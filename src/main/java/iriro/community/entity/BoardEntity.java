@@ -1,12 +1,13 @@
 package iriro.community.entity;
 
+import iriro.common.entity.BaseTime;
 import iriro.community.dto.BoardDto;
+import iriro.saferoute.entity.LocationlogEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
 
 @Entity
 @Table( name = "board")
