@@ -1,6 +1,8 @@
 package iriro.community.entity;
 
+import iriro.common.entity.BaseTime;
 import iriro.community.dto.BoardDto;
+import iriro.saferoute.entity.LocationlogEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +34,7 @@ public class BoardEntity extends BaseTime {
     @JoinColumn( name = "user_id")
     private UserEntity userEntity;
 
+    // 로그 번호
     @ManyToOne
     @JoinColumn( name = "log_id")
     private LocationlogEntity LocationlogEntity;
