@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service @Transactional @RequiredArgsConstructor
+@Service @RequiredArgsConstructor @Transactional
 public class RefreshAllDataService {
     private final FacilitySafeService fs;
     private final CrimeRoadService cs;

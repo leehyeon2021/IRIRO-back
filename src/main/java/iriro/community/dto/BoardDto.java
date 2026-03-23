@@ -18,7 +18,7 @@ public class BoardDto {
     private String updatedAt;
 
 
-    // + Dto --> Entity 변환
+    // + Dto --> Entity 변환 // 사용자가 직접 입력한 데이터만. 생고기로 바꿔.
     public BoardEntity boardEntity(){
         return BoardEntity.builder()
                 .boardTitle(this.boardTitle)

@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
 
 @Entity
 @Table( name = "board")
@@ -34,6 +33,7 @@ public class BoardEntity extends BaseTime {
     @JoinColumn( name = "user_id")
     private UserEntity userEntity;
 
+    // 로그 번호
     @ManyToOne
     @JoinColumn( name = "log_id")
     private LocationlogEntity LocationlogEntity;

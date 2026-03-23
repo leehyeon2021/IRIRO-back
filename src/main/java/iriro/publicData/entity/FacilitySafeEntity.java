@@ -8,8 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "facility_safe")
-@NoArgsConstructor @AllArgsConstructor
-@Data @Builder
+@NoArgsConstructor @AllArgsConstructor @Data @Builder
 public class FacilitySafeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "fac_id")
