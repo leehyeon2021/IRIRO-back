@@ -25,7 +25,7 @@ INSERT INTO crime_road (cri_zip, cri_sgg, cri_road) VALUES
 (6789,  '금천구',   '시흥대로53길');
 
 -- [3] users
-INSERT INTO users (user_id, email, pw_hash, nickname, created_at, updated_at) VALUES
+INSERT INTO users (user_id, email, pw_token, nickname, created_at, updated_at) VALUES
 (1, 'worker@gmail.com', '$2a$10$hash1', '프로야근러', '2026-02-10 18:30:00', '2026-03-01 22:10:00'),
 (2, 'dogwalker@naver.com', '$2a$10$hash2', '초코맘_산책중', '2026-02-11 09:15:00', '2026-02-11 09:15:00'),
 (3, 'sheriff@daum.net', '$2a$10$hash3', '동네보안관', '2026-02-15 14:20:00', '2026-03-10 10:05:00'),
@@ -52,6 +52,19 @@ VALUES
 (8, 8, 37.3988000, 126.9310000, 37.4001000, 126.9330000, 40, '2026-03-19 22:40:00', 2), -- 취약지구 탐색
 (9, 9, 37.3855000, 126.9555000, 37.3870000, 126.9570000, 85, '2026-03-19 23:20:00', 2), -- 딸 마중 나가는 길
 (10, 10, 37.3999000, 126.9288000, 37.4015000, 126.9300000, 30, '2026-03-19 23:55:00', 3); -- 무서워서 뛰는 중
+
+-- [5] route_log
+INSERT INTO route_log (point_id, log_id, latitude, longitude, sequence) VALUES
+(1, 1, 37.3895300, 126.9509400, 1),
+(2, 1, 37.3906822, 126.9484800, 2),
+(3, 1, 37.3918344, 126.9460200, 3),
+(4, 1, 37.3929867, 126.9435600, 4),
+(5, 1, 37.3941389, 126.9411000, 5),
+(6, 1, 37.3952911, 126.9386400, 6),
+(7, 1, 37.3964433, 126.9361800, 7),
+(8, 1, 37.3975956, 126.9337200, 8),
+(9, 1, 37.3987478, 126.9312600, 9),
+(10, 1, 37.3999000, 126.9288000, 10);
 
 -- [5] board
 INSERT INTO board (board_id, user_id, log_id, board_title, board_content, recommend_count, created_at, updated_at) VALUES
