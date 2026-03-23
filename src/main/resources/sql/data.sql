@@ -10,7 +10,7 @@ INSERT INTO facility_safe (fac_type, fac_sgg, fac_name, fac_add, fac_lat, fac_ln
 ('CCTV',         '강남구', '테헤란로 CCTV',          '서울 강남구 개포동 404',   37.4821, 127.0614, 2,    'Y', '02-8901-2345'),
 ( '안전벨',       '강남구', '역삼역 안전벨',          '서울 강남구 역삼동 505',   37.5003, 127.0388, 1,    'Y', '02-9012-3456'),
 ( '안전벨', '강남구', '역삼역 안전벨',          '서울 강남구 역삼동 505',   37.5003, 127.0388, 1,    'Y', '02-9012-3456');
---
+
 -- [2] crime
 INSERT INTO crime_road (cri_zip, cri_sgg, cri_road) VALUES
 (21242, '노원구',   '노해로21길'),
@@ -36,7 +36,6 @@ INSERT INTO users (user_id, email, pw_token, nickname, created_at, updated_at) V
 (8, 'cctv_hunter@naver.com', '$2a$10$hash8', '매의눈', '2026-02-28 16:45:00', '2026-03-05 09:20:00'),
 (9, 'mommy@daum.net', '$2a$10$hash9', '딸바보아빠', '2026-03-01 08:30:00', '2026-03-01 08:30:00'),
 (10, 'scared@kakao.com', '$2a$10$hash10', '쫄보', '2026-03-15 22:10:00', '2026-03-15 22:10:00');
-
 
 -- [4] location_log
 INSERT INTO location_log

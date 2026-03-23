@@ -4,6 +4,7 @@ import iriro.publicData.dto.FacilitySafeDto;
 import iriro.publicData.repository.FacilitySafeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service @RequiredArgsConstructor @Transactional
 public class FacilitySafeService {
-    private FacilitySafeRepository fr;
+    private final FacilitySafeRepository fr;
 
     // 조회
     // 1. 경찰서 조회
