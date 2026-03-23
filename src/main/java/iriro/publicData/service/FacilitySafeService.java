@@ -2,9 +2,10 @@ package iriro.publicData.service;
 
 import iriro.publicData.repository.FacilitySafeRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service @Transactional
+@Service @RequiredArgsConstructor @Transactional
 public class FacilitySafeService {
     private FacilitySafeRepository fr;
 
