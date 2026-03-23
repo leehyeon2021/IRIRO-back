@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class BoardDto {
     private Integer boardId;
     private Integer userId;
-    private Integer logId;
+    private Long logId;
     private String boardTitle;
     private String boardContent;
     private Integer recommendCount;

@@ -34,8 +34,16 @@ public class ReplyEntity extends BaseTime {
     private BoardEntity boardEntity;
 
     // Entity --> Dto 변환
-    public ReplyDto.builder()
-            .replyId(this.replyId)
-    .replyContent(this.replycon)
+    public ReplyDto replyDto(){
+        return ReplyDto.builder()
+                .replyId(this.replyId)
+                .userId(this.getUserEntity().getUserId())
+                .boardId(this.getBoardEntity().getBoardId())
+                .replyContent(this.replyContent)
+                .createdAt(this.getCreatedAt().toString())
+                .updatedAt(this.getUpdatedAt().toString())
+                .build();
+    }
+
 
 }
