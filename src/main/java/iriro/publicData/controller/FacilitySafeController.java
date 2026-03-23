@@ -13,8 +13,10 @@ public class FacilitySafeController {
 
     // 조회
     // 1. 경찰서 조회
-//    @GetMapping("/policeStation")
-//
+    @GetMapping("/policeStation")
+    public ResponseEntity<?> getPoliceStation(){
+        return ResponseEntity.ok(fs.getPoliceStation());
+    }
 
     // 2. 안심지킴이집 조회
     // 3. 보안등 조회
