@@ -1,6 +1,8 @@
 package iriro.community.entity;
 
+import iriro.common.entity.BaseTime;
 import iriro.community.dto.BoardDto;
+import iriro.saferoute.entity.LocationlogEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
