@@ -7,28 +7,28 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 @Entity
-@Table( name = "user")
+@Table( name = "users")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 
+// email, pwToken, nickname 길이 너무 짧아서 늘림, nickName x nickname으로 해야함, users X, user O
 public class UserEntity extends BaseTime {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Integer userId;
 
-    @Column(nullable = false , length = 20 , unique = true )
+    @Column(nullable = false , length = 40 , unique = true )
     private String email;
 
-    @Column(nullable = false , length = 20 )
+    @Column(nullable = false , length = 60 )
     private String pwToken;
 
-    @Column( nullable = false , length = 20 , unique = true )
-    private String nickName;
+    @Column( nullable = false , length = 40 , unique = true )
+    private String nickname;
 
     // Entity --> Dto 변환함수
     public UserDto userDto(){
@@ -36,7 +36,7 @@ public class UserEntity extends BaseTime {
                 .userId(this.userId)
                 .email(this.email)
                 // 비밀번호는 소중하니까 불포함한다.
-                .nickName(this.nickName)
+                .nickName(this.nickname)
                 .createAt( this.getCreatedAt().toString())
                 .updateAt( this.getUpdatedAt().toString())
                 .build();
