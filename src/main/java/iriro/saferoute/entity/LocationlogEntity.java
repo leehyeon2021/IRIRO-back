@@ -23,7 +23,7 @@ public class LocationlogEntity{
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
-    private Long log_id;
+    private Long logId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
