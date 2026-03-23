@@ -22,7 +22,6 @@ public class BoardService {
     private final UserRepository userRepository;
     private final ReplyRepository replyRepository;
 
-    @Autowired
     // 1. 리뷰 등록
     public boolean rvAdd( BoardDto boardDto ){
         // 1] dto --> entity 변환
