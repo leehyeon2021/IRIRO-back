@@ -33,6 +33,7 @@ public class BoardEntity extends BaseTime {
     @JoinColumn( name = "user_id")
     private UserEntity userEntity;
 
+    // 로그 번호
     @ManyToOne
     @JoinColumn( name = "log_id")
     private LocationlogEntity LocationlogEntity;
