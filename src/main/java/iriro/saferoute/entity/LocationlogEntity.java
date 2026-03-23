@@ -23,26 +23,26 @@ public class LocationlogEntity{
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
-    private Long log_id;
+    private Long logId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
     @Column(nullable = false, precision = 10, scale = 7) // 총 10자리 중에 소수점 이하 자리는 7자리 == decimal(10,7)
-    private BigDecimal start_latitude;
+    private BigDecimal startLatitude;
 
     @Column(nullable = false, precision = 10, scale = 7)
-    private BigDecimal start_longitude;
+    private BigDecimal startLongitude;
 
     @Column(nullable = false, precision = 10, scale = 7)
-    private BigDecimal end_latitude;
+    private BigDecimal endLatitude;
 
     @Column(nullable = false, precision = 10, scale = 7)
-    private BigDecimal end_longitude;
+    private BigDecimal endLongitude;
 
     @Column(nullable = false)
-    private Integer safety_score;
+    private Integer safetyScore;
 
     @Column(nullable = false)
     private Integer rating;
