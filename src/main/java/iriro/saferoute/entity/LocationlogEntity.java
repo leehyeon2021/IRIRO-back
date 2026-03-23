@@ -25,11 +25,9 @@ public class LocationlogEntity{
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long log_id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    private UserEntity userEntity;  추후에 유저엔티티가져오기
-
-    private Integer user_id; // 임시
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity userEntity;
 
     @Column(nullable = false, precision = 10, scale = 7) // 총 10자리 중에 소수점 이하 자리는 7자리 == decimal(10,7)
     private BigDecimal start_latitude;
