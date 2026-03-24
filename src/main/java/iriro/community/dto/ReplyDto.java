@@ -19,7 +19,7 @@ public class ReplyDto {
     private String updatedAt;
 
     // + Dto --> Entity 변환 // 사용자가 직접 입력한 데이터만.
-    public ReplyEntity replyEntity(){
+    public ReplyEntity toEntity(){
         return ReplyEntity.builder()
                 .replyContent(this.replyContent)
                 .build();
