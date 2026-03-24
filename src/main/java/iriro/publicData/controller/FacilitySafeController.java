@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController @RequiredArgsConstructor @RequestMapping("/api")
 public class FacilitySafeController {
-    private FacilitySafeService fs;
+    private final FacilitySafeService fs;
 
     // 조회
     // 1. 경찰서 조회
