@@ -17,6 +17,7 @@ public class SafeRouteService {
 
     //지금은 위험지역 샘플을 가져오지만 조회를 통해 가져옴 테스트 리스트 -> 추후에 삭제
     List<SafetyFacDto> safetyPoints = TestSampleCode.safeRoutePoint;
+    List<RoutePointDto> dangerPoints = TestSampleCode.dangerRoutePoints;
 
     // 안전 경로 계산 함수
     public SafeRouteResponseDto getSafeRoute(RouteRequestDto routeRequestDto){
@@ -24,6 +25,8 @@ public class SafeRouteService {
         // (출발지 위/경도, 목적지 위/경도, 경로 배열, 총걸린 시간, 총 거리)를 반환
         RouteResponseDto routeResponseDto = tmapRouteService.getPedestrianRoute(routeRequestDto);
         List<RoutePointDto> routePoints = routeResponseDto.getRoutePoints(); // 기존 안내 경로
+        // 위험 지역을 DB에서 조사해 1차 필터링을 거친 값들만 리스트로 변환하여 가져옴. --> 추후 JPA활용하여 처리
+
 
         // 해당 객체 내에 있는 시작점과 끝점의 위/경도를 가지고 위험구역 boundingbox를 만듬
         BboxDto bbox = createBox( routePoints );
@@ -32,10 +35,15 @@ public class SafeRouteService {
                 isInsideBbox(point.getLatitude().doubleValue(), point.getLongitude().doubleValue(),bbox))
                 .toList();
 
-        // 경유지 목록 생성 (우회 경로로 쓸)
-        List<DetourWayPointDto> detourRoute = riskPointFilterService.getDetourWayPoint(routePoints, bbox);
+        // 위험 리스트 필터링
+        List<RoutePointDto> firstInDangerPoints = dangerPoints.stream().filter(point ->
+                        isInsideBbox(point.getLat().doubleValue(), point.getLng().doubleValue(),bbox))
+                .toList();
 
-        // 안전 로직 계산
+        // 경유지 목록 생성 (우회 경로로 쓸) -> 아직 미완 기본 경로, 1차 필터링된 위험 위치 리스트
+        List<DetourWayPointDto> detourRoute = riskPointFilterService.getDetourWayPoint(routePoints, firstInDangerPoints);
+
+        // 안전 로직 계산 --> 추후에
 
         return null; //임의 값 추후에 삭제
     }

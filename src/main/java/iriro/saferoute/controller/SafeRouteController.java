@@ -19,7 +19,7 @@ public class SafeRouteController {
     // 안전 경로 로그 저장
 
     // 일반 경로 반환(test)
-    @PostMapping("/test")
+    @PostMapping("/tmaptest")
     public ResponseEntity<?> test(@RequestBody RouteRequestDto routeRequestDto){
         return ResponseEntity.ok(tmapRouteService.getPedestrianRoute(routeRequestDto));
     }
