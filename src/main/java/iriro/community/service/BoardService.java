@@ -30,7 +30,7 @@ public class BoardService {
     // 1. 리뷰 등록
     public boolean rvAdd( BoardDto boardDto ){
         // 1] dto --> entity 변환
-        BoardEntity boardEntity = boardDto.boardEntity();
+        BoardEntity boardEntity = boardDto.toEntity();
         // 2] JPA save 이용하여 insert 하기
         BoardEntity saved = boardRepository.save( boardEntity );
         // 3] save 결과에 pk 여부 성공판단
@@ -55,7 +55,6 @@ public class BoardService {
         }
         return dtoList;
     }
-
 
     // 3. 리뷰 상세 조회
     public BoardDto rvView(Integer boardId){

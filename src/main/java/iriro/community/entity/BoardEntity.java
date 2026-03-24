@@ -51,7 +51,8 @@ public class BoardEntity extends BaseTime {
     public BoardDto toDto(){
         return BoardDto.builder()
                 .boardId(this.boardId)
-                .userId(this.userEntity.getUserId())
+                .userId(this.userEntity != null ? this.userEntity.getUserId() : null)
+                // userEntity가 비어있지 않으면 아이디를 꺼내고, 비어있으면 null을 넣어라!
                 .logId(this.locationlogEntity.getLogId())
                 .boardTitle(this.boardTitle)
                 .boardContent(this.boardContent)
