@@ -1,6 +1,7 @@
 package iriro.publicData.service;
 
 import iriro.publicData.dto.FacilitySafeDto;
+import iriro.publicData.entity.FacilitySafeEntity;
 import iriro.publicData.repository.FacilitySafeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,19 +21,7 @@ public class FacilitySafeService {
     public List<FacilitySafeDto> getPoliceStation(){
         return fr.findByFacType("경찰서")
                 .stream()
-                .map(entity ->
-                    FacilitySafeDto.builder()
-                            .facId(entity.getFacId())
-                            .facType(entity.getFacType())
-                            .facSgg(entity.getFacSgg())
-                            .facName(entity.getFacName())
-                            .facAdd(entity.getFacAdd())
-                            .facLat(entity.getFacLat())
-                            .facLng(entity.getFacLng())
-                            .facCount(entity.getFacCount())
-                            .facUse(entity.getFacUse())
-                            .facTel(entity.getFacTel())
-                                    .build())
+                .map(FacilitySafeEntity::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -40,19 +29,7 @@ public class FacilitySafeService {
     public List<FacilitySafeDto> getSafeHouse() {
         return fr.findByFacType("안심지킴이집")
                 .stream()
-                .map(entity ->
-                        FacilitySafeDto.builder()
-                                .facId(entity.getFacId())
-                                .facType(entity.getFacType())
-                                .facSgg(entity.getFacSgg())
-                                .facName(entity.getFacName())
-                                .facAdd(entity.getFacAdd())
-                                .facLat(entity.getFacLat())
-                                .facLng(entity.getFacLng())
-                                .facCount(entity.getFacCount())
-                                .facUse(entity.getFacUse())
-                                .facTel(entity.getFacTel())
-                                .build())
+                .map(FacilitySafeEntity::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -60,19 +37,7 @@ public class FacilitySafeService {
     public List<FacilitySafeDto> getSafeLight() {
         return fr.findByFacType("보안등")
                 .stream()
-                .map(entity ->
-                        FacilitySafeDto.builder()
-                                .facId(entity.getFacId())
-                                .facType(entity.getFacType())
-                                .facSgg(entity.getFacSgg())
-                                .facName(entity.getFacName())
-                                .facAdd(entity.getFacAdd())
-                                .facLat(entity.getFacLat())
-                                .facLng(entity.getFacLng())
-                                .facCount(entity.getFacCount())
-                                .facUse(entity.getFacUse())
-                                .facTel(entity.getFacTel())
-                                .build())
+                .map(FacilitySafeEntity::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -80,19 +45,7 @@ public class FacilitySafeService {
     public List<FacilitySafeDto> getCctv() {
         return fr.findByFacType("CCTV")
                 .stream()
-                .map(entity ->
-                        FacilitySafeDto.builder()
-                                .facId(entity.getFacId())
-                                .facType(entity.getFacType())
-                                .facSgg(entity.getFacSgg())
-                                .facName(entity.getFacName())
-                                .facAdd(entity.getFacAdd())
-                                .facLat(entity.getFacLat())
-                                .facLng(entity.getFacLng())
-                                .facCount(entity.getFacCount())
-                                .facUse(entity.getFacUse())
-                                .facTel(entity.getFacTel())
-                                .build())
+                .map(FacilitySafeEntity::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -100,19 +53,7 @@ public class FacilitySafeService {
     public List<FacilitySafeDto> getSafeBell() {
         return fr.findByFacType("안전벨")
                 .stream()
-                .map(entity ->
-                        FacilitySafeDto.builder()
-                                .facId(entity.getFacId())
-                                .facType(entity.getFacType())
-                                .facSgg(entity.getFacSgg())
-                                .facName(entity.getFacName())
-                                .facAdd(entity.getFacAdd())
-                                .facLat(entity.getFacLat())
-                                .facLng(entity.getFacLng())
-                                .facCount(entity.getFacCount())
-                                .facUse(entity.getFacUse())
-                                .facTel(entity.getFacTel())
-                                .build())
+                .map(FacilitySafeEntity::toDto)
                 .collect(Collectors.toList());
     }
 
