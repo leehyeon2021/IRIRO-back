@@ -1,12 +1,10 @@
 package iriro.saferoute.controller;
 
+import iriro.saferoute.dto.RouteRequestDto;
 import iriro.saferoute.service.TmapRouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,14 +19,9 @@ public class SafeRouteController {
     // 안전 경로 로그 저장
 
     // 일반 경로 반환(test)
-    @GetMapping("/test")
-    public ResponseEntity<?> test(
-            @RequestParam double startLat,
-            @RequestParam double startLng,
-            @RequestParam double endLat,
-            @RequestParam double endLng
-                                  ){
-        return ResponseEntity.ok(tmapRouteService.getPedestrianRoute(startLat,startLng,endLat,endLng));
+    @PostMapping("/test")
+    public ResponseEntity<?> test(@RequestBody RouteRequestDto routeRequestDto){
+        return ResponseEntity.ok(tmapRouteService.getPedestrianRoute(routeRequestDto));
     }
 
 }
