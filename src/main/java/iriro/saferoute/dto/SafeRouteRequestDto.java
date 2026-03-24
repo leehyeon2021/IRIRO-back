@@ -1,16 +1,15 @@
 package iriro.saferoute.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder
-public class SafeRouteRequest {
+public class SafeRouteRequestDto {
     private double startLat;
     private double startLng;
     private double endLat;

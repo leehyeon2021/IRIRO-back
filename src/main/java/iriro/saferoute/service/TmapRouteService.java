@@ -1,8 +1,8 @@
 package iriro.saferoute.service;
 
 import iriro.saferoute.dto.RoutePointDto;
+import iriro.saferoute.dto.RouteRequestDto;
 import iriro.saferoute.dto.RouteResponseDto;
-import iriro.saferoute.dto.SafeRouteResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,15 +29,13 @@ public class TmapRouteService { //Tmap API 연결
     // 외부 API를 호출하기 위한 HTTP 클라이언트 객체 생성
     private final WebClient webClient;
 
-    public RouteResponseDto getPedestrianRoute(
-            double startLat, double startLng, double endLat, double endLng
-    ){
+    public RouteResponseDto getPedestrianRoute(RouteRequestDto routeRequestDto){
         // 1. 요청 body 생성
         Map<String, Object> body = new HashMap<>();
-        body.put( "startX", startLng ); // 출발지 경도
-        body.put( "startY", startLat ); // 출발지 위도
-        body.put( "endX", endLng ); // 도착지 경도
-        body.put( "endY", endLat ); // 도착지 위도
+        body.put( "startX", routeRequestDto.getStartLng() ); // 출발지 경도
+        body.put( "startY", routeRequestDto.getStartLat() ); // 출발지 위도
+        body.put( "endX", routeRequestDto.getEndLng() ); // 도착지 경도
+        body.put( "endY", routeRequestDto.getEndLat() ); // 도착지 위도
         body.put( "reqCoordType", "WGS84GEO" ); // WGS84GEO -> 기준 좌표계
         body.put( "resCoordType", "WGS84GEO" );
         body.put( "startName", "출발지" );
@@ -117,10 +115,10 @@ public class TmapRouteService { //Tmap API 연결
         }
 
         return RouteResponseDto.builder()
-                .start_latitude(BigDecimal.valueOf(startLat))
-                .start_longitude(BigDecimal.valueOf(startLng))
-                .end_latitude(BigDecimal.valueOf(endLat))
-                .end_longitude(BigDecimal.valueOf(endLng))
+                .start_latitude(BigDecimal.valueOf(routeRequestDto.getStartLat()))
+                .start_longitude(BigDecimal.valueOf(routeRequestDto.getStartLng()))
+                .end_latitude(BigDecimal.valueOf(routeRequestDto.getEndLat()))
+                .end_longitude(BigDecimal.valueOf(routeRequestDto.getEndLng()))
                 .totalTime(totalTime)
                 .totalDistance(totalDistance)
                 .routePoints(routePoints)
