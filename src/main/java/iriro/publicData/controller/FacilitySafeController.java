@@ -19,7 +19,19 @@ public class FacilitySafeController {
     }
 
     // 2. 안심지킴이집 조회
+    @GetMapping("/safeHouse")
+    public ResponseEntity<?> getSafeHouse(){return ResponseEntity.ok(fs.getSafeHouse());}
+
     // 3. 보안등 조회
+    @GetMapping("/safeLight")
+    public ResponseEntity<?> getSafeLight(){return ResponseEntity.ok(fs.getSafeLight());}
+
     // 4. CCTV 조회
+    @GetMapping("/cctv")
+    public ResponseEntity<?> getCctv(){return ResponseEntity.ok(fs.getCctv());}
+
     // 5. 안전벨 조회
+    @GetMapping("/safeBell")
+    public ResponseEntity<?> getSafeBell(){return ResponseEntity.ok(fs.getSafeBell());}
+
 }

@@ -1,10 +1,12 @@
 package iriro.publicData.service;
 
 import iriro.publicData.dto.FacilitySafeDto;
+import iriro.publicData.entity.FacilitySafeEntity;
 import iriro.publicData.repository.FacilitySafeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,28 +21,44 @@ public class FacilitySafeService {
     public List<FacilitySafeDto> getPoliceStation(){
         return fr.findByFacType("경찰서")
                 .stream()
-                .map(entity ->
-                    FacilitySafeDto.builder()
-                            .facId(entity.getFacId())
-                            .facType(entity.getFacType())
-                            .facSgg(entity.getFacSgg())
-                            .facName(entity.getFacName())
-                            .facAdd(entity.getFacAdd())
-                            .facLat(entity.getFacLat())
-                            .facLng(entity.getFacLng())
-                            .facCount(entity.getFacCount())
-                            .facUse(entity.getFacUse())
-                            .facTel(entity.getFacTel())
-                                    .build())
+                .map(FacilitySafeEntity::toDto)
                 .collect(Collectors.toList());
     }
 
     // 2. 안심지킴이집 조회
-    // 3. 보안등 조회
-    // 4. CCTV 조회
-    // 5. 안전벨 조회
+    public List<FacilitySafeDto> getSafeHouse() {
+        return fr.findByFacType("안심지킴이집")
+                .stream()
+                .map(FacilitySafeEntity::toDto)
+                .collect(Collectors.toList());
+    }
 
-    // 저장
+    // 3. 보안등 조회
+    public List<FacilitySafeDto> getSafeLight() {
+        return fr.findByFacType("보안등")
+                .stream()
+                .map(FacilitySafeEntity::toDto)
+                .collect(Collectors.toList());
+    }
+
+    // 4. CCTV 조회
+    public List<FacilitySafeDto> getCctv() {
+        return fr.findByFacType("CCTV")
+                .stream()
+                .map(FacilitySafeEntity::toDto)
+                .collect(Collectors.toList());
+    }
+
+    // 5. 안전벨 조회
+    public List<FacilitySafeDto> getSafeBell() {
+        return fr.findByFacType("안전벨")
+                .stream()
+                .map(FacilitySafeEntity::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+    // 저장 - 다른 파일 만드는 게 나을 것 같음
     // 1. 경찰서 저장
     // 2. 안심지킴이집 저장
     // 3. 보안등 저장
