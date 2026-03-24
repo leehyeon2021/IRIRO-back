@@ -29,6 +29,20 @@ public class BoardController {
     // http://localhost:8080/board/all
     @GetMapping("/all")
     public List<BoardDto> rbAllView(){
+        return boardService.rvAllView();
+    }
 
+    // 3. 리뷰 상세 조회
+    // http://localhost:8080/board/all/detail?boardId=1
+    @GetMapping("/all/detail")
+    public BoardDto rvView(@RequestParam Integer boardId){
+        return boardService.rvView(boardId);
+    }
+
+    // 4. 리뷰 개별 삭제
+    // http://localhost:8080/board/rvdelete?boardId=2
+    @DeleteMapping("/rvdelete")
+    public boolean rvDelete(@RequestParam Integer boardId){
+        return boardService.rvDelete(boardId);
     }
 }

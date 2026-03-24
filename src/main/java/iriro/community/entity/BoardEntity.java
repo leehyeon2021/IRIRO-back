@@ -4,10 +4,11 @@ import iriro.common.entity.BaseTime;
 import iriro.community.dto.BoardDto;
 import iriro.saferoute.entity.LocationlogEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.openqa.selenium.devtools.Reply;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table( name = "board")
@@ -37,6 +38,14 @@ public class BoardEntity extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn( name = "log_id")
     private LocationlogEntity locationlogEntity;
+
+    // 양방향 @OneToMany
+    // 1:N 일대다 ,  보드 1개에는 여러 개의 댓글이 포함된다.
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @ToString.Exclude
+    private List<ReplyEntity> replyList = new ArrayList<>();
+
 
     // Entity --> Dto 변환
     public BoardDto toDto(){
