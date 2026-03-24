@@ -25,10 +25,10 @@ public class BoardController {
         return result;
     }
 
-    // 2. 리뷰 전체 조회
-    // http://localhost:8080/board/all
-    @GetMapping("/all")
-    public List<BoardDto> rbAllView(){
-
-    }
+//    // 2. 리뷰 전체 조회
+//    // http://localhost:8080/board/all
+//    @GetMapping("/all")
+//    public List<BoardDto> rbAllView(){
+//
+//    }
 }
