@@ -10,9 +10,6 @@ import java.util.List;
 
 @NoArgsConstructor @AllArgsConstructor @Data @Builder
 public class SafeRouteResponseDto {
-    private Long log_id;
-    private Integer user_id;
-
     private BigDecimal start_latitude;
     private BigDecimal start_longitude;
     private BigDecimal end_latitude;
