@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @AllArgsConstructor @NoArgsConstructor @Data @Builder
-public class SafetyFacDto {
+public class SafetyFacPointDto {
 
     private String facType; // 안전시설물 타입
     private BigDecimal latitude; // 위도
