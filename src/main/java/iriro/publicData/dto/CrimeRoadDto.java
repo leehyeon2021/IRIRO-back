@@ -12,10 +12,14 @@ public class CrimeRoadDto {
     private Integer criZip;
     private String criSgg;
     private String criRoad;
+    private String criType;
+    private Double criLat;
+    private Double criLng;
 
-    public CrimeRoadEntity toEntity(){
+    public CrimeRoadEntity toEntity(){ // 저장 없어서 쓸 일 없을 수도
         return CrimeRoadEntity.builder()
                 .criId(this.criId).criZip(this.criZip).criSgg(this.criSgg).criRoad(this.criRoad)
+                .criLat(this.criLat).criLng(this.criLng)
                 .build();
     }
 }

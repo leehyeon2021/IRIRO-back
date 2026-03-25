@@ -1,5 +1,6 @@
 package iriro.publicData.service;
 
+import iriro.common.service.GeocodingService;
 import iriro.publicData.entity.CrimeRoadEntity;
 import iriro.publicData.repository.CrimeRoadRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,9 @@ public class CrimeRoadFetchService{
 
     private final WebClient webClient;
     private final CrimeRoadRepository cr;
+    private final GeocodingService gs;
 
-    // 범죄자도로명(Map) 저장
+    // 위험도로명(Map) 저장
     public boolean fetchCrimeRoad(){
         // * 일단 써놓음
         int numOfRows = 1000;   // 한 번에 1000개 조회 가능
@@ -66,25 +68,26 @@ public class CrimeRoadFetchService{
 
                 for (Map<String, Object> item : itemList) {
                     String ctpvNm = (String) item.get("ctpvNm");
-                    if (!ctpvNm.contains("서울")) continue;
+                    if(ctpvNm==null||!ctpvNm.contains("서울")) continue;
+
+                    // 도로명 분리(criRoad , criType)
+                    String roadName = (String) item.get("roadNm");
+                    String roadType = getRoadSuffix(roadName);
+                    String fullAdr = "서울특별시 "+item.get("ssgNm")+" "+roadName;
+                    System.out.println(fullAdr);
+                    double[] coords = gs.getCoords(fullAdr);
 
                     cr.save(CrimeRoadEntity.builder()
                             .criZip(Integer.parseInt((String) item.get("roadNmZip")))
                             .criSgg((String) item.get("sggNm"))
-                            .criRoad((String) item.get("roadNm"))
+                            .criRoad()
+                            .criType(roadType)
                             .build());
                 }
             }
             return true;
         }catch(Exception e){System.out.println("위험도로명 저장 실패: "+e);return false;}
     }
-
-    /*
-    마지막 글자만 따오는 함수
-    System.out.println(getRoadSuffix("테헤란대로")); // 대로
-    System.out.println(getRoadSuffix("세종로"));     // 로
-    System.out.println(getRoadSuffix("충장길"));     // 길
-     */
 
     public static String getRoadSuffix(String roadName) {
         if (roadName == null || roadName.isBlank()) return "";
@@ -95,5 +98,9 @@ public class CrimeRoadFetchService{
 
         return "";
     }
+    /* 마지막 글자만 따오는 함수
+    System.out.println(getRoadSuffix("테헤란대로")); // 대로
+    System.out.println(getRoadSuffix("세종로"));     // 로
+    System.out.println(getRoadSuffix("충장길"));     // 길  */
 
 }

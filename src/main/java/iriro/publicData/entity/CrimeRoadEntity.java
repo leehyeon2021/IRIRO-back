@@ -20,10 +20,17 @@ public class CrimeRoadEntity {
     private String criSgg;
     @Column(name = "cri_road", length = 300)
     private String criRoad;
+    @Column(name = "cri_type", length = 10)
+    private String criType;
+    @Column(name = "cri_lat")
+    private Double criLat;
+    @Column(name = "cri_lng")
+    private Double criLng;
 
     public CrimeRoadDto toDto(){
         return CrimeRoadDto.builder()
                 .criId(this.criId).criZip(this.criZip).criSgg(this.criSgg).criRoad(this.criRoad)
+                .criLat(this.criLat).criLng(this.criLng)
                 .build();
     }
 
