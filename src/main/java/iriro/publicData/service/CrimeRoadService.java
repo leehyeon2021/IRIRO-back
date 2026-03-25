@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class CrimeRoadService {
     private final CrimeRoadRepository cr;
 
-    // 범죄자도로명 조회
+    // 위험도로명 조회
     public List<CrimeRoadDto> getCrimeRoad(){
         List<CrimeRoadEntity> entityList = cr.findAll();
         List<CrimeRoadDto> list = entityList.stream()
@@ -21,6 +21,4 @@ public class CrimeRoadService {
                 .collect(Collectors.toList());
         return list;
     }
-
-    // 범죄자도로명 저장
 }
