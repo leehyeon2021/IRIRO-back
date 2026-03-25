@@ -21,6 +21,6 @@ public class RefreshAllDataService {
         ffs.fetchPoliceStation();    // 경찰서
         ffs.fetchSafeHouse();        // 안심지킴이집
         ffs.fetchSafeFac();          // 안전시설물(보안등,CCTV,안전벨)
-        cfs.fetchCrimeRoad();        // 범죄자거주도로명 - 가장 많음
+        cfs.fetchCrimeRoad();        // 위험도로명 - 가장 많음(오래걸림!!)
     }
 }
