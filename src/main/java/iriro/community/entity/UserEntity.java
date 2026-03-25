@@ -31,7 +31,7 @@ public class UserEntity extends BaseTime {
     private String nickname;
 
     // Entity --> Dto 변환함수 // 생고기에서 플레이팅 접시용으로 바꾸는 거야~
-    public UserDto userDto(){
+    public UserDto toDto(){
         return UserDto.builder()
                 .userId(this.userId)
                 .email(this.email)

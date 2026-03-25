@@ -19,7 +19,7 @@ public class UserDto {
     private String updateAt; // 수정일
 
     // + Dto --> Entity 변환 // 사용자가 직접 입력한 데이터만.
-    public UserEntity userEntity(){
+    public UserEntity toEntity(){
         return UserEntity.builder()
                 .email(this.email)
                 .pwToken(this.pwToken)
