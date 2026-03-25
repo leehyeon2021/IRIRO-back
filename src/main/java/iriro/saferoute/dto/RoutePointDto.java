@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Data
 @Builder
 public class RoutePointDto {
-    private BigDecimal lat; // 위도
-    private BigDecimal lng; // 경도
+    private BigDecimal latitude; // 위도
+    private BigDecimal longitude; // 경도
     private Integer sequence; // 경로 순서 -> 몇 번째 지점이 위험구역인지 판단
 }
