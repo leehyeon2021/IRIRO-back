@@ -1,5 +1,6 @@
 package iriro.saferoute.service;
 
+import iriro.saferoute.dto.DetourWayPointDto;
 import iriro.saferoute.dto.RoutePointDto;
 import iriro.saferoute.dto.RouteRequestDto;
 import iriro.saferoute.dto.RouteResponseDto;
@@ -116,11 +117,11 @@ public class TmapRouteService { //Tmap API 연결
     }
 
     // 경유지 있는 경로 함수 만들기 (경유지 리스트 문자열 방식으로 변환)
-    public RouteResponseDto getDetourRoute(RouteRequestDto routeRequestDto, List<RoutePointDto> detourList){
+    public RouteResponseDto getDetourRoute(RouteRequestDto routeRequestDto, List<DetourWayPointDto> detourList){
         // passList 문자열로 변환
         String passList = detourList.stream()
                 .limit(5)
-                .map(point -> point.getLng() + "," + point.getLat())
+                .map(point -> point.getLongitude() + "," + point.getLatitude())
                 .collect(Collectors.joining("_"));
 
         // 1. 요청 body 생성
