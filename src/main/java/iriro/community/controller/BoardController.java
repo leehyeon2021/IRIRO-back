@@ -45,4 +45,8 @@ public class BoardController {
     public boolean rvDelete(@RequestParam Integer boardId){
         return boardService.rvDelete(boardId);
     }
+
+    // 5. 글 추천
+    @PostMapping("/ddabong")
+    public boolean ddabong(@RequestParam Integer boardId){return boardService.ddabong(boardId); }
 }

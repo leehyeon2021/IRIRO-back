@@ -7,6 +7,7 @@ import iriro.community.entity.BoardEntity;
 import iriro.community.repository.BoardRepository;
 import iriro.community.repository.ReplyRepository;
 import iriro.community.repository.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,4 +73,19 @@ public class BoardService {
         }
     }
 
-}
+    // 5. 글 추천
+    public boolean ddabong(Integer boardId){
+        Optional<BoardEntity> optionalBoard = boardRepository.findById(boardId);
+
+        if(optionalBoard.isPresent()) {
+            BoardEntity board = optionalBoard.get();
+
+            board.setRecommendCount(board.getRecommendCount() + 1);
+
+            return true;
+        }
+        return false;
+    }
+
+    }
+
