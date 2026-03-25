@@ -10,8 +10,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 import java.util.Map;
 
-// boolean으로 바꾸기 (마지막 criId가 totalCount랑 같으면 true 다르면 false)
-
 @Service @RequiredArgsConstructor
 public class CrimeRoadFetchService{
 
@@ -21,15 +19,15 @@ public class CrimeRoadFetchService{
     @Value("${api.pub.crime-road.url}")
     private String crimeRoadUrl;
 
-    private final WebClient webClient = WebClient.builder().build();
+    private final WebClient webClient;
     private final CrimeRoadRepository cr;
 
-    // (공공데이터 수집) 범죄자도로명
+    // 범죄자도로명(Map) 저장
     public boolean fetchCrimeRoad(){
         // * 일단 써놓음
-        int numOfRows = 1000; // 한 번에 1000개 조회 가능
-        int totalCount = 0; // 저장해야 함
-        int totalPages = 1; // 하나씩 올라감
+        int numOfRows = 1000;   // 한 번에 1000개 조회 가능
+        int totalCount = 0;     // 저장해야 함
+        int totalPages = 1;     // numOfRows와 totalCount를 고려하여 페이지 넘김
 
         try {
 
@@ -52,6 +50,7 @@ public class CrimeRoadFetchService{
                         .block();
                 System.out.println(response);
 
+                // 열어
                 Map<String, Object> responseInner = (Map<String, Object>) response.get("response");
                 Map<String, Object> body = (Map<String, Object>) responseInner.get("body");
 
@@ -68,20 +67,33 @@ public class CrimeRoadFetchService{
                 for (Map<String, Object> item : itemList) {
                     String ctpvNm = (String) item.get("ctpvNm");
                     if (!ctpvNm.contains("서울")) continue;
-                    CrimeRoadEntity entity = CrimeRoadEntity.builder()
+
+                    cr.save(CrimeRoadEntity.builder()
                             .criZip(Integer.parseInt((String) item.get("roadNmZip")))
                             .criSgg((String) item.get("sggNm"))
                             .criRoad((String) item.get("roadNm"))
-                            .build();
-                    cr.save(entity);
+                            .build());
                 }
             }
             return true;
-        }catch (Exception e){
-            System.out.println("저장 실패 사유: "+e);
-            return false;
-        }
+        }catch(Exception e){System.out.println("저장 실패 사유: "+e);return false;}
     }
 
+    /*
+    마지막 글자만 따오는 함수
+    System.out.println(getRoadSuffix("테헤란대로")); // 대로
+    System.out.println(getRoadSuffix("세종로"));     // 로
+    System.out.println(getRoadSuffix("충장길"));     // 길
+     */
+
+    public static String getRoadSuffix(String roadName) {
+        if (roadName == null || roadName.isBlank()) return "";
+
+        if (roadName.endsWith("대로")) return "대로";
+        if (roadName.endsWith("로")) return "로";
+        if (roadName.endsWith("길")) return "길";
+
+        return "";
+    }
 
 }
