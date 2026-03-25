@@ -15,9 +15,9 @@ public class RefreshAllDataService {
     @Scheduled(cron = "0 0 1 1 * *")  // 매월 1일 새벽 2시
     public void refreshAllData() {
 
-        // 1. 전체 삭제
+        // 1. 전체 삭제 - db에 들어간 파일 전체 삭제
 
-//        // 2. 순서대로 저장
+//        // 2. 순서대로 저장 - sleep 같은 거 해야할 것 같음
 //        ffs.fetchPoliceStation();    // 경찰서
 //        ffs.fetchSafeHouse();        // 안심지킴이집
 //        ffs.fetchSafeLight();        // 보안등
