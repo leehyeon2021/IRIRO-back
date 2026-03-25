@@ -1,6 +1,7 @@
 package iriro.saferoute.controller;
 
 import iriro.saferoute.dto.RouteRequestDto;
+import iriro.saferoute.service.SafeRouteService;
 import iriro.saferoute.service.TmapRouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ public class SafeRouteController {
 
     // 테스트용 일반 경로 반환 확인
     private final TmapRouteService tmapRouteService;
+    private final SafeRouteService safeRouteService;
 
     // 안전 경로 반환
 
@@ -27,8 +29,7 @@ public class SafeRouteController {
     // 경유지 경로 반환(test2)
     @PostMapping("/tmaptest2")
     public ResponseEntity<?> test2(@RequestBody RouteRequestDto routeRequestDto){
-        String passList = "126.9525000,37.3908000_126.9460000,37.3923000_126.9395000,37.3945000_126.9345000,37.3962000"; // 샘플 경유지 4개
-        return ResponseEntity.ok(tmapRouteService.getDetourRoute(routeRequestDto, passList));
+        return ResponseEntity.ok( safeRouteService.getSafeRoute(routeRequestDto) );
     }
 
 }
