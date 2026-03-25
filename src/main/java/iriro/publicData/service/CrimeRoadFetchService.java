@@ -76,7 +76,7 @@ public class CrimeRoadFetchService{
                 }
             }
             return true;
-        }catch(Exception e){System.out.println("저장 실패 사유: "+e);return false;}
+        }catch(Exception e){System.out.println("위험도로명 저장 실패: "+e);return false;}
     }
 
     /*
