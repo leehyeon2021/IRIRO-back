@@ -1,15 +1,42 @@
 package iriro.community.service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Date;
 
 @Service
 public class JwtService {
-    private String secret = "qkrwlsrkatkfkdgoqkrwlsrkatkfkdgoqkrwlsrkatkfkdgo"
+    private String secret = "qkrwlsrkatkfkdgoqkrwlsrkatkfkdgoqkrwlsrkatkfkdgo";
     private Key secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // 비밀키 생성
     // [1] 토큰 발급
-    public String createToken(String )
-}
+    public String createToken(String email) {
+        String token = Jwts.builder()
+                .claim("email",email) // key와 value 쌍으로 토큰에 저장할 값
+                .setIssuedAt(new Date()) // 토큰 발급날짜
+                .setExpiration( new Date(System.currentTimeMillis()+(1000L*60*60*24))) // 토큰 유효시간 24시간
+                .signWith(secretKey, SignatureAlgorithm.HS256) // 토큰에 비밀키 넣고 서명 알고리즘
+                .compact();
+        return token;
+    }
+    // [2] 토큰의 클레임(내용물) 추출
+    public String getClaim(String token){
+        try{
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey) // 비밀키 대입
+                    .build() // 비밀키가 일치하지 않으면 예외 발생
+                    .parseClaimsJws(token) // 서명 확인할 토큰 대입
+                    .getBody(); // 서명확인 토큰 내 클레임(내용물) 반환 / 없으면 예외 발생
+            Object object = claims.get("email"); // 클레임(내용물)의 값은 모두 Object 이다.
+            return (String)object;
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        return null; // 토큰이 없거나 유효하지 않을 때
+    }
+} // class END
