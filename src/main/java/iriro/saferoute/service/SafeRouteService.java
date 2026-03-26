@@ -88,6 +88,9 @@ public class SafeRouteService {
                 BigDecimal.valueOf(bbox.getMinLng()), BigDecimal.valueOf(bbox.getMaxLng()))
                 .stream().map(CrimeRoadEntity::toRiskPointDto).toList();
 
+        System.out.println("안전시설물경로: " + allSafetyPoints);
+        System.out.println("위험경로: " + allDangerPoints);
+
 
         // 안전 지역 1,2차 필터링 ( bbox, 경로상 50m 이내 )
         List<SafetyFacPointDto> filteredSafetyFacPoints = safeFacFilterSvc.filterSafetyFacPoints(routePoints, allSafetyPoints);
@@ -120,6 +123,9 @@ public class SafeRouteService {
             DetourWayPointDto singleWayPoint = detourRouteSvc.createSingleDetourWayPoint(routePoints, filteredDangerPoints.get(0) );
             RouteResponseDto singleDetourRoute = tmapRouteSvc.getDetourRoute(routeRequestDto, List.of(singleWayPoint)); // 싱글 우회경로 생성
             List<RoutePointDto> singleRoutePoints = singleDetourRoute.getRoutePoints();
+
+            System.out.println("한번 더 우회한 경로 총 시간: " + singleDetourRoute.getTotalTime());
+            System.out.println("한번 더 우회한 경로 총 거리: " + singleDetourRoute.getTotalDistance());
 
             // 한 번 더 우회했지만 비율이 여전히 20%가 넘으면 기본 경로로 반환
             double detourRatio2 = (double)singleDetourRoute.getTotalDistance() / originRoute.getTotalDistance();
@@ -156,8 +162,9 @@ public class SafeRouteService {
         int safeCount = safetyFacPoints.stream().mapToInt(safeFac -> getFacScore(safeFac.getFacType()) * safeFac.getSafeCount() ).sum();
         int riskCount = dangerPoints.stream().mapToInt(RiskPointDto::getRiskCount).sum() * -7;
 
-        System.out.println("safeCount: " + safeCount);
-        System.out.println("riskCount: " + riskCount);
+        System.out.println("안전점수(보안등1점, CCTV/안전벨2점, 안전지킴이집4점, 경찰서5점): " + safeCount);
+        System.out.println("위험점수(위험경로당-7점): " + riskCount);
+        System.out.println("안전점수: " + 100 + safeCount + riskCount);
 
         return 100 + safeCount + riskCount;
     }
