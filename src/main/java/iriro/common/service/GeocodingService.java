@@ -18,23 +18,29 @@ double[] coords = gs.getCoords("서울특별시 강남구 어쩌고");
 @RequiredArgsConstructor
 public class GeocodingService {
 
+    // Tmap 지오코딩
     @Value("${tmap.app-key}")
     private String tmapServiceKey;
-
     @Value("${tmap.geocoding.url}")
     private String tmapGeocodingUrl;
 
+    // Kakao 지오코딩
+    @Value("${kakao.api-key}")
+    private String kakaoApiKey;
+    @Value("${kakao.geocoding.url}")
+    private String kakaoGeocodingUrl;
+
     private final WebClient webClient;
 
-    // 주소 -> 위도, 경도 반환. 실패 시 null 반환
-    public double[] getCoords(String address, String addressFlag) {
+    // Tmap 지오코딩 (facilitySafe)
+    public double[] getCoords(String address) {
         try {
             // 1. URL 생성
             String uri = tmapGeocodingUrl
                     + "?version=1"
                     + "&fullAddr=" + URLEncoder.encode(address, "UTF-8")
                     + "&appKey=" + tmapServiceKey
-                    + "&addressFlag=" + addressFlag;
+                    + "&addressFlag=F00";
 
             // 2. 응답
             Map<String, Object> response = webClient.get()
@@ -71,4 +77,39 @@ public class GeocodingService {
             return null;
         }
     }
+
+
+    // 카카오 지오코딩 (CrimeRoad)
+    public double[] getCoordsKakao(String address) {
+        try {
+            String uri = kakaoGeocodingUrl
+                    + "?query=" + URLEncoder.encode(address, "UTF-8")
+                    + "&analyze_type=similar";
+
+            Map<String, Object> response = webClient.get()
+                    .uri(java.net.URI.create(uri))
+                    .header("Authorization", "KakaoAK " + kakaoApiKey) // Bearer는 JWT 토큰 방식이래
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+
+            if (response == null) return null;
+
+            List<Map<String, Object>> documents = (List<Map<String, Object>>) response.get("documents");
+            if (documents == null || documents.isEmpty()) return null;
+
+            // 위도경도
+            String lat = (String) documents.get(0).get("y");
+            String lon = (String) documents.get(0).get("x");
+            if (lat == null || lat.isEmpty()) return null;
+
+            return new double[]{Double.parseDouble(lat), Double.parseDouble(lon)};
+
+        } catch (Exception e) {
+            System.out.println("카카오 지오코딩 실패: " + address + " / " + e.getMessage());
+            return null;
+        }
+    }
+
+
 }
