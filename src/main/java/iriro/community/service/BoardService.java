@@ -84,6 +84,7 @@ public class BoardService {
         return false;
     }
 
+
     // 5. 글 추천
     public boolean ddabong(Integer boardId) {
         Optional<BoardEntity> optionalBoard = boardRepository.findById(boardId);
