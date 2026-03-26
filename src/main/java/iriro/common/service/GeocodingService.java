@@ -27,14 +27,14 @@ public class GeocodingService {
     private final WebClient webClient;
 
     // 주소 -> 위도, 경도 반환. 실패 시 null 반환
-    public double[] getCoords(String address) {
+    public double[] getCoords(String address, String addressFlag) {
         try {
             // 1. URL 생성
             String uri = tmapGeocodingUrl
                     + "?version=1"
                     + "&fullAddr=" + URLEncoder.encode(address, "UTF-8")
                     + "&appKey=" + tmapServiceKey
-                    + "&addressFlag=F00";
+                    + "&addressFlag=" + addressFlag;
 
             // 2. 응답
             Map<String, Object> response = webClient.get()
