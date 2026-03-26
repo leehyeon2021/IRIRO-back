@@ -124,6 +124,13 @@ public class FacilitySafeFetchService {
                         continue;
                     }
 
+                    // 전화번호 (-) null로 교체
+                    String facTel = (String) item.get("telno");
+                    if(facTel.equals("-")||facTel.equals("null")||facTel.isEmpty()){
+                        facTel = null;
+                    }
+
+                    // 좌표
                     String xStr = (String) item.get("x");
                     String yStr = (String) item.get("y");
 
@@ -131,7 +138,7 @@ public class FacilitySafeFetchService {
 
                     // x="0" 이면 지오코딩 (x없음y도없음)
                     if (xStr == null || xStr.equals("0")) {
-                        double[] coords = gs.getCoords(rnAdres);
+                        double[] coords = gs.getCoordsKakao(rnAdres);
                         if(coords == null)continue;
                         lat = coords[0];
                         lng = coords[1];
@@ -147,7 +154,7 @@ public class FacilitySafeFetchService {
                             .facAdd(rnAdres)
                             .facLat(lat)
                             .facLng(lng)
-                            .facTel((String) item.get("telno"))
+                            .facTel(facTel)
                             .build());
                 }
             }
