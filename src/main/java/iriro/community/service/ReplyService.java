@@ -59,7 +59,7 @@ public class ReplyService {
         }
         return false;
     }
-
+    
     // 2. 댓글 삭제 ( 비회원은 삭제 X ... 회원만 삭제 O )
     public boolean rpDelete(Integer replyId , String loginEmail){
     Optional<ReplyEntity> replyOptional = replyRepository.findById(replyId);
