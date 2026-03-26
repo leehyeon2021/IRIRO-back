@@ -80,8 +80,8 @@ public class SafeRouteService {
                 BigDecimal.valueOf(bbox.getMinLng()), BigDecimal.valueOf(bbox.getMaxLng()))
                 .stream().map(CrimeRoadEntity::toRiskPointDto).toList();
 
-        System.out.println("안전시설물경로: " + allSafetyPoints);
-        System.out.println("위험경로: " + allDangerPoints);
+        System.out.println("안전시설물Dto: " + allSafetyPoints);
+        System.out.println("위험Dto: " + allDangerPoints);
 
 
         // 안전 지역 1,2차 필터링 ( bbox, 경로상 50m 이내 )
@@ -89,17 +89,28 @@ public class SafeRouteService {
         // 위험 리스트 1, 2, 3차 필터링( bbox, 경로상 50m 이내, 연속된 위험지역 건너뛰기 )
         List<RiskPointDto> filteredDangerPoints = riskFilterSvc.filterDangerPoints(routePoints, allDangerPoints);
 
+        System.out.println("필터링된 안전시설물Dto: " + filteredSafetyFacPoints);
+        System.out.println("필터링된 위험Dto: " + filteredDangerPoints);
+
         // 만약 필터링 된 위험리스트가 비어있으면 기존 경로 안전점수 계산 후 반환
         if(filteredDangerPoints.isEmpty()){
+            System.out.println("위험리스트가 비어있습니다. 기존경로를 반환합니다.");
             // 기존 경로 안전 점수
             int safety_score = getSafetyScore(routePoints, filteredSafetyFacPoints, filteredDangerPoints);
             return SafeRouteResponseDto.builder().detourRoute(originRoute).safety_score(safety_score).build();
         }
 
-        // 우회 경유지 목록 생성 ( null이면 기본 경로 반환)
+        // 우회 경유지 목록 생성
         List<DetourWayPointDto> detourPoints = detourRouteSvc.getDetourWayPoints(routePoints, filteredDangerPoints);
         RouteResponseDto detourRoute = tmapRouteSvc.getDetourRoute(routeRequestDto, detourPoints); // ++추가 TmapAPI 호출
         List<RoutePointDto> detourRoutePoints = detourRoute.getRoutePoints();
+
+        // 우회 경유지가 없다면 기본 경로 반환
+        if(detourPoints.isEmpty()){
+            System.out.println("우회한 경유지가 없습니다. 기본 경로를 반환합니다.");
+            int safety_score = getSafetyScore(routePoints, filteredSafetyFacPoints, filteredDangerPoints);
+            return SafeRouteResponseDto.builder().detourRoute(originRoute).safety_score(safety_score).build();
+        }
 
         System.out.println("우회 경유지 목록: " + Arrays.deepToString(detourPoints.toArray()));
         System.out.println("우회 경유지 크기: " + detourPoints.size() );
@@ -122,15 +133,19 @@ public class SafeRouteService {
             // 한 번 더 우회했지만 비율이 여전히 20%가 넘으면 기본 경로로 반환
             double detourRatio2 = (double)singleDetourRoute.getTotalDistance() / originRoute.getTotalDistance();
             if( detourRatio2 > MAX_DETOUR_RATIO){
+                System.out.println("한 번 더 우회했지만 거리가 멉니다. 기본경로를 반환합니다.");
                 int safety_score = getSafetyScore(routePoints, filteredSafetyFacPoints, filteredDangerPoints);
                 return SafeRouteResponseDto.builder().detourRoute(originRoute).safety_score(safety_score).build();
             }
-            //비율이 20퍼가 안 넘으면... 계산
 
             // 안전 지역 1,2차 필터링 ( bbox, 경로상 50m 이내 )
             List<SafetyFacPointDto> singleFilteredSafetyFacPoints = safeFacFilterSvc.filterSafetyFacPoints(singleRoutePoints, allSafetyPoints);
             // 위험 리스트 1, 2, 3차 필터링( bbox, 경로상 50m 이내, 연속된 위험지역 건너뛰기 )
             List<RiskPointDto> singleFilteredDangerPoints = riskFilterSvc.filterDangerPoints(singleRoutePoints, allDangerPoints);
+
+            //한 번 더 필터링된 안전 지역, 위험 리스트
+            System.out.println("한 번 더 우회한 경로의 안전 시설물Dto: " + singleFilteredSafetyFacPoints);
+            System.out.println("한 번 더 우회한 겨올의 위험Dto: " + singleFilteredDangerPoints);
 
             // 싱글 경유지 우회 경로 안전 점수
             int safety_score = getSafetyScore(singleDetourRoute.getRoutePoints(), singleFilteredSafetyFacPoints, singleFilteredDangerPoints);
@@ -141,6 +156,9 @@ public class SafeRouteService {
         List<SafetyFacPointDto> detourFilteredSafetyFacPoints = safeFacFilterSvc.filterSafetyFacPoints(detourRoutePoints, allSafetyPoints);
         // 위험 리스트 1, 2, 3차 필터링( bbox, 경로상 50m 이내, 연속된 위험지역 건너뛰기 )
         List<RiskPointDto> detourFilteredDangerPoints = riskFilterSvc.filterDangerPoints(detourRoutePoints, allDangerPoints);
+
+        System.out.println("우회한 경로의 안전시설물Dto: " + detourFilteredSafetyFacPoints);
+        System.out.println("우회한 경로의 위험Dto: " + detourFilteredDangerPoints);
 
         // 여러 경유지 우회 경로 안전 점수
         int safety_score = getSafetyScore(detourRoute.getRoutePoints(), detourFilteredSafetyFacPoints, detourFilteredDangerPoints);
