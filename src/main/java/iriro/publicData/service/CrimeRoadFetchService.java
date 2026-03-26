@@ -102,9 +102,4 @@ public class CrimeRoadFetchService{
 
         return "";
     }
-    /* 마지막 글자만 따오는 함수
-    System.out.println(getRoadSuffix("테헤란대로")); // 대로
-    System.out.println(getRoadSuffix("세종로"));     // 로
-    System.out.println(getRoadSuffix("충장길"));     // 길  */
-
 }
