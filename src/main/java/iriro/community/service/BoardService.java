@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,25 +27,31 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
-    // 1. 리뷰 등록 (회원)
+    // 1. 리뷰 등록 (회원만 가능)
     public boolean rvAdd(BoardDto boardDto, String loginEmail) {
-        // 1] dto --> entity 변환
-        BoardEntity saveEntity = boardDto.toEntity();
-        // ********* 저장하기 전에 FK 대입하기 , FK의 엔티티를 찾아서 대입 ***********
-        // 현재 로그인 중인 email로 엔티티 찾기
-        Optional<UserEntity> entityOptional = userRepository.findByEmail(loginEmail);
-        if (!entityOptional.isPresent()) { // !부정문 , isPresent() 아니면
-            return false; // 존재하지 않은 회원으로 실패
-        }
-        // 저장할 게시물 엔티티에 set 참조 엔티티(회원엔티티);
-        saveEntity.setUserEntity(entityOptional.get());
 
-        BoardEntity savedEntity = boardRepository.save(saveEntity); // 2] entity 저장한다.
-        if (savedEntity.getBoardId() > 0) {
-            return true;
-        } else {
+        // 비회원이면 글쓰기 거절
+        if (loginEmail == null) {
+            System.out.println("비회원 접근 불가능 : 로그인 후 이용해주세요.");
             return false;
         }
+        // ============== 회원만 글쓰자 ================
+        // 1] dto --> entity 변환
+        BoardEntity saveEntity = boardDto.toEntity();
+
+        // 유저 엔티티를 담을 변수
+        UserEntity userEntity;
+
+        Optional<UserEntity> entityOptional = userRepository.findByEmail(loginEmail);
+        if (entityOptional.isPresent()) { // 로그인한 사용자 발견
+            userEntity = entityOptional.get();
+
+            // 찾은 유저를 게시물에 연결
+            saveEntity.setUserEntity((userEntity));
+            BoardEntity savedEntity = boardRepository.save(saveEntity); // 2] entity 저장한다.
+            return savedEntity.getBoardId() > 0;
+            }
+            return false;
     }
 
     // 2. 리뷰 전체 조회
@@ -72,11 +79,12 @@ public class BoardService {
     }
 
     // 4. 리뷰 개별 삭제 (회원)
-    public boolean rvDelete(Integer boardId, String loginEmail) {
+    public boolean rvDelete(Integer boardId,String loginEmail) {
         Optional<BoardEntity> boardOptional = boardRepository.findById(boardId);
         if (boardOptional.isPresent()) {
             BoardEntity board = boardOptional.get();
-            if (board.getUserEntity().getEmail().equals(loginEmail)) {
+            if (    board.getUserEntity() != null && // .getUserEntity()가 null일 수도 있으니까
+                    board.getUserEntity().getEmail().equals(loginEmail)) {
                 boardRepository.deleteById(boardId);
                 return true;
             }
