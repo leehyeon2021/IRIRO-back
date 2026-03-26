@@ -133,7 +133,7 @@ public class FacilitySafeFetchService {
                     }
 
                     // 비교 위한 저장소 저장 (이름, 주소)
-                    deleteCheck.add(facName + facAdd);
+                    deleteCheck.add(facName.trim() + facAdd.trim());
 
                     // 전화번호 (-) null로 교체
                     String facTel = (String) item.get("telno");
@@ -179,15 +179,13 @@ public class FacilitySafeFetchService {
                                 .build());
                     }
                 }
-
-
             }
-            // 드디어 삭제
+            // 업데이트된 데이터에 없는 기존 데이터 삭제
             for(FacilitySafeEntity db : oldList){
                 String dbNameAdd = db.getFacName().trim() + db.getFacAdd().trim();
                 if(!deleteCheck.contains(dbNameAdd)){
+                    System.out.println("중복 삭제: "+db + " " + dbNameAdd);
                     fr.delete(db);
-                    System.out.println("중복 삭제: "+dbNameAdd);
                 }
             }
             return true;
