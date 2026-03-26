@@ -18,6 +18,7 @@ import java.util.Optional;
 @RequestMapping("/user")
 public class UserController {
 
+
     @Autowired // 주방장을 불러오거라
     private UserService userService;
     private UserRepository userRepository;
@@ -25,7 +26,7 @@ public class UserController {
     // 1. 회원가입 post = create = save
     @PostMapping("/join")
     // http://localhost:8080/user/join
-    // { "email" : "soso@sadsa.com","pwToken" : "1234","nickName" : "박진감"}
+    // { "email" : "soso@naver.com","pwToken" : "1234","nickName" : "박진감"}
     public ResponseEntity<?> join(@RequestBody UserDto joinDto) {
         return ResponseEntity.ok(userService.join(joinDto));
     }
@@ -33,7 +34,7 @@ public class UserController {
     // 2. 로그인 Get
     @PostMapping("/login")
     // http://localhost:8080/user/login
-    // { "email" : "soso@sadsa.com","pwToken" : "1234" }
+    // { "email" : "soso@naver.com","pwToken" : "1234"}
     public ResponseEntity<?> login(@RequestBody UserDto loginDto, HttpSession session) {
         // 1] 입력받은 아이디/비밀번호를 서비스에게 보낸다.
         boolean result = userService.login(loginDto);
@@ -47,7 +48,7 @@ public class UserController {
 
     // 3. 로그아웃 Get
     @GetMapping("/logout")
-    // http://localhost:8080/user/logout
+    // http://localhost:8080/user/logout?userId=11
     public ResponseEntity<?> logout(HttpSession session){ // 1) 매개변수에 HttpSession session 받는다.
         session.removeAttribute("email");
         return ResponseEntity.ok(true);

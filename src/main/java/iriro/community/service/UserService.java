@@ -15,6 +15,7 @@ import java.util.Optional;
 @Transactional
 public class UserService {
 
+
     private final UserRepository userRepository;
     // 비크립트(암호화) 객체 생성
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

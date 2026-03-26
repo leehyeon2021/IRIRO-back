@@ -32,6 +32,7 @@ public class ReplyEntity extends BaseTime {
     @JoinColumn( name = "board_id")
     private BoardEntity boardEntity;
 
+
     // Entity --> Dto 변환
     public ReplyDto toDto(){
         return ReplyDto.builder()

@@ -21,7 +21,7 @@ public class ReplyDto {
     // + Dto --> Entity 변환 // 사용자가 직접 입력한 데이터만.
     public ReplyEntity toEntity(){
         return ReplyEntity.builder()
-                .replyContent(this.replyContent)
+                .replyContent(this.replyContent) 
                 .build();
     }
 }

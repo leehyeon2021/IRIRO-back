@@ -46,7 +46,6 @@ public class BoardEntity extends BaseTime {
     @ToString.Exclude
     private List<ReplyEntity> replyList = new ArrayList<>();
 
-
     // Entity --> Dto 변환
     public BoardDto toDto(){
         return BoardDto.builder()
