@@ -3,6 +3,7 @@ package iriro.publicData.service;
 import iriro.common.service.GeocodingService;
 import iriro.publicData.entity.FacilitySafeEntity;
 import iriro.publicData.repository.FacilitySafeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service @RequiredArgsConstructor
+@Service @RequiredArgsConstructor @Transactional
 public class FacilitySafeFetchService {
 
     // 안심지킴이집
@@ -23,7 +24,6 @@ public class FacilitySafeFetchService {
     @Value("${api.admin.service-key}") private String adminServiceKey;
     @Value("${api.admin.police.url}") private String policeUrl;
 
-
     // 안전시설물(보안등,CCTV,안전벨)
     @Value("${api.seoul.service-key}") private String seoulServiceKey;
     @Value("${api.seoul.safe-fac.url}") private String safeFacUrl;
@@ -32,10 +32,10 @@ public class FacilitySafeFetchService {
     private final FacilitySafeRepository fr;
     private final GeocodingService gs;
 
-    // 안심지킴이집(List) 저장
+    // 안심지킴이집(List) 저장 (700여 개)
     public boolean fetchSafeHouse(){
-        int numOfRows = 1000;   // 한 번에 1000개 조회 가능
-        int totalCount = 0;     // 저장해야 함
+        int numOfRows = 500;
+        int totalCount = 0;
         int totalPages = 1;     // numOfRows와 totalCount를 고려하여 페이지 넘김
         try{ // 전체 개수 찾기
             for(int page=1;page<=totalPages;page++){
@@ -45,7 +45,7 @@ public class FacilitySafeFetchService {
                         + "&pageNo=" + page
                         + "&numOfRows=" + numOfRows
                         + "&type=JSON"
-                        + "&ctprvnNm=서울";
+                        + "&ctprvnNm=서울특별시";
                 // 요청할 API 주소 넣기 webClient
                 Map<String,Object> response = webClient.get()
                         .uri(uri)
@@ -83,7 +83,7 @@ public class FacilitySafeFetchService {
         }catch(Exception e){System.out.println("안심지킴이집 저장 실패: "+e);return false;}
     }
 
-    // 경찰서 저장 (3000여 개)
+    // 경찰서 저장 (3000여 개 중 서울은 400여 개)
     public boolean fetchPoliceStation() {
         int numOfRows = 500;
         int totalCount = 0;
@@ -107,7 +107,7 @@ public class FacilitySafeFetchService {
                 Map<String, Object> body = (Map<String, Object>) response.get("body");
 
                 if (page==1){
-                    totalCount=(int)body.get("totalCount");
+                    totalCount=Integer.parseInt(String.valueOf(body.get("totalCount")));
                     System.out.println("totalCount: "+totalCount);
                     totalPages=(totalCount+numOfRows-1)/numOfRows;
                 }
@@ -119,7 +119,10 @@ public class FacilitySafeFetchService {
 
                     // 서울만 저장
                     String rnAdres = (String) item.get("rn_adres");
-                    if (rnAdres == null || !rnAdres.contains("서울")) continue;
+                    if (rnAdres == null || !rnAdres.contains("서울")){
+                        //System.out.println("문제 발생1: "+rnAdres);
+                        continue;
+                    }
 
                     String xStr = (String) item.get("x");
                     String yStr = (String) item.get("y");
@@ -155,7 +158,7 @@ public class FacilitySafeFetchService {
         }
     }
 
-    // 안전시설물(보안등,CCTV,안전벨) 저장
+    // 안전시설물(보안등,CCTV,안전벨) 저장 (8100여 개)
     public boolean fetchSafeFac(){
         int numOfRows = 500;
         int totalCount = 0;
