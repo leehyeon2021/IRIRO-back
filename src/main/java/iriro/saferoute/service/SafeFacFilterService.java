@@ -1,6 +1,7 @@
 package iriro.saferoute.service;
 
 import iriro.saferoute.dto.BboxDto;
+import iriro.saferoute.dto.RiskPointDto;
 import iriro.saferoute.dto.RoutePointDto;
 import iriro.saferoute.dto.SafetyFacPointDto;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,10 @@ public class SafeFacFilterService {
                         geoFilterSvc.isInsideBbox(point.getLatitude().doubleValue(), point.getLongitude().doubleValue(), bbox))
                 .toList();
 
-        // 안전 지역 2차 필터링
-        List<SafetyFacPointDto> safetyPoints = inSafetyPoints.stream().filter(point ->
-                        geoFilterSvc.isInsideBbox(point.getLatitude().doubleValue(), point.getLongitude().doubleValue(), bbox))
-                .toList();
-
-        return safetyPoints;
+        // [2차 필터] : 1차 필터링된 위험 위치 리스트를 경로 50m 안에 들어오는 위험 위치들만 필터링, 길의 타입에 따라 다르게 필터링.
+        // 2차 필터 적용 후 바로 반환
+        return inSafetyPoints.stream().filter(point ->
+                geoFilterSvc.getMinDistance(routePoints, point.getLatitude().doubleValue(), point.getLongitude().doubleValue()) <= 50 ).toList();
     }
 
 }

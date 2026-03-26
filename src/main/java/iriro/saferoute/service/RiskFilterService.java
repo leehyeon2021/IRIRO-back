@@ -27,7 +27,7 @@ public class RiskFilterService {
 
         // [2차 필터] : 1차 필터링된 위험 위치 리스트를 경로 50m 안에 들어오는 위험 위치들만 필터링, 길의 타입에 따라 다르게 필터링.
         List<RiskPointDto> secondDangerPoints = inDangerPoints.stream().filter(point ->
-                geoFilterSvc.getMinDistance(routePoints, point) <= getDangerRadius(point.getRoadType()) ).toList(); // 대로 15m, 로 30m, 길 50m 위험반경 생성
+                geoFilterSvc.getMinDistance(routePoints, point.getLatitude().doubleValue(), point.getLongitude().doubleValue()) <= getDangerRadius(point.getRoadType()) ).toList(); // 대로 15m, 로 30m, 길 50m 위험반경 생성
 
         // 2차 필터 적용 후 리스트가 비어 있으면 바로 리턴
         if(secondDangerPoints.isEmpty()) return new ArrayList<>();
