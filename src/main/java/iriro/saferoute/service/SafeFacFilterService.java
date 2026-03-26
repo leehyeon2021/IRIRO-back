@@ -1,6 +1,5 @@
 package iriro.saferoute.service;
 
-import iriro.saferoute.dto.BboxDto;
 import iriro.saferoute.dto.RoutePointDto;
 import iriro.saferoute.dto.SafetyFacPointDto;
 import lombok.RequiredArgsConstructor;

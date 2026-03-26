@@ -5,7 +5,6 @@ import iriro.publicData.entity.FacilitySafeEntity;
 import iriro.publicData.repository.CrimeRoadRepository;
 import iriro.publicData.repository.FacilitySafeRepository;
 import iriro.saferoute.dto.*;
-import iriro.saferoute.test.TestSampleCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SafeRouteService {
     private static final double MAX_DETOUR_RATIO = 1.20; // 늘어난 비율이 20%가 넘으면
+    private static final int BASE_SAFE_SCORE = 100;
 
     private final TmapRouteService tmapRouteSvc; // TmapAPI 사용 서비스
     private final RiskFilterService riskFilterSvc; // 위험 지역 필터 서비스
@@ -156,9 +156,9 @@ public class SafeRouteService {
 
         System.out.println("안전점수(보안등1점, CCTV/안전벨2점, 안전지킴이집4점, 경찰서5점): " + safeCount);
         System.out.println("위험점수(위험경로당-7점): " + riskCount);
-        System.out.println("안전점수: " + 100 + safeCount + riskCount);
+        System.out.println("안전점수(기본점수 100점): " + (BASE_SAFE_SCORE + safeCount + riskCount));
 
-        return 100 + safeCount + riskCount;
+        return BASE_SAFE_SCORE + safeCount + riskCount;
     }
 
     private int getFacScore(String FacType) {
