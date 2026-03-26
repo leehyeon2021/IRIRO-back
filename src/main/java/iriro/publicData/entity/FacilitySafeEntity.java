@@ -1,11 +1,14 @@
 package iriro.publicData.entity;
 
 import iriro.publicData.dto.FacilitySafeDto;
+import iriro.saferoute.dto.SafetyFacPointDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity @Table(name = "facility_safe")
 @NoArgsConstructor @AllArgsConstructor @Data @Builder
@@ -35,6 +38,16 @@ public class FacilitySafeEntity {
     public FacilitySafeDto toDto(){
         return FacilitySafeDto.builder()
                 .facId(this.facId).facType(this.facType).facSgg(this.facSgg).facName(this.facName).facAdd(this.facAdd).facLat(this.facLat).facLng(this.facLng).facCount(this.facCount).facUse(this.facUse).facTel(this.facTel)
+                .build();
+    }
+
+    // SafetyFacPointDto로 변환해주는 함수
+    public SafetyFacPointDto toSafetyFacPointDto(){
+        return SafetyFacPointDto.builder()
+                .facType(facType)
+                .safeCount(facCount)
+                .latitude(BigDecimal.valueOf(facLat))
+                .longitude(BigDecimal.valueOf(facLng))
                 .build();
     }
 }
