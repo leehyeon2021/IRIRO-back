@@ -31,6 +31,7 @@ public class UserController {
     @PostMapping("/login")
     // http://localhost:8080/user/login
     // { "email" : "soso@naver.com","pwToken" : "1234"}
+    // Content-Type : application/json
     public ResponseEntity<?> login(@RequestBody UserDto loginDto) {
         // 입력받은 아이디/비밀번호를 서비스에게 보낸다.
         boolean result = userService.login(loginDto);
