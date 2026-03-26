@@ -31,22 +31,33 @@ public class BoardService {
     public boolean rvAdd(BoardDto boardDto, String loginEmail) {
         // 1] dto --> entity 변환
         BoardEntity saveEntity = boardDto.toEntity();
-        // ********* 저장하기 전에 FK 대입하기 , FK의 엔티티를 찾아서 대입 ***********
-        // 현재 로그인 중인 email로 엔티티 찾기
-        Optional<UserEntity> entityOptional = userRepository.findByEmail(loginEmail);
-        if (!entityOptional.isPresent()) { // !부정문 , isPresent() 아니면
-            return false; // 존재하지 않은 회원으로 실패
-        }
-        // 저장할 게시물 엔티티에 set 참조 엔티티(회원엔티티);
-        saveEntity.setUserEntity(entityOptional.get());
 
-        BoardEntity savedEntity = boardRepository.save(saveEntity); // 2] entity 저장한다.
-        if (savedEntity.getBoardId() > 0) {
-            return true;
+        // 유저 엔티티를 담을 변수
+        UserEntity userEntity;
+
+        if (loginEmail != null) {
+            Optional<UserEntity> entityOptional = userRepository.findByEmail(loginEmail);
+            if (entityOptional.isPresent()) { // 로그인한 사용자 발견
+                userEntity = entityOptional.get();
+            } else {
+                // 이메일은 있는데 DB에 없다면.. 1번으로 처리하거나 실패.
+                return false; // 존재하지 않은 회원으로 실패
+            }
         } else {
-            return false;
+            // loginEmail이 null 이다 -> 1번 유저(비회원) 처리.
+            userEntity = userRepository.findById(1).get();
         }
-    }
+
+            // 찾은 유저를 게시물에 연결
+            saveEntity.setUserEntity((userEntity));
+
+            BoardEntity savedEntity = boardRepository.save(saveEntity); // 2] entity 저장한다.
+            if (savedEntity.getBoardId() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
     // 2. 리뷰 전체 조회
     public List<BoardDto> rvAllView() {
