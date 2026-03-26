@@ -18,18 +18,18 @@ public class TestSampleCode {
     // 2. 가상 위험 테이블의 위/경도를 뽑아 온 값 ( 실제로는 위험테이블에서 조회해와서 리스트화 시켜야함 )
     public static final List<RiskPointDto> dangerRoutePoints = List.of(
             // ===== 경로 근처 위험점 =====
-            new RiskPointDto("길", new BigDecimal("37.389413796907185"), new BigDecimal("126.95896112442831"), 1),
-            new RiskPointDto("길", new BigDecimal("37.39098303954915"), new BigDecimal("126.95785840291721"), 2),
-            new RiskPointDto("로", new BigDecimal("37.390335859209024"), new BigDecimal("126.95599747917913"), 3),
-            new RiskPointDto("길", new BigDecimal("37.389222039983025"), new BigDecimal("126.95265892511556"), 4),
-            new RiskPointDto("대로", new BigDecimal("37.38860541319803"), new BigDecimal("126.95088410379881"), 5),
+            new RiskPointDto("길", new BigDecimal("37.389413796907185"), new BigDecimal("126.95896112442831"), 1, 1),
+            new RiskPointDto("길", new BigDecimal("37.39098303954915"), new BigDecimal("126.95785840291721"), 2, 2),
+            new RiskPointDto("로", new BigDecimal("37.390335859209024"), new BigDecimal("126.95599747917913"), 1, 3),
+            new RiskPointDto("길", new BigDecimal("37.389222039983025"), new BigDecimal("126.95265892511556"), 3, 4),
+            new RiskPointDto("대로", new BigDecimal("37.38860541319803"), new BigDecimal("126.95088410379881"), 1, 5),
 
             // ===== bbox로 걸러져야 할 먼 위험점 =====
-            new RiskPointDto("길", new BigDecimal("37.4005000"), new BigDecimal("126.9705000"), 6),
-            new RiskPointDto("로", new BigDecimal("37.4050000"), new BigDecimal("126.9650000"), 7),
-            new RiskPointDto("대로", new BigDecimal("37.3820000"), new BigDecimal("126.9800000"), 8),
-            new RiskPointDto("길", new BigDecimal("37.4100000"), new BigDecimal("126.9400000"), 9),
-            new RiskPointDto("로", new BigDecimal("37.3700000"), new BigDecimal("126.9300000"), 10)
+            new RiskPointDto("길", new BigDecimal("37.4005000"), new BigDecimal("126.9705000"), 1, 6),
+            new RiskPointDto("로", new BigDecimal("37.4050000"), new BigDecimal("126.9650000"), 2, 7),
+            new RiskPointDto("대로", new BigDecimal("37.3820000"), new BigDecimal("126.9800000"), 1, 8),
+            new RiskPointDto("길", new BigDecimal("37.4100000"), new BigDecimal("126.9400000"), 4, 9),
+            new RiskPointDto("로", new BigDecimal("37.3700000"), new BigDecimal("126.9300000"), 1, 10)
     );
 
     // 3. 가상의 안전한 시설의 위치 테이블
