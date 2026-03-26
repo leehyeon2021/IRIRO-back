@@ -24,7 +24,7 @@ public class ReplyController {
 
     // 1. 댓글 등록
     // http://localhost:8080/reply/rpwrite
-    // { "replyContent" : "박진감보고싶습니감ㅠㅠ" }
+    // { "replyContent" : "박진감보고싶습니감ㅠㅠ" , "boardId" : 2 }
     @PostMapping("/rpwrite")
     public ResponseEntity<?> rpAdd(@RequestBody ReplyDto replyDto, HttpSession session) {
         Object object = session.getAttribute("email");
