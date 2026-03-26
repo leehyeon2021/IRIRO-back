@@ -41,8 +41,8 @@ public class CrimeRoadEntity {
         return RiskPointDto.builder()
                 .riskCount(1) // 같은 도로명주소에 살고 있는 범죄자 수. default 1 , 추후에 변경
                 .roadType(criType)
-                .latitude(BigDecimal.valueOf(criLat))
-                .longitude(BigDecimal.valueOf(criLng))
+                .latitude(criLat)
+                .longitude(criLng)
                 .build();
     }
 }

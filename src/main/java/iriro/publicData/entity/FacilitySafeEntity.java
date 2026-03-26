@@ -46,8 +46,8 @@ public class FacilitySafeEntity {
         return SafetyFacPointDto.builder()
                 .facType(facType)
                 .safeCount(facCount)
-                .latitude(BigDecimal.valueOf(facLat))
-                .longitude(BigDecimal.valueOf(facLng))
+                .latitude(facLat)
+                .longitude(facLng)
                 .build();
     }
 }
