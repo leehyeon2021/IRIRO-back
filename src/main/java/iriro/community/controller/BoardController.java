@@ -36,17 +36,15 @@ public class BoardController {
     //  { "boardTitle" : "테스트제목", "boardContent" : "테스트내용", "logId" : 1 }
     @PostMapping("/rvwrite")
     public ResponseEntity<?> rbAdd(@RequestBody BoardDto boardDto ,
-                                   @RequestHeader("Authorization")String token){
-        // 기본값을 null로 시작(비회원 상태)
-        String loginEmail = null;
-        // 만약에 토큰이 없거나 Bearer 시작하지 않으면 문자열.startsWith("시작문자")
-        // : 문자열내 시작문자가 존재하면 true
-        if(token != null && token.startsWith("Bearer")){ // 정말로 토큰이 null이 아니고 Bearer로 시작할 때만
-           String realToken = token.substring(7); // "Bearer "를 제거하고 토큰을 꺼낸다.
-            loginEmail = jwtService.getClaim(realToken);
+                                   @RequestHeader("Authorization")String token) {
+
+        // 만약에 토큰이 없거나 Bearer로 시작하지 않으면  + 문자열.startsWith("시작문자")
+        if (token != null && !token.startsWith("Bearer")) {
+            loginEmail = null; // null 처리
+        } else {
+            String realToken = token.substring(7);
+            loginEmail = jwtService.getClaim(realToken); // 있으면 이메일 꺼냄.
         }
-        boolean result = boardService.rvAdd(boardDto,loginEmail);
-        return ResponseEntity.ok(result);
     }
 
     // 2. 리뷰 전체 조회
