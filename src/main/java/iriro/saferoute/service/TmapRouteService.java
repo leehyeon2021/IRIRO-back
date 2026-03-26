@@ -67,6 +67,8 @@ public class TmapRouteService { //Tmap API 연결
         }
 
         List<RoutePointDto> routePoints = new ArrayList<>();
+        Integer totalDistance = 0;
+        Integer totalTime = 0;
         int sequence = 1;
 
         // 4. features 순회
@@ -80,6 +82,14 @@ public class TmapRouteService { //Tmap API 연결
             Map<?, ?> geometry = (Map<?, ?>) geometryObj;
 
             Object typeObj = geometry.get("type");
+
+            // 총 걸린 시간, 총 거리 추출
+            Object propertyObj = feature.get("properties");
+            if(propertyObj == null) continue;
+            Map<?, ?> properties = (Map<?, ?>) propertyObj;
+
+            if(properties.get("totalTime") != null) totalTime = ((Number) properties.get("totalTime")).intValue();
+            if(properties.get("totalDistance") != null) totalDistance = ((Number) properties.get("totalDistance")).intValue();
 
             // 경로 좌표 추출
             if(!typeObj.equals("LineString")) continue;
@@ -112,6 +122,8 @@ public class TmapRouteService { //Tmap API 연결
                 .start_longitude(BigDecimal.valueOf(routeRequestDto.getStartLng()))
                 .end_latitude(BigDecimal.valueOf(routeRequestDto.getEndLat()))
                 .end_longitude(BigDecimal.valueOf(routeRequestDto.getEndLng()))
+                .totalTime(totalTime)
+                .totalDistance(totalDistance)
                 .routePoints(routePoints)
                 .build();
     }
@@ -123,6 +135,8 @@ public class TmapRouteService { //Tmap API 연결
                 .limit(5)
                 .map(point -> point.getLongitude() + "," + point.getLatitude())
                 .collect(Collectors.joining("_"));
+
+        System.out.println("passList: " + passList); // 로그찍기 passList
 
         // 1. 요청 body 생성
         Map<String, Object> body = new HashMap<>();
