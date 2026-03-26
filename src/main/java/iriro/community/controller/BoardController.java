@@ -37,17 +37,14 @@ public class BoardController {
     @PostMapping("/rvwrite")
     public ResponseEntity<?> rbAdd(@RequestBody BoardDto boardDto ,
                                    @RequestHeader("Authorization")String token){
+        // 기본값을 null로 시작(비회원 상태)
+        String loginEmail = null;
         // 만약에 토큰이 없거나 Bearer 시작하지 않으면 문자열.startsWith("시작문자")
         // : 문자열내 시작문자가 존재하면 true
-        if(token == null || !token.startsWith("Bearer")){
-            return ResponseEntity.ok(false); // 비로그인이라 글쓰기 실패.
+        if(token != null || token.startsWith("Bearer")){ // 정말로 토큰이 null이 아니고 Bearer로 시작할 때만
+           String realToken = token.substring(7); // "Bearer "를 제거하고 토큰을 꺼낸다.
+            loginEmail = jwtService.getClaim(realToken);
         }
-        // 토큰만 추출
-        token = token.replace("Bearer ","");
-        // 토큰에서 값 꺼내기
-        String loginEmail = jwtService.getClaim(token);
-        if(loginEmail == null){return ResponseEntity.ok(false);}
-        // 서비스에게 입력받은 값과 세션에 저장된 값 전달.
         boolean result = boardService.rvAdd(boardDto,loginEmail);
         return ResponseEntity.ok(result);
     }
