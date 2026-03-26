@@ -27,7 +27,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
-    // 1. 리뷰 등록 (회원)
+    // 1. 리뷰 등록 (회원만 가능)
     public boolean rvAdd(BoardDto boardDto, String loginEmail) {
 
         // 비회원이면 글쓰기 거절
@@ -48,7 +48,6 @@ public class BoardService {
 
             // 찾은 유저를 게시물에 연결
             saveEntity.setUserEntity((userEntity));
-
             BoardEntity savedEntity = boardRepository.save(saveEntity); // 2] entity 저장한다.
             return savedEntity.getBoardId() > 0;
             }
