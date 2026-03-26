@@ -73,9 +73,9 @@ public class BoardService {
 
     // 4. 리뷰 개별 삭제 (회원)
     public boolean rvDelete(Integer boardId, String loginEmail) {
-        Optional<BoardEntity> boardOptinal = boardRepository.findById(boardId);
-        if (boardOptinal.isPresent()) {
-            BoardEntity board = boardOptinal.get();
+        Optional<BoardEntity> boardOptional = boardRepository.findById(boardId);
+        if (boardOptional.isPresent()) {
+            BoardEntity board = boardOptional.get();
             if (board.getUserEntity().getEmail().equals(loginEmail)) {
                 boardRepository.deleteById(boardId);
                 return true;
