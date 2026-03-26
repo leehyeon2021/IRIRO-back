@@ -26,11 +26,14 @@ public class CrimeRoadEntity {
     private Double criLat;
     @Column(name = "cri_lng")
     private Double criLng;
+    @Column(name = "cri_count")
+    private Integer criCount;
 
     public CrimeRoadDto toDto(){
         return CrimeRoadDto.builder()
                 .criId(this.criId).criZip(this.criZip).criSgg(this.criSgg).criRoad(this.criRoad)
                 .criLat(this.criLat).criLng(this.criLng)
+                .criType(this.criType).criCount(this.criCount)
                 .build();
     }
 
