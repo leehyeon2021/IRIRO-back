@@ -11,7 +11,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Service
-public class JwtService {
+public class JWTService {
     private String secret = "qkrwlsrkatkfkdgoqkrwlsrkatkfkdgoqkrwlsrkatkfkdgo";
     private Key secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // 비밀키 생성
     // [1] 토큰 발급
