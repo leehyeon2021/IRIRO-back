@@ -20,27 +20,28 @@ import java.util.Optional;
 public class ReplyController {
 
     @Autowired
-    private ReplyService replyService;
+    private final ReplyService replyService;
 
     // 1. 댓글 등록
     // http://localhost:8080/reply/rpwrite
     // { "replyContent" : "박진감보고싶습니감ㅠㅠ" }
     @PostMapping("/rpwrite")
-    public ResponseEntity<?> rpAdd(@RequestBody ReplyDto replyDto , HttpSession session){
+    public ResponseEntity<?> rpAdd(@RequestBody ReplyDto replyDto, HttpSession session) {
         Object object = session.getAttribute("email");
-        String loginEmail = (String)object;
-        boolean result = replyService.rpAdd(replyDto,loginEmail);
+        String loginEmail = (String) object;
+        boolean result = replyService.rpAdd(replyDto, loginEmail);
         return ResponseEntity.ok(result);
     }
 
     // 2. 댓글 삭제
     // http://localhost:8080/reply/rpdelete?replyId=1
     @DeleteMapping("/rpdelete")
-    public ResponseEntity<?> rpDelete(Integer replyId , HttpSession session){
+    public ResponseEntity<?> rpDelete(@RequestParam Integer replyId, HttpSession session) {
         Object object = session.getAttribute("email");
-        if(object == null){return ResponseEntity.ok(false);
+        if (object == null) { return ResponseEntity.ok(false);}
             String loginEmail = (String)object;
-            boolean result = replyService.rpDelete(replyId,loginEmail);
+            boolean result = replyService.rpDelete(replyId, loginEmail);
             return ResponseEntity.ok(result);
 
-}
+        }
+    }
