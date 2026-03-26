@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service @RequiredArgsConstructor @Transactional
 public class FacilitySafeFetchService {
@@ -89,6 +87,11 @@ public class FacilitySafeFetchService {
         int totalCount = 0;
         int totalPages = 1;
 
+        // DB 저장된 경찰서 데이터 가져오기 (비교용)
+        List<FacilitySafeEntity> oldList = fr.findByFacType("경찰서");
+        // 삭제 비교 위한 저장소
+        Set<String> deleteCheck = new HashSet<>();
+
         try {
             for (int page = 1; page <= totalPages; page++) {
 
@@ -104,25 +107,33 @@ public class FacilitySafeFetchService {
                         .bodyToMono(Map.class)
                         .block();
 
+                // 열어
                 Map<String, Object> body = (Map<String, Object>) response.get("body");
-
+                // totalCount 가져와
                 if (page==1){
                     totalCount=Integer.parseInt(String.valueOf(body.get("totalCount")));
                     System.out.println("totalCount: "+totalCount);
                     totalPages=(totalCount+numOfRows-1)/numOfRows;
                 }
 
+                // 더 열어
                 Map<String, Object> items = (Map<String, Object>) body.get("items");
                 List<Map<String, Object>> itemList = (List<Map<String, Object>>) items.get("item");
 
+                // 저장
                 for (Map<String,Object> item : itemList){
 
+                    String facAdd = (String) item.get("rn_adres");
+                    String facName = (String) item.get("fclty_nm");
+                    String facSgg = (String) item.get("polcsttn");
+
                     // 서울만 저장
-                    String rnAdres = (String) item.get("rn_adres");
-                    if (rnAdres == null || !rnAdres.contains("서울")){
-                        //System.out.println("문제 발생1: "+rnAdres);
+                    if (facAdd == null || !facAdd.contains("서울")){
                         continue;
                     }
+
+                    // 비교 위한 저장소 저장 (이름, 주소)
+                    deleteCheck.add(facName + facAdd);
 
                     // 전화번호 (-) null로 교체
                     String facTel = (String) item.get("telno");
@@ -134,11 +145,10 @@ public class FacilitySafeFetchService {
                     String xStr = (String) item.get("x");
                     String yStr = (String) item.get("y");
 
+                    // x좌표가 0 이면 지오코딩 (x없으면y도없음)
                     double lat;  double lng;
-
-                    // x="0" 이면 지오코딩 (x없음y도없음)
                     if (xStr == null || xStr.equals("0")) {
-                        double[] coords = gs.getCoordsKakao(rnAdres);
+                        double[] coords = gs.getCoordsKakao(facAdd);
                         if(coords == null)continue;
                         lat = coords[0];
                         lng = coords[1];
@@ -147,15 +157,37 @@ public class FacilitySafeFetchService {
                         lng = Double.parseDouble(xStr);
                     }
 
-                    fr.save(FacilitySafeEntity.builder()
-                            .facType("경찰서")
-                            .facSgg((String) item.get("polcsttn"))
-                            .facName((String) item.get("fclty_nm"))
-                            .facAdd(rnAdres)
-                            .facLat(lat)
-                            .facLng(lng)
-                            .facTel(facTel)
-                            .build());
+                    // DB에 있나요
+                    Optional<FacilitySafeEntity> exists = fr.findByFacNameAndFacAdd(facName , facAdd);
+                    if(exists.isPresent()){
+                        FacilitySafeEntity exist = exists.get();
+                        exist.setFacTel(facTel);
+                        exist.setFacAdd(facAdd);
+                        exist.setFacName(facName);
+                        exist.setFacSgg(facSgg);
+                        exist.setFacLat(lat);
+                        exist.setFacLng(lng);
+                    }else {
+                        fr.save(FacilitySafeEntity.builder()
+                                .facType("경찰서")
+                                .facSgg(facSgg)
+                                .facName(facName)
+                                .facAdd(facAdd)
+                                .facLat(lat)
+                                .facLng(lng)
+                                .facTel(facTel)
+                                .build());
+                    }
+                }
+
+
+            }
+            // 드디어 삭제
+            for(FacilitySafeEntity db : oldList){
+                String dbNameAdd = db.getFacName().trim() + db.getFacAdd().trim();
+                if(!deleteCheck.contains(dbNameAdd)){
+                    fr.delete(db);
+                    System.out.println("중복 삭제: "+dbNameAdd);
                 }
             }
             return true;
