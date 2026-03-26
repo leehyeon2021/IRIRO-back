@@ -5,6 +5,7 @@ import iriro.community.entity.ReplyEntity;
 import iriro.community.repository.ReplyRepository;
 import iriro.community.service.JWTService;
 import iriro.community.service.ReplyService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -45,11 +46,15 @@ public class ReplyController {
     // 2. 댓글 삭제
     // http://localhost:8080/reply/rpdelete?replyId=1
     @DeleteMapping("/rpdelete")
-    public ResponseEntity<?> rpDelete(@RequestParam Integer replyId, HttpSession session) {
-        Object object = session.getAttribute("email");
-        if (object == null) { return ResponseEntity.ok(false);}
-            String loginEmail = (String)object;
-            boolean result = replyService.rpDelete(replyId, loginEmail);
-            return ResponseEntity.ok(result);
+    public ResponseEntity<?> rpDelete(@RequestParam Integer replyId, HttpServletRequest request) {
+        // 요청헤더에서 Authorization 토큰 꺼내기.
+        String token = request.getHeader("Authorization");
+        // 2. JWTService를 이용해 토큰 안의 이메일 추출
+        String loginEmail = jwtService.getClaim(token);
+
+        // 서비스한테 삭제하라고 고함지름
+        boolean result = replyService.rpDelete(replyId, loginEmail);
+        return ResponseEntity.ok(result);
         }
+
     }
