@@ -34,15 +34,42 @@ public class TestSampleCode {
 
     // 3. 가상의 안전한 시설의 위치 테이블
     public static final List<SafetyFacPointDto> safeRoutePoint = List.of(
-            new SafetyFacPointDto("보안등", 3, new BigDecimal("37.3894200"), new BigDecimal("126.9590500")),
-            new SafetyFacPointDto("CCTV", 1, new BigDecimal("37.3909800"), new BigDecimal("126.9578600")),
+            // ===== 경로 근처 안전시설 =====
+            new SafetyFacPointDto("보안등", 2, new BigDecimal("37.3894200"), new BigDecimal("126.9590500")),
+            new SafetyFacPointDto("CCTV", 1, new BigDecimal("37.3895200"), new BigDecimal("126.9588700")),
+            new SafetyFacPointDto("안전벨", 1, new BigDecimal("37.3893000"), new BigDecimal("126.9591200")),
+            new SafetyFacPointDto("경찰서", 1, new BigDecimal("37.3896500"), new BigDecimal("126.9587000")),
+
+            new SafetyFacPointDto("보안등", 2, new BigDecimal("37.3909500"), new BigDecimal("126.9579800")),
+            new SafetyFacPointDto("CCTV", 1, new BigDecimal("37.3910200"), new BigDecimal("126.9577600")),
+            new SafetyFacPointDto("안심지킴이집", 1, new BigDecimal("37.3908600"), new BigDecimal("126.9580500")),
+            new SafetyFacPointDto("경찰서", 1, new BigDecimal("37.3907000"), new BigDecimal("126.9579000")),
+
+            new SafetyFacPointDto("보안등", 2, new BigDecimal("37.3903300"), new BigDecimal("126.9560500")),
+            new SafetyFacPointDto("CCTV", 2, new BigDecimal("37.3902500"), new BigDecimal("126.9559000")),
             new SafetyFacPointDto("안심지킴이집", 1, new BigDecimal("37.3900100"), new BigDecimal("126.9550100")),
-            new SafetyFacPointDto("보안등", 2, new BigDecimal("37.3897200"), new BigDecimal("126.9541300")),
-            new SafetyFacPointDto("CCTV", 1, new BigDecimal("37.3889500"), new BigDecimal("126.9519600")),
+            new SafetyFacPointDto("안전벨", 1, new BigDecimal("37.3901200"), new BigDecimal("126.9552500")),
+
+            new SafetyFacPointDto("보안등", 2, new BigDecimal("37.3892200"), new BigDecimal("126.9525600")),
+            new SafetyFacPointDto("CCTV", 1, new BigDecimal("37.3890500"), new BigDecimal("126.9524200")),
             new SafetyFacPointDto("안전벨", 1, new BigDecimal("37.3890800"), new BigDecimal("126.9522600")),
-            new SafetyFacPointDto("보안등", 2, new BigDecimal("37.3890500"), new BigDecimal("126.9502300")),
+            new SafetyFacPointDto("안심지킴이집", 1, new BigDecimal("37.3890000"), new BigDecimal("126.9521500")),
+
+            new SafetyFacPointDto("보안등", 2, new BigDecimal("37.3886300"), new BigDecimal("126.9507600")),
+            new SafetyFacPointDto("CCTV", 1, new BigDecimal("37.3887200"), new BigDecimal("126.9509200")),
             new SafetyFacPointDto("경찰서", 1, new BigDecimal("37.3896800"), new BigDecimal("126.9494000")),
-            new SafetyFacPointDto("안심지킴이집", 1, new BigDecimal("37.3922400"), new BigDecimal("126.9445300")),
-            new SafetyFacPointDto("CCTV", 1, new BigDecimal("37.3932700"), new BigDecimal("126.9405000"))
+            new SafetyFacPointDto("CCTV", 1, new BigDecimal("37.3891000"), new BigDecimal("126.9502000")),
+
+            new SafetyFacPointDto("보안등", 2, new BigDecimal("37.3922400"), new BigDecimal("126.9445300")),
+            new SafetyFacPointDto("CCTV", 1, new BigDecimal("37.3932700"), new BigDecimal("126.9405000")),
+            new SafetyFacPointDto("안심지킴이집", 1, new BigDecimal("37.3928000"), new BigDecimal("126.9425000")),
+            new SafetyFacPointDto("경찰서", 1, new BigDecimal("37.3935000"), new BigDecimal("126.9418000")),
+
+            // ===== bbox에서 걸러져야 할 먼 안전시설 =====
+            new SafetyFacPointDto("보안등", 2, new BigDecimal("37.4015000"), new BigDecimal("126.9715000")),
+            new SafetyFacPointDto("CCTV", 1, new BigDecimal("37.4060000"), new BigDecimal("126.9660000")),
+            new SafetyFacPointDto("안심지킴이집", 1, new BigDecimal("37.3815000"), new BigDecimal("126.9815000")),
+            new SafetyFacPointDto("경찰서", 1, new BigDecimal("37.4110000"), new BigDecimal("126.9410000")),
+            new SafetyFacPointDto("안전벨", 1, new BigDecimal("37.3695000"), new BigDecimal("126.9295000"))
     );
 }
