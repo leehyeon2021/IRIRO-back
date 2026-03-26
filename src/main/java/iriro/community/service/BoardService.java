@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class BoardService {
     }
 
     // 4. 리뷰 개별 삭제 (회원)
-    public boolean rvDelete(Integer boardId, String loginEmail) {
+    public boolean rvDelete(@RequestParam Integer boardId, String loginEmail) {
         Optional<BoardEntity> boardOptional = boardRepository.findById(boardId);
         if (boardOptional.isPresent()) {
             BoardEntity board = boardOptional.get();
