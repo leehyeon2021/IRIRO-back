@@ -1,6 +1,9 @@
 package iriro.community.controller;
 
+import io.github.bonigarcia.wdm.config.OperatingSystem;
 import iriro.community.dto.BoardDto;
+import iriro.community.entity.BoardEntity;
+import iriro.community.repository.BoardRepository;
 import iriro.community.service.BoardService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,9 +20,11 @@ import java.util.List;
 public class BoardController {
 
     @Autowired
-    private BoardService boardService;
+    private final BoardService boardService;
+    private final BoardRepository boardRepository;
+    private final BoardEntity boardEntity;
 
-    // 1. 리뷰 등록
+    // 1. 리뷰 등록 (회원)
     // http://localhost:8080/board/rbwrite
     //  { "boardTitle" : "테스트제목", "boardContent" : "테스트내용", "logId" : 1 }
     @PostMapping("/rbwrite")
@@ -47,12 +53,10 @@ public class BoardController {
         return boardService.rvView(boardId);
     }
 
-    // 4. 리뷰 개별 삭제
+    // 4. 리뷰 개별 삭제 (회원)
     // http://localhost:8080/board/rvdelete?boardId=2
     @DeleteMapping("/rvdelete")
-    public boolean rvDelete(@RequestParam Integer boardId){
-        return boardService.rvDelete(boardId);
-    }
+    public boolean rvDelete(@RequestParam Integer boardId ,
 
     // 5. 글 추천
     // http://localhost:8080/board/ddabong
