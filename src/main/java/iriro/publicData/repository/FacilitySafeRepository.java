@@ -15,5 +15,7 @@ public interface FacilitySafeRepository extends JpaRepository<FacilitySafeEntity
     Optional<FacilitySafeEntity> findByFacNameAndFacAdd(String facName , String facAdd);
     // 삭제(=업데이트) 사용
     List<FacilitySafeEntity> findByFacType(String facType);
+    // 업데이트 (안전시설) 사용 (IN 연산자)
+    List<FacilitySafeEntity> findByFacTypeIn(List<String> type);
 
 }
