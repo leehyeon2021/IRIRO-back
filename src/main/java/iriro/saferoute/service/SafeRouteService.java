@@ -1,26 +1,73 @@
 package iriro.saferoute.service;
 
+import iriro.publicData.entity.CrimeRoadEntity;
+import iriro.publicData.entity.FacilitySafeEntity;
+import iriro.publicData.repository.CrimeRoadRepository;
+import iriro.publicData.repository.FacilitySafeRepository;
 import iriro.saferoute.dto.*;
 import iriro.saferoute.test.TestSampleCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class SafeRouteService {
-    private static final int MAX_DETOUR_DISTANCE_METER = 300; // 허용 가능한 우회 최대 거리
+    private static final double MAX_DETOUR_RATIO = 1.20; // 늘어난 비율이 20%가 넘으면
 
     private final TmapRouteService tmapRouteSvc; // TmapAPI 사용 서비스
     private final RiskFilterService riskFilterSvc; // 위험 지역 필터 서비스
     private final SafeFacFilterService safeFacFilterSvc; // 안전 지역 필터 서비스
     private final DetourRouteService detourRouteSvc; // 우회 경로 서비스
+    private final CrimeRoadRepository crimeRoadRepository;
+    private final FacilitySafeRepository facilitySafeRepository;
 
-    //지금은 위험지역 샘플을 가져오지만 조회를 통해 가져옴 테스트 리스트 -> 추후에 삭제
-    List<SafetyFacPointDto> allSafetyPoints = TestSampleCode.safeRoutePoint;
-    List<RiskPointDto> allDangerPoints = TestSampleCode.dangerRoutePoints;
+    // Bbox안에 있는지 체크하는 함수 .. 1차 필터링
+    public boolean isInsideBbox(double lat, double lng, BboxDto bbox){
+        return lat >= bbox.getMinLat()
+                && lat <= bbox.getMaxLat()
+                && lng >= bbox.getMinLng()
+                && lng <= bbox.getMaxLng();
+    }
+
+    // boundingBox를 만드는 함수 .. 1차 필터링
+    public BboxDto createBox(List<RoutePointDto> routePoints){
+
+        // 만약 리스트가 비어있다면
+        if( routePoints == null || routePoints.isEmpty()){
+            System.out.println("경로 좌표가 비어있습니다.");
+            return null;
+        }
+
+        double minLat = routePoints.get(0).getLatitude().doubleValue();
+        double maxLat = routePoints.get(0).getLatitude().doubleValue();
+        double minLng = routePoints.get(0).getLatitude().doubleValue();
+        double maxLng = routePoints.get(0).getLatitude().doubleValue();
+
+        // 가장 크고 작은 위 경도 값 구하기
+        for(RoutePointDto point : routePoints){
+            minLat = Math.min(minLat, point.getLatitude().doubleValue() );
+            minLng = Math.min(minLng, point.getLongitude().doubleValue() );
+            maxLat = Math.max(maxLat, point.getLatitude().doubleValue() );
+            maxLng = Math.max(maxLng, point.getLongitude().doubleValue() );
+        }
+
+        // 50m 정도 margin
+        double latMargin = 50.0 / 111000.0;
+        double centerLat = (minLat + maxLat) / 2.0;
+        double lngMargin = 50.0 / (111000.0 * Math.cos(Math.toRadians(centerLat)));
+
+        // BboxDto 반환(위험구역)
+        return new BboxDto(
+                minLat - latMargin,
+                maxLat + latMargin,
+                minLng - lngMargin,
+                maxLng + lngMargin
+        );
+    }
 
     // 안전 경로 계산 함수
     public SafeRouteResponseDto getSafeRoute(RouteRequestDto routeRequestDto){
@@ -29,6 +76,18 @@ public class SafeRouteService {
         RouteResponseDto originRoute = tmapRouteSvc.getPedestrianRoute(routeRequestDto); // 경로 생성 API 1번 호출
         List<RoutePointDto> routePoints = originRoute.getRoutePoints(); // 기존 안내 경로
         // 위험 지역을 DB에서 조사해 1차 필터링을 거친 값들만 리스트로 변환하여 가져옴. --> 추후 JPA활용하여 처리
+
+        BboxDto bbox = createBox(routePoints);
+        //지금은 위험지역 샘플을 가져오지만 조회를 통해 가져옴 테스트 리스트 -> 추후에 삭제
+        List<SafetyFacPointDto> allSafetyPoints = facilitySafeRepository.findAllInBoundingBox(
+                BigDecimal.valueOf(bbox.getMinLat()), BigDecimal.valueOf(bbox.getMaxLat()),
+                BigDecimal.valueOf(bbox.getMinLng()), BigDecimal.valueOf(bbox.getMaxLng()))
+                .stream().map(FacilitySafeEntity::toSafetyFacPointDto).toList(); // 해당 엔티티를 SafetyFacPoint로 변경
+        List<RiskPointDto> allDangerPoints = crimeRoadRepository.findAllInBoundingBox(
+                BigDecimal.valueOf(bbox.getMinLat()), BigDecimal.valueOf(bbox.getMaxLat()),
+                BigDecimal.valueOf(bbox.getMinLng()), BigDecimal.valueOf(bbox.getMaxLng()))
+                .stream().map(CrimeRoadEntity::toRiskPointDto).toList();
+
 
         // 안전 지역 1,2차 필터링 ( bbox, 경로상 50m 이내 )
         List<SafetyFacPointDto> filteredSafetyFacPoints = safeFacFilterSvc.filterSafetyFacPoints(routePoints, allSafetyPoints);
@@ -54,23 +113,26 @@ public class SafeRouteService {
         System.out.println("우회 경로 총 시간: " + detourRoute.getTotalTime());
         System.out.println("우회 경로 총 거리: " + detourRoute.getTotalDistance());
 
+        double detourRatio = (double)detourRoute.getTotalDistance() / originRoute.getTotalDistance();
         // 우회 경유지가 기존 경로보다 300m가 넓다면
-        if(detourRoute.getTotalDistance() - originRoute.getTotalDistance() > MAX_DETOUR_DISTANCE_METER ){
-
+        if(  detourRatio > MAX_DETOUR_RATIO ){
             // 위험경로를 한 번만 우회하는 경로 생성
             DetourWayPointDto singleWayPoint = detourRouteSvc.createSingleDetourWayPoint(routePoints, filteredDangerPoints.get(0) );
             RouteResponseDto singleDetourRoute = tmapRouteSvc.getDetourRoute(routeRequestDto, List.of(singleWayPoint)); // 싱글 우회경로 생성
             List<RoutePointDto> singleRoutePoints = singleDetourRoute.getRoutePoints();
 
+            // 한 번 더 우회했지만 비율이 여전히 20%가 넘으면 기본 경로로 반환
+            double detourRatio2 = (double)singleDetourRoute.getTotalDistance() / originRoute.getTotalDistance();
+            if( detourRatio2 > MAX_DETOUR_RATIO){
+                int safety_score = getSafetyScore(routePoints, filteredSafetyFacPoints, filteredDangerPoints);
+                return SafeRouteResponseDto.builder().detourRoute(originRoute).safety_score(safety_score).build();
+            }
+            //비율이 20퍼가 안 넘으면... 계산
+
             // 안전 지역 1,2차 필터링 ( bbox, 경로상 50m 이내 )
             List<SafetyFacPointDto> singleFilteredSafetyFacPoints = safeFacFilterSvc.filterSafetyFacPoints(singleRoutePoints, allSafetyPoints);
             // 위험 리스트 1, 2, 3차 필터링( bbox, 경로상 50m 이내, 연속된 위험지역 건너뛰기 )
             List<RiskPointDto> singleFilteredDangerPoints = riskFilterSvc.filterDangerPoints(singleRoutePoints, allDangerPoints);
-
-            int safeCount = singleFilteredSafetyFacPoints.stream().mapToInt(SafetyFacPointDto::getSafeCount).sum();
-            int riskCount = singleFilteredDangerPoints.stream().mapToInt(RiskPointDto::getRiskCount).sum();
-            System.out.println("경로에 있는 안전시설물 개수: " + safeCount);
-            System.out.println("경로에 있는 위험물 개수: " + riskCount);
 
             // 싱글 경유지 우회 경로 안전 점수
             int safety_score = getSafetyScore(singleDetourRoute.getRoutePoints(), singleFilteredSafetyFacPoints, singleFilteredDangerPoints);

@@ -12,50 +12,6 @@ import java.util.List;
 public class GeoFilterService {
     private static final double EARTH_RADIUS = 6371000; // 지구 반지름(상수)
 
-    // Bbox안에 있는지 체크하는 함수 .. 1차 필터링
-    public boolean isInsideBbox(double lat, double lng, BboxDto bbox){
-        return lat >= bbox.getMinLat()
-                && lat <= bbox.getMaxLat()
-                && lng >= bbox.getMinLng()
-                && lng <= bbox.getMaxLng();
-    }
-
-    // boundingBox를 만드는 함수 .. 1차 필터링
-    public BboxDto createBox(List<RoutePointDto> routePoints){
-
-        // 만약 리스트가 비어있다면
-        if( routePoints == null || routePoints.isEmpty()){
-            System.out.println("경로 좌표가 비어있습니다.");
-            return null;
-        }
-
-        double minLat = routePoints.get(0).getLatitude().doubleValue();
-        double maxLat = routePoints.get(0).getLatitude().doubleValue();
-        double minLng = routePoints.get(0).getLatitude().doubleValue();
-        double maxLng = routePoints.get(0).getLatitude().doubleValue();
-
-        // 가장 크고 작은 위 경도 값 구하기
-        for(RoutePointDto point : routePoints){
-            minLat = Math.min(minLat, point.getLatitude().doubleValue() );
-            minLng = Math.min(minLng, point.getLongitude().doubleValue() );
-            maxLat = Math.max(maxLat, point.getLatitude().doubleValue() );
-            maxLng = Math.max(maxLng, point.getLongitude().doubleValue() );
-        }
-
-        // 50m 정도 margin
-        double latMargin = 50.0 / 111000.0;
-        double centerLat = (minLat + maxLat) / 2.0;
-        double lngMargin = 50.0 / (111000.0 * Math.cos(Math.toRadians(centerLat)));
-
-        // BboxDto 반환(위험구역)
-        return new BboxDto(
-                minLat - latMargin,
-                maxLat + latMargin,
-                minLng - lngMargin,
-                maxLng + lngMargin
-        );
-    }
-
     // 좌표 1개당 경로 좌표들 중 최소거리를 구하는 함수
     public double getMinDistance(List<RoutePointDto> routePoints, double latitude, double longitude){
         double minDistance = Double.MAX_VALUE;
