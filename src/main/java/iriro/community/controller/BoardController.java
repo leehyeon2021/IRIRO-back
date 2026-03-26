@@ -23,9 +23,9 @@ public class BoardController {
     private final BoardService boardService;
 
     // 1. 리뷰 등록 (회원만 가능)
-    // http://localhost:8080/board/rbwrite
+    // http://localhost:8080/board/rvwrite
     //  { "boardTitle" : "테스트제목", "boardContent" : "테스트내용", "logId" : 1 }
-    @PostMapping("/rbwrite")
+    @PostMapping("/rvwrite")
     public ResponseEntity<?> rbAdd(@RequestBody BoardDto boardDto , HttpSession session){
         // 1) 세션 내 로그인 정보 확인하기
         Object object = session.getAttribute("email");
