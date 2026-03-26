@@ -26,6 +26,10 @@ public class JWTService {
     }
     // [2] 토큰의 클레임(내용물) 추출
     public String getClaim(String token){
+        if(token != null && token.startsWith("Bearer ")){
+            // 토큰이 "Bearer " 로 시작한다면 "Bearer "을 잘라내고 토큰 남겨라
+            token = token.substring(7);
+        }
         try{
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(secretKey) // 비밀키 대입
