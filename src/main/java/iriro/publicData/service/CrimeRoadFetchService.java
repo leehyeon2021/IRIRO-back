@@ -26,7 +26,6 @@ public class CrimeRoadFetchService{
 
     // 위험도로명(Map) 저장
     public boolean fetchCrimeRoad(){
-        // * 일단 써놓음
         int numOfRows = 1000;   // 한 번에 1000개 조회 가능
         int totalCount = 0;     // 저장해야 함
         int totalPages = 1;     // numOfRows와 totalCount를 고려하여 페이지 넘김
@@ -77,7 +76,7 @@ public class CrimeRoadFetchService{
                     String fullAdr = "서울특별시 "+item.get("sggNm")+" "+roadName;
                     System.out.println(fullAdr);
                     // 지오코딩 좌표 가져와서 넣기
-                    double[] coords = gs.getCoords(fullAdr);
+                    double[] coords = gs.getCoords(fullAdr, "F01");
                     if(coords==null){
                         System.out.println("좌표 저장 실패: "+fullAdr);
                         continue;
@@ -102,6 +101,8 @@ public class CrimeRoadFetchService{
         if (roadName.endsWith("대로")) return "대로";
         if (roadName.endsWith("로")) return "로";
         if (roadName.endsWith("길")) return "길";
+        if (roadName.endsWith("동")) return "동";
+        if (roadName.endsWith("가")) return "가";
 
         return "";
     }
