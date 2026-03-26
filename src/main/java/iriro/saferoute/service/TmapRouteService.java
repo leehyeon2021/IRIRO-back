@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -116,6 +113,7 @@ public class TmapRouteService { //Tmap API 연결
                 routePoints.add(new RoutePointDto(latitude, longitude, sequence++));
             }
         }
+        List<RoutePointDto> deduplicateRoutePoints = deduplicateRoutePoints(routePoints);
 
         return RouteResponseDto.builder()
                 .start_latitude(BigDecimal.valueOf(routeRequestDto.getStartLat()))
@@ -124,7 +122,7 @@ public class TmapRouteService { //Tmap API 연결
                 .end_longitude(BigDecimal.valueOf(routeRequestDto.getEndLng()))
                 .totalTime(totalTime)
                 .totalDistance(totalDistance)
-                .routePoints(routePoints)
+                .routePoints(deduplicateRoutePoints)
                 .build();
     }
 
@@ -223,6 +221,8 @@ public class TmapRouteService { //Tmap API 연결
             }
         }
 
+        List<RoutePointDto> deduplicateRoutePoints = deduplicateRoutePoints(routePoints);
+
         return RouteResponseDto.builder()
                 .start_latitude(BigDecimal.valueOf(routeRequestDto.getStartLat()))
                 .start_longitude(BigDecimal.valueOf(routeRequestDto.getStartLng()))
@@ -230,7 +230,22 @@ public class TmapRouteService { //Tmap API 연결
                 .end_longitude(BigDecimal.valueOf(routeRequestDto.getEndLng()))
                 .totalTime(totalTime)
                 .totalDistance(totalDistance)
-                .routePoints(routePoints)
+                .routePoints(deduplicateRoutePoints)
                 .build();
+    }
+
+    // 불필요한 연속된 중복된 경로를 제거하는 함수.
+    private List<RoutePointDto> deduplicateRoutePoints(List<RoutePointDto> routePoints){
+        List<RoutePointDto> DDRoutePoints = new ArrayList<>();
+        RoutePointDto prev = null;
+
+        for(RoutePointDto current : routePoints){
+            // 전 좌표가 null이거나 위,경도가 둘 중 하나라도 다르면 추가
+            if (prev == null || current.getLatitude().compareTo(prev.getLatitude()) != 0 || current.getLongitude().compareTo(prev.getLongitude()) != 0) {
+                DDRoutePoints.add(current);
+            }
+            prev = current;
+        }
+        return DDRoutePoints;
     }
 }
