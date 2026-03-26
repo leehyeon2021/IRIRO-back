@@ -9,6 +9,7 @@ import iriro.community.service.JWTService;
 import iriro.community.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +69,7 @@ public class BoardController {
     // 4. 리뷰 개별 삭제 (회원)
     // http://localhost:8080/board/rvdelete?boardId=11
     @DeleteMapping("/rvdelete")
+    @Transactional
     public ResponseEntity<?> rvDelete(@RequestParam Integer boardId , HttpServletRequest request){
         // 요청헤더에서 Authorization 토큰 꺼내기.
         String token = request.getHeader("Authorization");
