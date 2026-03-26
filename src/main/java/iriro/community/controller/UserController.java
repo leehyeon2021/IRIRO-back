@@ -52,8 +52,8 @@ public class UserController {
     // 3. 로그아웃 Get
     @GetMapping("/logout")
     // http://localhost:8080/user/logout?userId=11
-    public ResponseEntity<?> logout(HttpSession session){ // 1) 매개변수에 HttpSession session 받는다.
-        session.removeAttribute("email");
+    public ResponseEntity<?> logout(){
+        // 서버는 할 게 없지만 프론트에게 지워도 된다고 신호를 줌...
         return ResponseEntity.ok(true);
     }
 }
