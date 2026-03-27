@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import './App.css'; 
 
-// ⭐ 1. 캐릭터 이미지 불러오기 (장바구니에서 꺼내기)
 import myLocationImg from './assets/my_location_marker.png';
 
 function App() {
   const [showDangerSpots, setShowDangerSpots] = useState(false);
   const [showSafeSpots, setShowSafeSpots] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // ⭐ 1단계: 왼쪽 아래 메뉴를 열고 닫을 스위치 추가!
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <div className="app-container">
@@ -15,16 +17,9 @@ function App() {
       {/* 📍 가짜 지도 배경 */}
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10 }}>
         
-        {/* ⭐ 2. 내 현재 위치 (파란 점 대신 캐릭터 등장!) */}
         <div className="my-location-wrapper">
-          <div className="radar-pulse"></div> {/* 뒤에서 펄스 애니메이션 */}
-          
-          {/* 🚨 바로 이 줄이 빠져있어서 아까 경고가 뜬 거예요! (책상 위에 올리기) */}
-          <img 
-            src={myLocationImg} 
-            alt="내 위치" 
-            className="my-location-character" 
-          />
+          <div className="radar-pulse"></div>
+          <img src={myLocationImg} alt="내 위치" className="my-location-character" />
         </div>
 
         <div className="marker-warning" style={{ top: '400px', left: '250px' }}></div>
@@ -62,11 +57,35 @@ function App() {
 
       {/* ⬇️ 하단 영역 */}
       <div className="bottom-wrapper">
-        <button className="btn-menu">
-          <div className="menu-bar"></div>
-          <div className="menu-bar"></div>
-          <div className="menu-bar"></div>
-        </button>
+        
+        {/* ⭐ 2단계: 왼쪽 메뉴 버튼 그룹 (버튼과 팝업을 하나로 묶음) */}
+        <div style={{ position: 'relative' }}>
+          
+          {/* 스위치(isMenuOpen)가 켜졌을 때만 팝업 메뉴 보이기 */}
+          {isMenuOpen && (
+            <div className="menu-popup">
+              <button 
+                className="btn-menu-item" 
+                onClick={() => {
+                  // 나중에 여기에 진짜 커뮤니티 페이지로 넘어가는 코드를 넣으면 됩니다!
+                  alert("커뮤니티 페이지로 이동합니다! 📢");
+                  setIsMenuOpen(false); // 클릭 후에는 메뉴 다시 닫아주기
+                }}
+              >
+                📢
+              </button>
+            </div>
+          )}
+
+          {/* 기존 햄버거 메뉴 버튼 (누를 때마다 스위치 껐다 켜기) */}
+          <button className="btn-menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <div className="menu-bar"></div>
+            <div className="menu-bar"></div>
+            <div className="menu-bar"></div>
+          </button>
+        </div>
+
+        {/* 오른쪽 신고 버튼 */}
         <button className="btn-menu btn-report" onClick={() => setIsModalOpen(true)}>
           <span>🚨</span>
           <span>신고</span>
