@@ -21,11 +21,11 @@ public interface FacilitySafeRepository extends JpaRepository<FacilitySafeEntity
             @Param("minLng") BigDecimal minLng, @Param("maxLng") BigDecimal maxLng
     );
 
-    // 저장(=업데이트) 사용 (시설 이름, 주소)
+    // 저장 사용 (시설 이름, 주소로 중복 검사)
     Optional<FacilitySafeEntity> findByFacNameAndFacAdd(String facName , String facAdd);
-    // 삭제(=업데이트) 사용
+    // 저장 사용 (안전시설 타입 확인)
     List<FacilitySafeEntity> findByFacType(String facType);
-    // 업데이트 (안전시설) 사용 (IN 연산자)
+    // 저장 사용 (안전시설-보안등,CCTV,안전벨) 사용 (IN 연산자)
     List<FacilitySafeEntity> findByFacTypeIn(List<String> type);
 
 }
