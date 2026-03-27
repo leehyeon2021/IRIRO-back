@@ -71,6 +71,7 @@ public class UserController {
         String realToken = token.substring(7);
         loginEmail = jwtService.getClaim(realToken);
     }
+    if(loginEmail==null){return ResponseEntity.status(401).body("로그인이 필요한 서비스입니다.");}
     List<BoardDto> result = userService.myrv(loginEmail);
     return ResponseEntity.ok(result);
     }
