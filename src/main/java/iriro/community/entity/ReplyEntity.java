@@ -28,7 +28,7 @@ public class ReplyEntity extends BaseTime {
     private UserEntity userEntity;
 
     // 글 번호
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn( name = "board_id")
     private BoardEntity boardEntity;
 
