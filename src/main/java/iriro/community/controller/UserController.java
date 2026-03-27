@@ -64,10 +64,15 @@ public class UserController {
     // 4. 내가 쓴 글 조회
     // http://localhost:8080/user/myrv
     @GetMapping("/myrv")
-    public List<BoardDto> myrv(@RequestParam Integer userId , HttpServletRequest request) {
-    String token = request.getHeader("Authorization");
-    String loginEmail = jwtService.getClaim(token);
-    return userService.myrv(userId,loginEmail);
+    public ResponseEntity<?> myrv(@RequestHeader("Authorization") String token) {
+    String loginEmail = null;
+
+    if(token != null && token.startsWith("Bearer")){
+        String realToken = token.substring(7);
+        loginEmail = jwtService.getClaim(realToken);
+    }
+    List<BoardDto> result = userService.myrv(loginEmail);
+    return ResponseEntity.ok(result);
     }
 
 }
