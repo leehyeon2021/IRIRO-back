@@ -61,19 +61,5 @@ public class UserController {
         return ResponseEntity.ok(true);
     }
 
-    // 4. 내가 쓴 글 조회
-    // http://localhost:8080/user/myrv
-    @GetMapping("/myrv")
-    public ResponseEntity<?> myrv(@RequestHeader("Authorization") String token) {
-    String loginEmail = null;
-
-    if(token != null && token.startsWith("Bearer")){
-        String realToken = token.substring(7);
-        loginEmail = jwtService.getClaim(realToken);
-    }
-    if(loginEmail==null){return ResponseEntity.status(401).body("로그인이 필요한 서비스입니다.");}
-    List<BoardDto> result = userService.myrv(loginEmail);
-    return ResponseEntity.ok(result);
-    }
 
 }
