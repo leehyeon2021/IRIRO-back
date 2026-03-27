@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 
 
 @Entity
@@ -31,6 +32,17 @@ public class UserEntity extends BaseTime {
 
     @Column( nullable = false , length = 40 , unique = true )
     private String nickname;
+
+    // 글
+    @OneToMany(mappedBy = "userEntity")
+    @JoinColumn( name = "board_id")
+    private List<BoardEntity> boards;
+
+    // 댓글
+    @OneToMany(mappedBy = "")
+    @JoinColumn( name = "reply_id")
+    private List<ReplyEntity> replies;
+
 
     // Entity --> Dto 변환함수 // 생고기에서 플레이팅 접시용으로 바꾸는 거야~
     public UserDto toDto(){
