@@ -1,185 +1,114 @@
-import React from 'react';
+import React, { useState } from 'react';
+import './App.css'; 
+
+import myLocationImg from './assets/my_location_marker.png';
 
 function App() {
-  // 1. 전체 앱 컨테이너 (모바일 화면 크기 고정)
-  const appStyle = {
-    fontFamily: 'sans-serif',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100vh',
-    width: '100%',
-    margin: 0,
-    backgroundColor: '#f2f2f2', // 실제 지도 들어갈 자리임을 보여주는 연회색 배경
-    position: 'relative', // 중요! 하단 버튼 배치를 위해 필요합니다.
-    overflow: 'hidden', // 스크롤 방지
-  };
-
-  // 2. 상단 영역 wrapper (검색바 + 필터 버튼)
-  const topWrapperStyle = {
-    position: 'absolute',
-    top: '20px', // 스마트폰 상단 바 공간 고려
-    left: '0',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    zIndex: 100, // 지도보다 위에 떠있게 함
-  };
-
-  // 3. 둥근 검색바
-  const searchBarStyle = {
-    backgroundColor: 'white',
-    width: '90%',
-    maxWidth: '400px', // 너무 넓어지지 않게 방지
-    height: '50px',
-    borderRadius: '25px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // 살짝 그림자 효과
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0 20px',
-    marginBottom: '15px',
-    boxSizing: 'border-box', // 패딩 포함 크기 계산
-  };
-
-  // 검색바 내부 요소들
-  const logoStyle = { color: '#4caf50', fontWeight: 'bold', marginRight: '10px' };
-  const searchTextStyle = { flex: 1, color: '#999' };
-  const searchIconStyle = { fontSize: '20px', color: '#666' };
-
-  // 4. 필터 버튼 영역
-  const filterButtonsStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '90%',
-    maxWidth: '400px',
-  };
-
-  // 개별 필터 버튼 기본 스타일
-  const filterButtonStyle = {
-    width: '48%', // 정확히 반씩 차지
-    height: '50px',
-    borderRadius: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 'bold',
-    border: 'none', // 기본 버튼 테두리 제거
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // 살짝 그림자 효과
-    cursor: 'pointer',
-  };
-
-  // 위험 구역 버튼 (빨간색)
-  const dangerButtonStyle = {
-    ...filterButtonStyle,
-    backgroundColor: '#ff5252',
-    color: 'white',
-  };
-
-  // 안전 구역 버튼 (초록색)
-  const safeButtonStyle = {
-    ...filterButtonStyle,
-    backgroundColor: '#66bb6a',
-    color: 'white',
-  };
-
-  // 5. 하단 영역 wrapper (메뉴 + 신고 버튼)
-  const bottomWrapperStyle = {
-    position: 'absolute',
-    bottom: '20px',
-    left: '20px',
-    right: '20px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    zIndex: 100, // 지도보다 위에 떠있게 함
-  };
-
-  // 가로 세 줄 메뉴 버튼
-  const menuButtonStyle = {
-    backgroundColor: 'white',
-    width: '60px',
-    height: '60px',
-    borderRadius: '50%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
-    border: 'none',
-    cursor: 'pointer',
-  };
-
-  // 메뉴 바 (세 줄)
-  const menuBarStyle = {
-    width: '25px',
-    height: '3px',
-    backgroundColor: '#666',
-    margin: '3px 0',
-    borderRadius: '2px',
-  };
-
-  // 신고 버튼 (빨간색 사이렌)
-  const reportButtonStyle = {
-    ...menuButtonStyle, // 공통 스타일 상속
-    backgroundColor: '#ff4444',
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: '14px',
-  };
-
-  // 6. 가짜 지도 마커 (왼쪽 스크린샷 핀들을 대략 흉내)
-  const markerStyle = {
-    position: 'absolute',
-    width: '20px',
-    height: '20px',
-    borderRadius: '50%',
-    zIndex: 50,
-  };
+  const [showDangerSpots, setShowDangerSpots] = useState(false);
+  const [showSafeSpots, setShowSafeSpots] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // ⭐ 1단계: 왼쪽 아래 메뉴를 열고 닫을 스위치 추가!
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div style={appStyle}>
-      {/* 📍 가짜 지도 배경 (실제 지도가 들어올 영역) */}
+    <div className="app-container">
+      
+      {/* 📍 가짜 지도 배경 */}
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10 }}>
-        {/* 가짜 마커 배치 (이미지의 핀들을 대략 흉내) */}
-        <div style={{ ...markerStyle, top: '250px', left: '150px', backgroundColor: '#e91e63' }}></div> {/* 빨간 핀 */}
-        <div style={{ ...markerStyle, top: '300px', left: '220px', backgroundColor: '#e91e63' }}></div>
-        <div style={{ ...markerStyle, top: '350px', left: '180px', backgroundColor: '#e91e63' }}></div>
-        <div style={{ ...markerStyle, top: '400px', left: '250px', backgroundColor: '#3f51b5' }}></div> {/* 파란 핀 */}
-        <div style={{ ...markerStyle, top: '500px', left: '100px', backgroundColor: '#3f51b5' }}></div>
-        <div style={{ ...markerStyle, top: '280px', left: '320px', backgroundColor: '#ff9800' }}></div> {/* 주황 핀 */}
-      </div>
-
-      {/* ⬆️ 상단 영역 (검색바 + 필터 버튼) */}
-      <div style={topWrapperStyle}>
-        {/* 둥근 검색바 */}
-        <div style={searchBarStyle}>
-          <span style={logoStyle}>이리로</span>
-          <span style={searchTextStyle}>안전 경로 탐색</span>
-          <span style={searchIconStyle}>🔍</span>
+        
+        <div className="my-location-wrapper">
+          <div className="radar-pulse"></div>
+          <img src={myLocationImg} alt="내 위치" className="my-location-character" />
         </div>
 
-        {/* 필터 버튼 2개 */}
-        <div style={filterButtonsStyle}>
-          <button style={dangerButtonStyle}>⚠️ 위험 구역</button>
-          <button style={safeButtonStyle}>✅ 안전 구역</button>
+        <div className="marker-warning" style={{ top: '400px', left: '250px' }}></div>
+
+        {showDangerSpots && (
+          <>
+            <div className="marker-danger" style={{ top: '250px', left: '150px' }}></div> 
+            <div className="marker-danger" style={{ top: '300px', left: '220px' }}></div>
+            <div className="marker-danger" style={{ top: '65%', left: '35%' }}></div>
+            <div className="marker-danger" style={{ top: '55%', left: '25%' }}></div>
+          </>
+        )}
+
+        {showSafeSpots && (
+          <>
+            <div className="marker-safe" style={{ top: '150px', left: '280px' }}></div> 
+            <div className="marker-safe" style={{ top: '450px', left: '100px' }}></div>
+            <div className="marker-safe" style={{ top: '75%', left: '60%' }}></div>
+          </>
+        )}
+      </div>
+
+      {/* ⬆️ 상단 영역 */}
+      <div className="top-wrapper">
+        <div className="search-bar">
+          <span className="logo">이리로</span>
+          <span className="search-text">안전 경로 탐색</span>
+          <span className="search-icon">🔍</span>
+        </div>
+        <div className="filter-buttons">
+          <button className="btn-filter btn-danger" onClick={() => setShowDangerSpots(!showDangerSpots)}>⚠️ 위험 구역</button>
+          <button className="btn-filter btn-safe" onClick={() => setShowSafeSpots(!showSafeSpots)}>✅ 안전 구역</button>
         </div>
       </div>
 
-      {/* ⬇️ 하단 영역 (메뉴 + 신고 버튼) */}
-      <div style={bottomWrapperStyle}>
-        {/* 가로 세 줄 메뉴 버튼 */}
-        <button style={menuButtonStyle}>
-          <div style={menuBarStyle}></div>
-          <div style={menuBarStyle}></div>
-          <div style={menuBarStyle}></div>
-        </button>
+      {/* ⬇️ 하단 영역 */}
+      <div className="bottom-wrapper">
+        
+        {/* ⭐ 2단계: 왼쪽 메뉴 버튼 그룹 (버튼과 팝업을 하나로 묶음) */}
+        <div style={{ position: 'relative' }}>
+          
+          {/* 스위치(isMenuOpen)가 켜졌을 때만 팝업 메뉴 보이기 */}
+          {isMenuOpen && (
+            <div className="menu-popup">
+              <button 
+                className="btn-menu-item" 
+                onClick={() => {
+                  // 나중에 여기에 진짜 커뮤니티 페이지로 넘어가는 코드를 넣으면 됩니다!
+                  alert("커뮤니티 페이지로 이동합니다! 📢");
+                  setIsMenuOpen(false); // 클릭 후에는 메뉴 다시 닫아주기
+                }}
+              >
+                📢
+              </button>
+            </div>
+          )}
 
-        {/* 신고 버튼 */}
-        <button style={reportButtonStyle}>
+          {/* 기존 햄버거 메뉴 버튼 (누를 때마다 스위치 껐다 켜기) */}
+          <button className="btn-menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <div className="menu-bar"></div>
+            <div className="menu-bar"></div>
+            <div className="menu-bar"></div>
+          </button>
+        </div>
+
+        {/* 오른쪽 신고 버튼 */}
+        <button className="btn-menu btn-report" onClick={() => setIsModalOpen(true)}>
           <span>🚨</span>
           <span>신고</span>
         </button>
       </div>
+
+      {/* 모달창 조건부 렌더링 */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2 className="modal-title">🚨 긴급 신고</h2>
+            <p className="modal-text">현재 위치를 기반으로<br/>경찰에 긴급 신고하시겠습니까?</p>
+            <div className="modal-buttons">
+              <button className="btn-modal btn-cancel" onClick={() => setIsModalOpen(false)}>취소</button>
+              <button className="btn-modal btn-confirm" onClick={() => {
+                alert("신고가 접수되었습니다!"); 
+                setIsModalOpen(false);
+              }}>신고하기</button>
+            </div>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 }

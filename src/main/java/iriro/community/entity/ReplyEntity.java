@@ -23,12 +23,12 @@ public class ReplyEntity extends BaseTime {
     private String replyContent;
 
     // 회원번호(FK)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn( name = "user_id")
     private UserEntity userEntity;
 
     // 글 번호
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn( name = "board_id")
     private BoardEntity boardEntity;
 

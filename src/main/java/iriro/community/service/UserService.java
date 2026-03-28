@@ -1,13 +1,17 @@
 package iriro.community.service;
 
+import iriro.community.dto.BoardDto;
 import iriro.community.dto.UserDto;
+import iriro.community.entity.BoardEntity;
 import iriro.community.entity.UserEntity;
+import iriro.community.repository.BoardRepository;
 import iriro.community.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +21,7 @@ public class UserService {
 
 
     private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
     // 비크립트(암호화) 객체 생성
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -49,5 +54,6 @@ public class UserService {
         return false;
 
     }
+
 
 }
