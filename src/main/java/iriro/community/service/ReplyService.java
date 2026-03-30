@@ -23,7 +23,7 @@ public class ReplyService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
 
-// 1. 댓글 등록
+    // 1. 댓글 등록
 
     public boolean rpAdd(ReplyDto replyDto,String loginEmail) {
         if(loginEmail==null)return false;
@@ -39,16 +39,10 @@ public class ReplyService {
     public boolean rpDelete(Integer replyId , String loginEmail){
         ReplyEntity reply = replyRepository.findById(replyId).orElse(null);
         if(reply == null)return false;
-
         if(reply.getUserEntity() == null || !reply.getUserEntity().getEmail().equals(loginEmail)){
             return false;
         }
-
         replyRepository.deleteById(replyId);
         return true;
     }
-
-
-
-
 }
