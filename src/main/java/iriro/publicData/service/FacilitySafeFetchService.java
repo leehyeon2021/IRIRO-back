@@ -6,12 +6,15 @@ import iriro.publicData.repository.FacilitySafeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
 
-@Service @RequiredArgsConstructor @Transactional
+@Service
+@RequiredArgsConstructor
+@Transactional
 public class FacilitySafeFetchService {
 
     // 안심지킴이집
@@ -43,18 +46,21 @@ public class FacilitySafeFetchService {
 
         try{ // 전체 개수 찾기
             for(int page=1;page<=totalPages;page++){
+                int pageNo = page;
                 // 서비스키 주소에 넣기
-                String uri = safeHouseUrl
-                        + "?serviceKey=" + pubServiceKey
-                        + "&pageNo=" + page
-                        + "&numOfRows=" + numOfRows
-                        + "&type=JSON"
-                        + "&ctprvnNm=서울특별시";
                 // 요청할 API 주소 넣기 webClient
                 Map<String,Object> response = webClient.get()
-                        .uri(uri)
-                        .retrieve() // 반환타입
-                        .bodyToMono(Map.class)
+                        .uri(uriBuilder -> uriBuilder
+                                .path(safeHouseUrl)
+                                .queryParam("serviceKey",pubServiceKey)
+                                .queryParam("pageNo",pageNo)
+                                .queryParam("numOfRows",numOfRows)
+                                .queryParam("type","JSON")
+                                .queryParam("ctprvnNm","서울특별시")
+                                .build()
+                        )
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>(){})
                         .block();
 
                 // 열어
@@ -134,17 +140,18 @@ public class FacilitySafeFetchService {
 
         try {
             for (int page = 1; page <= totalPages; page++) {
-
-                String uri = policeUrl
-                        + "?serviceKey=" + adminServiceKey
-                        + "&pageNo=" + page
-                        + "&numOfRows=" + numOfRows
-                        + "&returnType=json";
+                int pageNo = page;
 
                 Map<String, Object> response = webClient.get()
-                        .uri(uri)
+                        .uri(uriBuilder -> uriBuilder
+                                .path(policeUrl)
+                                .queryParam("serviceKey", adminServiceKey)
+                                .queryParam("pageNo", pageNo)
+                                .queryParam("numOfRows",numOfRows)
+                                .queryParam("returnType","json")
+                                .build())
                         .retrieve()
-                        .bodyToMono(Map.class)
+                        .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>() {})
                         .block();
 
                 // 열어
@@ -255,16 +262,12 @@ public class FacilitySafeFetchService {
                 int endIndex = page*numOfRows;
 
                 // 주소에 넣기
-                String uri = safeFacUrl
-                        + "/" + seoulServiceKey
-                        + "/json/tbSafeReturnItem/"
-                        + startIndex + "/" + endIndex;
-
                 // 요청 API
                 Map<String,Object> response = webClient.get()
-                        .uri(uri)
+                        .uri(safeFacUrl+"/{key}/{type}/{service}/{start}/{end}",
+                                safeFacUrl, "json", "tbSafeReturnItem", startIndex, endIndex)
                         .retrieve()
-                        .bodyToMono(Map.class)
+                        .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>() {})
                         .block();
 
                 // 열기
