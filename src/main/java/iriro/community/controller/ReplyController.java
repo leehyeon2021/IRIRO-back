@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/reply")
+@RequestMapping("/board")
 public class ReplyController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class ReplyController {
     private final JWTService jwtService;
 
     // 1. 댓글 등록
-    // http://localhost:8080/reply/rpwrite
+    // http://localhost:8080/board/rpwrite
     // { "replyContent" : "박진감보고싶습니감ㅠㅠ" , "boardId" : 2 }
     @PostMapping("/rpwrite")
     public ResponseEntity<?> rpAdd(@RequestBody ReplyDto replyDto, @RequestHeader("Authorization")String token) {
@@ -44,7 +44,7 @@ public class ReplyController {
     }
 
     // 2. 댓글 삭제
-    // http://localhost:8080/reply/rpdelete?replyId=1
+    // http://localhost:8080/board/rpdelete?replyId=1
     @DeleteMapping("/rpdelete")
     public ResponseEntity<?> rpDelete(@RequestParam Integer replyId, HttpServletRequest request) {
         // 요청헤더에서 Authorization 토큰 꺼내기.
