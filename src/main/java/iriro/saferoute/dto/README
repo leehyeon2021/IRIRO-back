@@ -16,3 +16,5 @@
     [6] RiskPointDto : 위험 구간 관련 Dto
 
     [7] SafeyFacPointDto : 안전 시설물 관련 Dto
+
+    [8] SaveLogDto : 안전 경로 로그 저장 Dto
