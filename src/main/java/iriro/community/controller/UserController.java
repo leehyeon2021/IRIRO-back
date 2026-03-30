@@ -63,7 +63,7 @@ public class UserController {
 
 
     // 4. 마이페이지
-    @GetMapping("/myinfo")
+    @GetMapping("/myinfo/{email}")
     // http://localhost:8080/user/myinfo/
     public UserDto myInfo(@PathVariable String email){return userService.myInfo(email);}
 
