@@ -121,7 +121,7 @@ public class FacilitySafeFetchService {
         }catch(Exception e){System.out.println("안심지킴이집 저장 실패: "+e);return false;}
     }
 
-    // 경찰서 저장 (3000여 개 중 서울은 400여 개)
+    // 경찰서 저장 (3000여 개 중 서울은 400여 개) - 동기화 async
     public boolean fetchPoliceStation() {
         int numOfRows = 100;
         int totalCount = 0;
