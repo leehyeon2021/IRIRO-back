@@ -1,5 +1,6 @@
 package iriro.saferoute.entity;
 
+import iriro.common.entity.BaseTime;
 import iriro.community.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "location_log")
-public class LocationlogEntity{
+public class LocationlogEntity extends BaseTime {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)

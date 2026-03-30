@@ -1,6 +1,13 @@
+<<<<<<<< HEAD:src/main/react/src/App.js
+App.js
+
 import React, { useEffect, useRef, useState } from 'react';
+========
+import React, { useState } from 'react';
+>>>>>>>> origin/강병모:src/main/react/src/App.jsx
 import './App.css';
 import myLocationImg from './assets/my_location_marker.png';
+import MapPage from './MapPage';
 
 function App() {
   const [showDangerSpots, setShowDangerSpots] = useState(false);
@@ -9,23 +16,9 @@ function App() {
   // ⭐ 1단계: 왼쪽 아래 메뉴를 열고 닫을 스위치 추가!
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const mapRef = useRef(null);
-
-  useEffect(() => {
-      if (!window.Tmapv2 || !mapRef.current) return;
-
-      new window.Tmapv2.Map(mapRef.current, {
-        center: new window.Tmapv2.LatLng(37.38953, 126.9594),
-        width: '100%',
-        height: '100%',
-        zoom: 16,
-        zoomControl: true,
-        scrollwheel: true
-      });
-    }, []);
-
   return (
     <div className="app-container">
+<<<<<<<< HEAD:src/main/react/src/App.js
 
       {/* 진짜 지도 */}
       <div
@@ -39,6 +32,9 @@ function App() {
           zIndex: 10
         }}
       />
+========
+        <MapPage />
+>>>>>>>> origin/강병모:src/main/react/src/App.jsx
       {/* 지도 위에 덮는 커스텀 UI */}
           <div
             style={{
@@ -51,7 +47,6 @@ function App() {
               pointerEvents: 'none'
             }}
           >
-
         {/* 기존 코드 */}
         <div className="my-location-wrapper">
           <div className="radar-pulse"></div>
@@ -150,4 +145,3 @@ function App() {
 }
 
 export default App;
-

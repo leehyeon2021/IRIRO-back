@@ -1,7 +1,6 @@
 package iriro.saferoute.controller;
 
 
-import iriro.saferoute.dto.SaveLogDto;
 import iriro.saferoute.service.RouteLogSaveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

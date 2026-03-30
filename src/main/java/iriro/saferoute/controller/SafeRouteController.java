@@ -4,7 +4,6 @@ import iriro.saferoute.dto.RouteRequestDto;
 import iriro.saferoute.dto.SafeRouteResponseDto;
 import iriro.saferoute.service.RouteLogSaveService;
 import iriro.saferoute.service.SafeRouteService;
-import iriro.saferoute.service.TmapRouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
