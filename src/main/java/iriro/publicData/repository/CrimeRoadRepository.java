@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CrimeRoadRepository extends JpaRepository<CrimeRoadEntity,Integer>{
@@ -19,5 +20,9 @@ public interface CrimeRoadRepository extends JpaRepository<CrimeRoadEntity,Integ
             @Param("minLat") BigDecimal minLat, @Param("maxLat") BigDecimal maxLat,
             @Param("minLng") BigDecimal minLng, @Param("maxLng") BigDecimal maxLng
     );
+
+    // 저장 시 사용 (시설 이름, 주소로 중복 검사)
+    Optional<CrimeRoadEntity> findByCriSggAndCriRoad(String criSgg, String criRoad);
+
 
 }

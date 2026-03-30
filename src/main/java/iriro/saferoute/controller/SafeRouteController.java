@@ -17,13 +17,19 @@ public class SafeRouteController {
     private final SafeRouteService safeRouteSvc;
     private final RouteLogSaveService routeLogSaveSvc;
 
-    // 안전 경로 반환
+    // 안전 경로 반환 // http://localhost:8080/api/saferoute
+    // {
+    //  "startLat" : 37.3895300,
+    //  "startLng" : 126.959400,
+    //  "endLat" : 37.3976478,
+    //  "endLng" : 126.9312600
+    //}
     @PostMapping("/saferoute")
     public ResponseEntity<?> test2(@RequestBody RouteRequestDto routeRequestDto){
         SafeRouteResponseDto result = safeRouteSvc.getSafeRoute(routeRequestDto);
         if(result != null){
-//            Long logId = routeLogSaveSvc.createRouteLog(null);
-//            routeLogSaveSvc.saveLogRoute(logId, result.getDetourRoute().getRoutePoints());
+            Long logId = routeLogSaveSvc.createRouteLog(null);
+            routeLogSaveSvc.saveLogRoute(logId, result.getDetourRoute().getRoutePoints());
             return ResponseEntity.ok( result );
         }
         return ResponseEntity.ok( false ); // 반환 실패

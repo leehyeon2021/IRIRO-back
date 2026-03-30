@@ -9,4 +9,15 @@ import lombok.NoArgsConstructor;
 public class SafeRouteResponseDto {
     private RouteResponseDto detourRoute; //경유지 우회 경로
     private Integer safety_score;
+
+//    public SaveLogDto toSaveLogDto(){
+//        return SaveLogDto.builder()
+//                .startLatitude()
+//                .startLongitude()
+//                .endLatitude()
+//                .endLongitude()
+//                .safetyScore()
+//                .createdAt()
+//                .build();
+//    }
 }

@@ -3,17 +3,15 @@ package iriro.publicData.service;
 import iriro.common.service.GeocodingService;
 import iriro.publicData.entity.CrimeRoadEntity;
 import iriro.publicData.repository.CrimeRoadRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-@Service @RequiredArgsConstructor
+@Service @RequiredArgsConstructor @Transactional
 public class CrimeRoadFetchService{
 
     @Value("${api.pub.service-key}")
@@ -32,8 +30,14 @@ public class CrimeRoadFetchService{
         int totalCount = 0;     // 저장해야 함
         int totalPages = 1;     // numOfRows와 totalCount를 고려하여 페이지 넘김
 
-        try {
+        // 기존 데이터 체크용
+        List<CrimeRoadEntity> oldList = cr.findAll();
+        // 삭제 비교 위한 저장소
+        Set<String> deleteCheck = new HashSet<>();
+        // criCount
+        Set<String> count = new HashSet<>();
 
+        try {
             // totalCount을 찾아라 하나둘셋 으아악
             for (int page = 1; page <= totalPages; page++) {
 
@@ -68,11 +72,10 @@ public class CrimeRoadFetchService{
                 Map<String, Object> items = (Map<String, Object>) body.get("items");
                 List<Map<String, Object>> itemList = (List<Map<String, Object>>) items.get("item");
 
-                // 중복 체크용 Set<String>
-                Set<String> list = new HashSet<>();
-
                 // 저장
                 for (Map<String, Object> item : itemList) {
+
+                    // 서울만
                     String ctpvNm = (String) item.get("ctpvNm");
                     if(ctpvNm==null||!ctpvNm.contains("서울")) continue;
 
@@ -80,26 +83,62 @@ public class CrimeRoadFetchService{
                     String roadName = (String) item.get("roadNm");
                     String sggNm = (String) item.get("sggNm");
                     String it = sggNm + "_" + roadName;
-                    if(!list.add(it)) continue;
 
-                    // 주소 조합 + 지오코딩 좌표 저장
-                    String fullAdr = "서울특별시 "+item.get("sggNm")+" "+roadName;
-                    System.out.println(fullAdr);
-                    double[] coords = gs.getCoordsKakao(fullAdr);
-                    if(coords==null){
-                        System.out.println("좌표 저장 실패: "+fullAdr);
+                    // 삭제 비교 위한 저장
+                    deleteCheck.add(it);
+
+                    // cri_count 추가
+                    if(!count.add(it)){ // Set은 중복이면 저장x false 반환
+                        Optional<CrimeRoadEntity> lists = cr.findByCriSggAndCriRoad(sggNm, ctpvNm);
+                        lists.ifPresent( list -> list.setCriCount(list.getCriCount()+1));
                         continue;
                     }
 
-                    // 저장
-                    cr.save(CrimeRoadEntity.builder()
-                                .criZip(Integer.parseInt((String) item.get("roadNmZip")))
+                    String fullAdr  = "서울특별시 " + sggNm + " " + roadName;
+                    String roadType = getRoadSuffix(roadName);
+                    int zipCode = Integer.parseInt((String) item.get("roadNmZip"));
+
+                    // DB에 있나요
+                    Optional<CrimeRoadEntity> exists = cr.findByCriSggAndCriRoad(sggNm, ctpvNm);
+                    if(exists.isPresent()){
+                        // 있으면 업데이트
+                        CrimeRoadEntity exist = exists.get();
+                        exist.setCriType(roadType);
+                        exist.setCriZip(zipCode);
+                        exist.setCriCount(exist.getCriCount() + 1); // 중복
+                            // 좌표가 없을 때만!! 지오코딩 (지오코딩 횟수 줄이기 위함)
+                            if (exist.getCriLat() == null) {
+                                double[] coords = gs.getCoordsKakao(fullAdr);
+                                if (coords != null) {
+                                    exist.setCriLat(coords[0]);
+                                    exist.setCriLng(coords[1]);
+                                }
+                            }
+                    } else {
+                        // 없을 때만!! 지오코딩
+                        double[] coords = gs.getCoordsKakao(fullAdr);
+                        if (coords == null) {
+                            System.out.println("좌표 저장 실패: " + fullAdr);
+                            continue;
+                        }
+                        cr.save(CrimeRoadEntity.builder()
+                                .criZip(zipCode)
                                 .criSgg(sggNm)
                                 .criRoad(roadName)
-                                .criType(getRoadSuffix(roadName))
+                                .criType(roadType)
                                 .criLat(coords[0])
                                 .criLng(coords[1])
-                            .build());
+                                .criCount(1) // 기본: 1
+                                .build());
+                    }
+                }
+            }
+            // 업데이트된 데이터에 없는 기존 데이터 삭제
+            for (CrimeRoadEntity db : oldList) {
+                String dbNameAdd = db.getCriSgg().trim() + "_" + db.getCriRoad().trim();
+                if (!deleteCheck.contains(dbNameAdd)) {
+                    System.out.println("중복/사라진 데이터 삭제: "+db + " " + dbNameAdd);
+                    cr.delete(db);
                 }
             }
             return true;
