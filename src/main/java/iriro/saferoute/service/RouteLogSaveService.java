@@ -9,6 +9,7 @@ import iriro.saferoute.repository.LocationLogRepository;
 import iriro.saferoute.repository.RoutePointLogRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class RouteLogSaveService {
     // 사용자 로그 저장하는 서비스
     private final LocationLogRepository locationLogRepo;
@@ -24,6 +26,7 @@ public class RouteLogSaveService {
 
     // 경로 추천 시 일단 경로 제외 로그에 저장
     public Long createRouteLog(SaveLogDto saveLogDto){
+        log.info("RouteLogSaveService.createRouteLog saveLogDto = {}", saveLogDto);
         //후기와 사용자 빼고 다 저장 가능.
         LocationlogEntity saveEntity = saveLogDto.toEntity();
         return locationLogRepo.save( saveEntity ).getLogId();

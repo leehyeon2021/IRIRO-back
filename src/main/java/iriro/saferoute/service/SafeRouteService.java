@@ -7,6 +7,7 @@ import iriro.publicData.repository.CrimeRoadRepository;
 import iriro.publicData.repository.FacilitySafeRepository;
 import iriro.saferoute.dto.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SafeRouteService {
     private static final double MAX_DETOUR_RATIO = 1.20; // 늘어난 비율이 20%가 넘으면
     private static final int BASE_SAFE_SCORE = 100;
@@ -66,8 +68,10 @@ public class SafeRouteService {
     // 로그를 후기(평점)제외하고 저장하고 lodId를 반환하는 함수 --> API 명세서에 추가해야함
     public Long saveRouteLog(RouteResponseDto originRoute, int safety_score ){
 
+
         // SaveLogDto로 변환
         SaveLogDto saveLog = originRoute.toSaveLogDto();
+        log.info("saveLogDto = {}", saveLog);
         saveLog.setSafetyScore(safety_score); //안전 점수 추가
 
         // 로그 1차 저장 후 로그 Id 받아오기
