@@ -39,6 +39,13 @@ public class UserEntity extends BaseTime {
     @ToString.Exclude
     private List<BoardEntity> boardList = new ArrayList<>();
 
+    // 유저 1명에는 여러 개의 리플이 포함된다.
+    @OneToMany(mappedBy = "userENtity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @ToString.Exclude
+    private List<ReplyEntity> replyList = new ArrayList<>();
+
+
 
     // Entity --> Dto 변환함수 // 생고기에서 플레이팅 접시용으로 바꾸는 거야~
     public UserDto toDto(){
