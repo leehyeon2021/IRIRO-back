@@ -39,7 +39,7 @@ INSERT INTO users (user_id, email, pw_token, nickname, created_at, updated_at) V
 
 -- [4] location_log
 INSERT INTO location_log
-(log_id, user_id, start_latitude, start_longitude, end_latitude, end_longitude, safety_score, total_titme, total_distance, created_at, rating)
+(log_id, user_id, start_latitude, start_longitude, end_latitude, end_longitude, safety_score, total_time, total_distance, created_at, rating)
 VALUES
 (1, 1, 37.3895300, 126.9509400, 37.3912000, 126.9521000, 75, 2100, 2200, '2026-03-18 23:15:00', 3), -- 심야 퇴근길
 (2, 2, 37.4015100, 126.9225200, 37.4030000, 126.9240000, 85, 2400, 2350, '2026-03-18 21:30:00', 1), -- 저녁 강아지 산책
