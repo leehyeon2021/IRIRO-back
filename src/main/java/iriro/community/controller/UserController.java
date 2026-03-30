@@ -62,5 +62,9 @@ public class UserController {
     }
 
 
+    // 4. 유저 정보 조회
+    @GetMapping("/myinfo")
+    public ResponseEntity<?> myInfo(@PathVariable String email){return userService.myInfo(email);
 
+    }
 }
