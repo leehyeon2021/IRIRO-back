@@ -63,10 +63,10 @@ public class UserController {
 
 
     // 4. 마이페이지
-    @GetMapping("/myinfo/")
+    @GetMapping("/myinfo")
     // http://localhost:8080/user/myinfo
-    public ResponseEntity<?> myInfo(@RequestHeader("Authorization") String token){
-        if(token == null || !token.startsWith("Bearer")){
+    public ResponseEntity<?> myInfo(@RequestHeader(value = "Authorization",required = false) String token){
+        if(token == null || !token.startsWith("Bearer ")){
             return ResponseEntity.ok(false);
         }
         token = token.replace("Bearer ","");
