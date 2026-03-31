@@ -65,36 +65,13 @@ public class SafeRouteService {
         );
     }
 
-    // 로그를 후기(평점)제외하고 저장하고 lodId를 반환하는 함수 --> API 명세서에 추가해야함
-    public Long saveRouteLog(RouteResponseDto originRoute, int safety_score ){
 
 
-        // SaveLogDto로 변환
-        SaveLogDto saveLog = originRoute.toSaveLogDto();
-        log.info("saveLogDto = {}", saveLog);
-        saveLog.setSafetyScore(safety_score); //안전 점수 추가
-
-        // 로그 1차 저장 후 로그 Id 받아오기
-        Long logId = routeLogSaveSvc.createRouteLog(saveLog);
-        // 로그Id 경로까지 저장 후 잘 저장되었는지 반환하기 ( 로그 아이디와, 경로 배열을 반환)
-        List<RoutePointDto> safeRoutePoints = originRoute.getRoutePoints();
-        boolean result = routeLogSaveSvc.saveLogRoute( logId, safeRoutePoints );
-
-        if(result) return logId; // 경로 저장까지 성공 시 로그아이디 반환
-        else return 0L; // 실패시 0L 반환
-    }
-
-    // 로그를 저장하고 빌드하여 응답객체를 반환
+    // 빌드하여 응답객체를 반환
     private SafeRouteResponseDto buildResponse(RouteResponseDto route, RouteResponseDto originRoute, int safetyScore){
-        Long logId = saveRouteLog(originRoute, safetyScore);
-        if (logId == 0L) { // 예외처리
-            throw new LogSaveException("log_id is 0L");
-        }
-
         return SafeRouteResponseDto.builder()
                 .detourRoute(route)
                 .safety_score(safetyScore)
-                .logId(logId)
                 .build();
     }
 
@@ -178,8 +155,8 @@ public class SafeRouteService {
 
     // 안전 점수 계산 로직: 경로(우회경로 or 기본 경로) 상의 위험지역 개수와 안전시설물의 개수를 따진다. 안전시설물은 어떤 안전시설물인지에 따라 차등을 다르게 둔다.
     private int calcSafetyScore( List<RoutePointDto> routePoints, List<SafetyFacPointDto> allSafetyFacPoints, List<RiskPointDto> allDangerPoints ){
-        // 경로에 대해서 안전 시설물과 위험시설물에 대하여 가져온다,
 
+        // 경로에 대해서 안전 시설물과 위험시설물 필터링
         List<SafetyFacPointDto> safetyFacPoints = safeFacFilterSvc.filterSafetyFacPoints(routePoints, allSafetyFacPoints);
         List<RiskPointDto> riskPoints = riskFilterSvc.filterDangerPoints(routePoints, allDangerPoints);
 
