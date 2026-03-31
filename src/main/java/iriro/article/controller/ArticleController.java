@@ -13,8 +13,5 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArticleController {
     private final ArticleService as;
 
-    @GetMapping("/find")
-    public ResponseEntity<?> getArticleFindAll(){
-        return ResponseEntity.ok(as.getArticleFindAll());
-    }
+
 }
