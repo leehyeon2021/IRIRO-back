@@ -47,6 +47,10 @@ public class BoardController {
             String realToken = token.substring(7);
             loginEmail = jwtService.getClaim(realToken);
         }
+        if (loginEmail == null){
+            System.out.println("로그인 정보 없음 : 리뷰 등록 실패");
+            return ResponseEntity.ok(false);
+        }
         boolean result = boardService.rvAdd(boardDto,loginEmail);
         return ResponseEntity.ok(result);
         }
