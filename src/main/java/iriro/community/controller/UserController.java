@@ -65,35 +65,18 @@ public class UserController {
     // 4. 마이페이지
     @GetMapping("/myinfo")
     public ResponseEntity<?> myInfo(@RequestHeader(value = "Authorization") String token) {
-
-        // [1단계] 브라우저에서 보낸 토큰이 서버에 잘 도착했는지 확인
-        System.out.println("로그 1 (전달받은 토큰): " + token);
-
         if (token == null || !token.startsWith("Bearer")) {
-            System.out.println("로그 1-1: 토큰이 없거나 Bearer 형식이 아님!"); // 거름망 확인
             return ResponseEntity.ok(false);
         }
-
         token = token.replace("Bearer ", "");
-
-        // [2단계] 토큰을 해독해서 이메일(아이디)을 잘 꺼냈는지 확인
         String email = jwtService.getClaim(token);
-        System.out.println("로그 2 (추출된 이메일): " + email);
-
         if (email == null) {
-            System.out.println("로그 2-1: 토큰 해독 실패 (이메일 없음)");
             return ResponseEntity.ok(false);
         }
-
-        // [3단계] DB에서 회원 정보를 잘 가져왔는지 확인
         UserDto result = userService.myInfo(email);
-        System.out.println("로그 3 (DB 조회 결과): " + result);
-
         if (result == null) {
-            System.out.println("로그 3-1: DB에 해당 이메일의 회원이 없음");
             return ResponseEntity.status(404).body("회원 정보가 없습니다.");
         }
-
         return ResponseEntity.ok(result);
     }
 }
