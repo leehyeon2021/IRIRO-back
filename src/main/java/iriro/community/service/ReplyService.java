@@ -24,41 +24,25 @@ public class ReplyService {
     private final BoardRepository boardRepository;
 
     // 1. 댓글 등록
+
     public boolean rpAdd(ReplyDto replyDto,String loginEmail) {
-        // 모두 글쓰자
-        // dto ---> entity 변환
+        if(loginEmail==null)return false;
+        UserEntity userEntity = userRepository.findByEmail(loginEmail).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         ReplyEntity saveEntity = replyDto.toEntity();
-
-        // 유저 엔티티를 담을 변수
-        UserEntity userEntity;
-
-        Optional<UserEntity> entityOptional = userRepository.findByEmail(loginEmail);
-        if (entityOptional.isPresent()) { // 로그인한 사용자 발견
-            userEntity = entityOptional.get();
-
-            // 찾은 유저를 댓글에 연결
-            saveEntity.setUserEntity((userEntity));
-            ReplyEntity savedEntity = replyRepository.save(saveEntity); // entity 저장
-            return savedEntity.getReplyId() > 0;
-        }
-        return false;
+        saveEntity.setUserEntity((userEntity));
+        // 찾은 유저를 댓글에 연결
+        ReplyEntity savedEntity = replyRepository.save(saveEntity); // entity 저장
+        return savedEntity.getReplyId() > 0;
     }
 
     // 2. 댓글 삭제
     public boolean rpDelete(Integer replyId , String loginEmail){
-    Optional<ReplyEntity> replyOptional = replyRepository.findById(replyId);
-    if(replyOptional.isPresent()){
-        ReplyEntity reply = replyOptional.get();
-        if(     reply.getUserEntity() != null && // .getUserEntity()가 null일 수도 있으니까ㅣ
-                reply.getUserEntity().getEmail().equals(loginEmail)){
-            replyRepository.deleteById(replyId);
-            return true;
+        ReplyEntity reply = replyRepository.findById(replyId).orElse(null);
+        if(reply == null)return false;
+        if(reply.getUserEntity() == null || !reply.getUserEntity().getEmail().equals(loginEmail)){
+            return false;
         }
+        replyRepository.deleteById(replyId);
+        return true;
     }
-    return false;
-    }
-
-
-
-
 }

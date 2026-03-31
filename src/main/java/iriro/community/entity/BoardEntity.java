@@ -53,6 +53,7 @@ public class BoardEntity extends BaseTime {
                 .userId(this.userEntity != null ? this.userEntity.getUserId() : null)
                 // userEntity가 비어있지 않으면 아이디를 꺼내고, 비어있으면 null을 넣어라!
                 .logId(this.locationlogEntity.getLogId())
+                .nickname(this.userEntity.getNickname())
                 .boardTitle(this.boardTitle)
                 .boardContent(this.boardContent)
                 .recommendCount(this.recommendCount)

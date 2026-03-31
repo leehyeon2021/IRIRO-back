@@ -3,20 +3,23 @@ package iriro.community.service;
 import iriro.community.dto.BoardDto;
 import iriro.community.dto.UserDto;
 import iriro.community.entity.BoardEntity;
+import iriro.community.entity.ReplyEntity;
 import iriro.community.entity.UserEntity;
 import iriro.community.repository.BoardRepository;
 import iriro.community.repository.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserService {
 
 
@@ -47,7 +50,7 @@ public class UserService {
             UserEntity userEntity = optionalUser.get();
             // 비크립트 암호화로 평문과 암호화문 비교, passwordEncoder.matches( 평문 , 암호문 );
             boolean result = passwordEncoder.matches(loginDto.getPwToken(), userEntity.getPwToken());
-            if( result == true ){ return true; } // 로그인 성공
+            if( result ){ return true; } // 로그인 성공
             else{ return false; } // 로그인 실패(패스워드 다를 때)
         }
         // 3] 없으면 로그인 실패(아이디 없을 때)
@@ -55,5 +58,13 @@ public class UserService {
 
     }
 
+    // 마이페이지
+    @Transactional
+    public UserDto myInfo(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email).orElse(null);
+
+        if(userEntity == null){return null;}
+        return userEntity.toDto(); // Dto 알맹이만 반환
+    }
 
 }
