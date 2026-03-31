@@ -78,17 +78,19 @@ public class BoardController {
     // http://localhost:8080/board/rvdelete?boardId=11
     @DeleteMapping("/rvdelete")
     @Transactional
-    public ResponseEntity<?> rvDelete(@RequestParam Integer boardId , HttpServletRequest request){
-        // 요청헤더에서 Authorization 토큰 꺼내기.
-        String token = request.getHeader("Authorization");
-        // 2. JWTService를 이용해 토큰 안의 이메일 추출
-        String loginEmail = jwtService.getClaim(token);
-
-        // 서비스한테 삭제하라고 고함지름
+    public ResponseEntity<?> rvDelete(@RequestParam Integer boardId ,
+                                      @RequestHeader(value="Authorization",required = false)String token){
+        if (token == null || !token.startsWith("Bearer ")){
+            return ResponseEntity.ok(false);
+        }
+        String realToken = token.replace("Bearer ","");
+        String loginEmail = jwtService.getClaim(realToken);
+        if(loginEmail==null){
+            return ResponseEntity.ok(false);
+        }
         boolean result = boardService.rvDelete(boardId,loginEmail);
         return ResponseEntity.ok(result);
-
-    }
+        }
 
     // 6. 글 추천
     // http://localhost:8080/board/ddabong?boardId=10
