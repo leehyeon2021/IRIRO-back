@@ -30,6 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'            // 8. HTTP요청 라이브러리
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.21.1'  // 9. XML 파싱
     implementation 'org.springframework.security:spring-security-crypto:6.4.4'       // 10. 비크립트
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // DTO유효성 검사
 
     // JWT 라이브러리
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'

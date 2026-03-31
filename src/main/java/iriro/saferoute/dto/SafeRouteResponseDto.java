@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor @Data @Builder
 public class SafeRouteResponseDto {
     private RouteResponseDto detourRoute; //경유지 우회 경로
-    private Integer safety_score;
+    private Integer safety_score; //안전 점수
+    private Long logId; // 저장된 로그 id 반환
 
 //    public SaveLogDto toSaveLogDto(){
 //        return SaveLogDto.builder()

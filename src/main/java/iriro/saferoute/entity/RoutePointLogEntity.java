@@ -31,5 +31,5 @@ public class RoutePointLogEntity{
     private BigDecimal longitude;
 
     @Column(nullable = false)
-    private Long sequence;
+    private Integer sequence;
 }

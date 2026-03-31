@@ -3,10 +3,7 @@ package iriro.saferoute.entity;
 import iriro.common.entity.BaseTime;
 import iriro.community.entity.UserEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
@@ -43,10 +40,15 @@ public class LocationlogEntity extends BaseTime {
     private BigDecimal endLongitude;
 
     @Column(nullable = false)
-    private Integer safetyScore;
+    private Integer total_time;
 
     @Column(nullable = false)
-    private Integer rating;
+    private Integer total_distance;
+
+    @Column(nullable = false)
+    private Integer safetyScore;
+
+    private Integer rating; // (처음엔 null 그 다음엔 업데이트)
 
     // 생성 일자만 엔티티 생성
     @CreatedDate
