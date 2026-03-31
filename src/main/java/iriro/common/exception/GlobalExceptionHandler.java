@@ -3,6 +3,7 @@ package iriro.common.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException; // DTO 검증 실패 시 던지는 예외
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("저장에 실패했습니다.");
+                .body("로그 저장에 실패했습니다.");
     }
 
     // 이메일을 못찾았을 때 예외처리
@@ -41,6 +42,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body("해당 이메일이 없습니다.");
+    }
+    // DTO 유효성 검증 실패
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException e) {
+
+        String message = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .map(error -> error.getDefaultMessage())
+                .orElse("잘못된 요청입니다.");
+
+        log.error("유효성 검증 실패: {}", message, e);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(message);
     }
 
     // 에상치 못한 예외처리
