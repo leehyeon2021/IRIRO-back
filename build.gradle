@@ -24,9 +24,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'                                           // 3. Lombok
     annotationProcessor 'org.projectlombok:lombok'                                   // 3. Lombok
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'           // 4. JPA
-    implementation 'org.jsoup:jsoup:1.21.2'                                          // 5. Jsoup (정적 페이지)
-    implementation 'org.seleniumhq.selenium:selenium-java:4.35.0'                    // 6. Selenium셀레니움 (동적 페이지 크롤링)
-    implementation 'io.github.bonigarcia:webdrivermanager:6.3.1'                     // 7. Selenium셀레니움 (크롬 브라우저 조작)
+    implementation 'org.jsoup:jsoup:1.21.2'                                          // 5. Jsoup
+    implementation 'org.seleniumhq.selenium:selenium-java:4.35.0'                    // 6. Selenium
+    implementation 'io.github.bonigarcia:webdrivermanager:6.3.1'                     // 7. Selenium
     implementation 'org.springframework.boot:spring-boot-starter-webflux'            // 8. HTTP요청 라이브러리
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.21.1'  // 9. XML 파싱
     implementation 'org.springframework.security:spring-security-crypto:6.4.4'       // 10. 비크립트
