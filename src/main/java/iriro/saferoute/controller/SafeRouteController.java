@@ -27,9 +27,7 @@ public class SafeRouteController {
     public ResponseEntity<?> test2(@RequestBody RouteRequestDto routeRequestDto){
         SafeRouteResponseDto result = safeRouteSvc.getSafeRoute(routeRequestDto);
         if(result != null){
-            Long logId = routeLogSaveSvc.createRouteLog(null);
-            routeLogSaveSvc.saveLogRoute(logId, result.getDetourRoute().getRoutePoints());
-            return ResponseEntity.ok( result );
+            return ResponseEntity.ok( result ); // 반환 성공
         }
         return ResponseEntity.ok( false ); // 반환 실패
     }
