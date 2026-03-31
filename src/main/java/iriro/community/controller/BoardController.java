@@ -82,7 +82,7 @@ public class BoardController {
     }
 
     // 5. 글 추천
-    // http://localhost:8080/board/ddabong
+    // http://localhost:8080/board/ddabong?boardId=10
     @PostMapping("/ddabong")
     public boolean ddabong(@RequestParam Integer boardId){return boardService.ddabong(boardId); }
 }
