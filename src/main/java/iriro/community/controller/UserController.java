@@ -31,7 +31,7 @@ public class UserController {
         return ResponseEntity.ok(userService.join(joinDto));
     }
 
-    // 2. 로그인 Get //  세션->토큰 변경
+    // 2. 로그인
     @PostMapping("/login")
     // http://localhost:8080/user/login
     // { "email" : "soso@naver.com","pwToken" : "1234"}
