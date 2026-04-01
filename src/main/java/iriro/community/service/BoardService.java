@@ -29,8 +29,8 @@ public class BoardService {
     private final UserRepository userRepository;
 
     // 1. 리뷰 등록 (회원만 가능)
+    @Transactional
     public boolean rvAdd(BoardDto boardDto, String loginEmail) {
-
         // 비회원이면 글쓰기 거절
         if (loginEmail == null) return false;
 
