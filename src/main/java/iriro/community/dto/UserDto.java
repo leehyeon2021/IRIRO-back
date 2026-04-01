@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,8 +25,10 @@ public class UserDto {
 
 
     // 내가 쓴 글 목록 , 댓글 목록 담을 칸
-    private List<BoardDto> myBoards;
-    private List<ReplyDto> myReplies;
+    @Builder.Default
+    private List<BoardDto> myBoards = new ArrayList<>();
+    @Builder.Default
+    private List<ReplyDto> myReplies = new ArrayList<>();
 
     // + Dto --> Entity 변환 // 사용자가 직접 입력한 데이터만.
     public UserEntity toEntity(){
