@@ -62,7 +62,7 @@ public class BoardController {
     }
 
     // 3. 리뷰 상세 조회
-    // http://localhost:8080/board/all/detail?boardId=1
+    // http://localhost:8080/board/detail?boardId=1
     @GetMapping("/detail")
     public BoardDto rvView(@RequestParam Integer boardId){
         return boardService.rvView(boardId);
@@ -74,7 +74,7 @@ public class BoardController {
 //        return ResponseEntity.ok(boardService.rvUpdate(boardId,request));
 //    }
 
-    // 5. 리뷰 개별 삭제 (회원)
+    // 5. 리뷰 개별 삭제
     // http://localhost:8080/board/rvdelete?boardId=11
     @DeleteMapping("/rvdelete")
     @Transactional
