@@ -28,7 +28,7 @@ public class ReplyController {
         // 기본값=비회원 이메일
         String loginEmail = "test@gmail.com";
 
-        if(token != null && !token.startsWith("Bearer ")) {
+        if(token != null && token.startsWith("Bearer ")) {
             String realToken = token.replace("Bearer ", "");
             String realEmail = jwtService.getClaim(realToken);
             if (realEmail != null) {
