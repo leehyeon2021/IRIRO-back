@@ -1,17 +1,12 @@
 package iriro.community.controller;
 
-import iriro.community.dto.BoardDto;
 import iriro.community.dto.UserDto;
 import iriro.community.service.JWTService;
 import iriro.community.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
