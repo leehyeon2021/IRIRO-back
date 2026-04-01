@@ -28,6 +28,7 @@ public class BoardController {
     // Authorization
     // Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNvc29AbmF2ZXIuY29tIiwiaWF0IjoxNzc0NTA5MzI1LCJleHAiOjE3NzQ1OTU3MjV9.olTdmXyDEL9amHExge5VC8VdwSruWt7Q0ia4q7VcB58
     //  { "boardTitle" : "테스트제목", "boardContent" : "테스트내용", "logId" : 1 }
+    // { "boardTitle" : "회원만 쓸 수 있다능", "boardContent" : "회원이 씀", "logId" : 1 }
     @PostMapping("/rvwrite")
     public ResponseEntity<?> rbAdd(@RequestBody BoardDto boardDto ,
                                    @RequestHeader(value = "Authorization",required = false)String token) {

@@ -36,9 +36,9 @@ public class ReplyEntity extends BaseTime {
     public ReplyDto toDto(){
         return ReplyDto.builder()
                 .replyId(this.replyId)
-                .userId(this.getUserEntity().getUserId())
-                .boardId(this.getBoardEntity().getBoardId())
-                .nickname(this.getUserEntity().getNickname())
+                .userId(this.userEntity.getUserId())
+                .boardId(this.boardEntity.getBoardId())
+                .nickname(this.userEntity.getNickname())
                 .replyContent(this.replyContent)
                 .createdAt(this.getCreatedAt().toString())
                 .updatedAt(this.getUpdatedAt().toString())
