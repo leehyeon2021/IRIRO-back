@@ -39,9 +39,18 @@ public class ReplyService {
     }
 
     // 2. 댓글 삭제
+    @Transactional
     public boolean rpDelete(Integer replyId , String loginEmail){
         ReplyEntity reply = replyRepository.findById(replyId).orElse(null);
+
         if(reply == null)return false;
+
+        // 비회원은 삭제 불가능
+        if(loginEmail.equals("iriro@google.com")){
+            System.out.println("비회원 댓글은 삭제가 불가능합니다.");
+            return false;
+        }
+        // 작성자 본인 확인
         if(reply.getUserEntity() == null || !reply.getUserEntity().getEmail().equals(loginEmail)){
             return false;
         }
