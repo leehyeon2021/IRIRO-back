@@ -33,10 +33,10 @@ public class CrawlingService {
             driver.get(searchUrl);
 
             // 검색 결과 나올 때까지 대기
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".newslist > li > di")));
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("")));
 
             // 기사 목록 가져오기
-            List<WebElement> articles = driver.findElements(By.cssSelector(""));
+            List<WebElement> articles = driver.findElements(By.cssSelector(".newslist > li > di"));
 
             //
 
