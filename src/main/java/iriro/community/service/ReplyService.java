@@ -24,13 +24,16 @@ public class ReplyService {
     private final BoardRepository boardRepository;
 
     // 1. 댓글 등록
-
+    @Transactional
     public boolean rpAdd(ReplyDto replyDto,String loginEmail) {
         if(loginEmail==null)return false;
         UserEntity userEntity = userRepository.findByEmail(loginEmail).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        BoardEntity boardEntity = boardRepository.findById(replyDto.getBoardId()).orElseThrow(()->new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
         ReplyEntity saveEntity = replyDto.toEntity();
+
         saveEntity.setUserEntity((userEntity));
-        // 찾은 유저를 댓글에 연결
+        saveEntity.setBoardEntity(boardEntity);
         ReplyEntity savedEntity = replyRepository.save(saveEntity); // entity 저장
         return savedEntity.getReplyId() > 0;
     }
