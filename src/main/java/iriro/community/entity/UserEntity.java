@@ -8,6 +8,8 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ch.qos.logback.classic.spi.ThrowableProxyVO.build;
+
 
 @Entity
 @Table( name = "users")
@@ -40,19 +42,33 @@ public class UserEntity extends BaseTime {
     private List<BoardEntity> boardList = new ArrayList<>();
 
     // 댓글
-    @OneToMany(mappedBy = "")
-    private List<ReplyEntity> replies;
+    @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @ToString.Exclude
+    private List<ReplyEntity> replies = new ArrayList<>();
 
 
     // Entity --> Dto 변환함수 // 생고기에서 플레이팅 접시용으로 바꾸는 거야~
     public UserDto toDto(){
+
         return UserDto.builder()
                 .userId(this.userId)
                 .email(this.email)
                 // 비밀번호는 소중하니까 불포함한다.
                 .nickName(this.nickname)
-                .createAt( this.getCreatedAt().toString())
-                .updateAt( this.getUpdatedAt().toString())
+                .createAt(this.getCreatedAt().toString())
+                .updateAt(this.getUpdatedAt().toString())
+                .myBoards(this.boardList != null ?
+                        this.boardList.stream()
+                                .map(board->board.toDto())
+                                .toList()
+                        : new ArrayList<>())
+                .myReplies(this.replies != null ?
+                        this.replies.stream()
+                                .map(reply->reply.toDto())
+                                .toList()
+                        : new ArrayList<>())
+
                 .build();
     }
 
