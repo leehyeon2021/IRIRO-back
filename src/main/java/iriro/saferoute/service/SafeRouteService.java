@@ -25,8 +25,8 @@ public class SafeRouteService {
     private final SafeFacFilterService safeFacFilterSvc; // 안전 지역 필터 서비스
     private final DetourRouteService detourRouteSvc; // 우회 경로 서비스
     private final RouteLogSaveService routeLogSaveSvc;
-    private final CrimeRoadRepository crimeRoadRepository;
-    private final FacilitySafeRepository facilitySafeRepository;
+    private final CrimeRoadRepository crimeRoadRepo;
+    private final FacilitySafeRepository facilitySafeRepo;
 
     // boundingBox를 만드는 함수 .. 1차 필터링
     public BboxDto createBox(List<RoutePointDto> routePoints){
@@ -84,13 +84,13 @@ public class SafeRouteService {
         // 위험 지역을 DB에서 조사해 1차 필터링을 거친 값들만 리스트로 변환하여 가져옴. --> 추후 JPA활용하여 처리
 
         BboxDto bbox = createBox(routePoints);
-        //지금은 위험지역 샘플을 가져오지만 조회를 통해 가져옴 테스트 리스트 -> 추후에 삭제
-        List<SafetyFacPointDto> allSafetyPoints = facilitySafeRepository.findAllInBoundingBox(
+        // DB에서 안전과 위험 경로 가져오기(경로의 범위 안)
+        List<SafetyFacPointDto> allSafetyPoints = facilitySafeRepo.findAllInBoundingBox(
                 BigDecimal.valueOf(bbox.getMinLat()), BigDecimal.valueOf(bbox.getMaxLat()),
                 BigDecimal.valueOf(bbox.getMinLng()), BigDecimal.valueOf(bbox.getMaxLng()))
                 .stream().map(FacilitySafeEntity::toSafetyFacPointDto).toList(); // 해당 엔티티를 SafetyFacPoint로 변경
 
-        List<RiskPointDto> allDangerPoints = crimeRoadRepository.findAllInBoundingBox(
+        List<RiskPointDto> allDangerPoints = crimeRoadRepo.findAllInBoundingBox(
                 BigDecimal.valueOf(bbox.getMinLat()), BigDecimal.valueOf(bbox.getMaxLat()),
                 BigDecimal.valueOf(bbox.getMinLng()), BigDecimal.valueOf(bbox.getMaxLng()))
                 .stream().map(CrimeRoadEntity::toRiskPointDto).toList();
