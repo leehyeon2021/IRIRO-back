@@ -9,18 +9,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
-
-    @Autowired // 주방장을 불러오거라
     private final UserService userService;
     private final JWTService jwtService; // * 토큰
 
     // 1. 회원가입 post = create = save
     @PostMapping("/join")
-    // http://localhost:8080/user/join
+    // http://localhost:8080/api/user/join
     // { "email" : "soso@naver.com","pwToken" : "1234","nickName" : "박진감"}
     public ResponseEntity<?> join(@RequestBody UserDto joinDto) {
         return ResponseEntity.ok(userService.join(joinDto));
@@ -28,7 +27,7 @@ public class UserController {
 
     // 2. 로그인
     @PostMapping("/login")
-    // http://localhost:8080/user/login
+    // http://localhost:8080/api/user/login
     // { "email" : "soso@naver.com","pwToken" : "1234"}
     // Content-Type : application/json
     public ResponseEntity<?> login(@RequestBody UserDto loginDto) {
@@ -50,7 +49,7 @@ public class UserController {
 
     // 3. 로그아웃 Get
     @GetMapping("/logout")
-    // http://localhost:8080/user/logout?userId=11
+    // http://localhost:8080/api/user/logout?userId=11
     public ResponseEntity<?> logout() {
         // 서버는 할 게 없지만 프론트에게 지워도 된다고 신호를 줌...
         return ResponseEntity.ok(true);
@@ -58,6 +57,7 @@ public class UserController {
 
 
     // 4. 마이페이지
+    // http://localhost:8080/api/user/myinfo
     @GetMapping("/myinfo")
     public ResponseEntity<?> myInfo(@RequestHeader(value = "Authorization") String token) {
         if (token == null || !token.startsWith("Bearer")) {
