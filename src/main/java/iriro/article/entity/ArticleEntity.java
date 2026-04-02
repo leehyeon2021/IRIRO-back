@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class ArticleEntity {
+public class ArticleEntity extends BaseTime{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer articleId;
@@ -33,10 +33,15 @@ public class ArticleEntity {
     private String articleSite;
     @Column(columnDefinition = "text")
     private String articleKeyword;
+    @Column(name = "article_district")
+    private String articleDistrict;
 
     public ArticleDto toDto(){
         return ArticleDto.builder()
-                .articleId(this.articleId).articleTitle(this.articleTitle).articleDate(this.articleDate).articleContent(this.articleContent).articleUrl(this.articleUrl).articleWriter(this.articleWriter).articlePic(this.articlePic).articleSite(this.articleSite).articleKeyword(this.articleKeyword)
+                .articleId(this.articleId).articleTitle(this.articleTitle).articleDate(this.articleDate)
+                .articleContent(this.articleContent).articleUrl(this.articleUrl).articleWriter(this.articleWriter)
+                .articlePic(this.articlePic).articleSite(this.articleSite).articleKeyword(this.articleKeyword)
+                .articleCreatedAt(getArticleCreatedAt().toString())
                 .build();
     }
 }
