@@ -12,6 +12,13 @@ public class ArticleService {
 
     // 저장
     public void saveToDb(String title, String url, String content, String siteName, String district, String keyword, String date, String writer, String pic) {
+
+        // URL 중복 체크
+        if (articleRepository.existsByArticleUrl(url)) {
+            System.out.println("이미 저장된 기사 건너뜀: " + title);
+            return;
+        }
+
         // DB 글자 수 제한 지키기
         String safeTitle = title.length() > 95 ? title.substring(0, 95) + "..." : title;
         String safeSite = siteName.length() > 10 ? siteName.substring(0, 10) : siteName;
