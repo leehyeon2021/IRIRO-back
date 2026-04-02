@@ -1,8 +1,9 @@
 package iriro.saferoute.controller;
 
 
-import iriro.saferoute.dto.SaveLogDto;
+import iriro.saferoute.dto.RouteRatingRequestDto;
 import iriro.saferoute.service.RouteLogSaveService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,9 @@ public class RouteLogSaveController {
     private final RouteLogSaveService routeLogSaveSvc;
 
     // 후기 저장
-    @PostMapping("/savelog")
-    public ResponseEntity<?> saveLog(@RequestParam Long logId, @RequestParam Integer rating){
-        return ResponseEntity.ok( routeLogSaveSvc.updateLogReview(logId, rating));
+    @PatchMapping("/saverating")
+    public ResponseEntity<?> saveRating(@Valid @RequestBody RouteRatingRequestDto routeRatingRequest){
+        routeLogSaveSvc.updateLogRating(routeRatingRequest);
+        return ResponseEntity.ok( true );
     }
 }

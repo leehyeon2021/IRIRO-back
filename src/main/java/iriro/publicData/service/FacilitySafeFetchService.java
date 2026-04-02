@@ -6,12 +6,14 @@ import iriro.publicData.repository.FacilitySafeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
 
-@Service @RequiredArgsConstructor @Transactional
+@Service
+@RequiredArgsConstructor
 public class FacilitySafeFetchService {
 
     // 안심지킴이집
@@ -31,6 +33,7 @@ public class FacilitySafeFetchService {
     private final GeocodingService gs;
 
     // 안심지킴이집(List) 저장 (700여 개)
+    @Transactional
     public boolean fetchSafeHouse(){
         int numOfRows = 500;
         int totalCount = 0;
@@ -43,21 +46,24 @@ public class FacilitySafeFetchService {
 
         try{ // 전체 개수 찾기
             for(int page=1;page<=totalPages;page++){
+                int pageNo = page;
                 // 서비스키 주소에 넣기
-                String uri = safeHouseUrl
-                        + "?serviceKey=" + pubServiceKey
-                        + "&pageNo=" + page
-                        + "&numOfRows=" + numOfRows
-                        + "&type=JSON"
-                        + "&ctprvnNm=서울특별시";
                 // 요청할 API 주소 넣기 webClient
                 Map<String,Object> response = webClient.get()
-                        .uri(uri)
-                        .retrieve() // 반환타입
-                        .bodyToMono(Map.class)
+                        .uri(uriBuilder -> uriBuilder
+                                .path(safeHouseUrl)
+                                .queryParam("serviceKey",pubServiceKey)
+                                .queryParam("pageNo",pageNo)
+                                .queryParam("numOfRows",numOfRows)
+                                .queryParam("type","JSON")
+                                .queryParam("ctprvnNm","서울특별시")
+                                .build()
+                        )
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>(){})
                         .block();
 
-                // 열어
+                // 열기
                 Map<String,Object> responseInner = (Map<String, Object>) response.get("response");
                 Map<String,Object> body = (Map<String, Object>) responseInner.get("body");
 
@@ -68,7 +74,7 @@ public class FacilitySafeFetchService {
                     totalPages = (totalCount+numOfRows-1)/numOfRows;
                 }
 
-                // item 저장(List임)
+                // item 저장(List)
                 List<Map<String,Object>> itemList = (List<Map<String, Object>>) body.get("items");
 
                 // 저장
@@ -86,7 +92,7 @@ public class FacilitySafeFetchService {
                     // 비교 위한 저장
                     deleteCheck.add(facName+facAdd);
 
-                    // DB에 있나요
+                    // DB 확인
                     Optional<FacilitySafeEntity> exists = fr.findByFacNameAndFacAdd( facName, facAdd );
                     if(exists.isPresent()){
                         FacilitySafeEntity exist = exists.get();
@@ -122,6 +128,7 @@ public class FacilitySafeFetchService {
     }
 
     // 경찰서 저장 (3000여 개 중 서울은 400여 개)
+    @Transactional
     public boolean fetchPoliceStation() {
         int numOfRows = 100;
         int totalCount = 0;
@@ -134,29 +141,30 @@ public class FacilitySafeFetchService {
 
         try {
             for (int page = 1; page <= totalPages; page++) {
-
-                String uri = policeUrl
-                        + "?serviceKey=" + adminServiceKey
-                        + "&pageNo=" + page
-                        + "&numOfRows=" + numOfRows
-                        + "&returnType=json";
+                int pageNo = page;
 
                 Map<String, Object> response = webClient.get()
-                        .uri(uri)
+                        .uri(uriBuilder -> uriBuilder
+                                .path(policeUrl)
+                                .queryParam("serviceKey", adminServiceKey)
+                                .queryParam("pageNo", pageNo)
+                                .queryParam("numOfRows",numOfRows)
+                                .queryParam("returnType","json")
+                                .build())
                         .retrieve()
-                        .bodyToMono(Map.class)
+                        .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>() {})
                         .block();
 
-                // 열어
+                // 열기
                 Map<String, Object> body = (Map<String, Object>) response.get("body");
-                // totalCount 가져와
+                // totalCount 가져오기
                 if (page==1){
                     totalCount=Integer.parseInt(String.valueOf(body.get("totalCount")));
                     System.out.println("totalCount: "+totalCount);
                     totalPages=(totalCount+numOfRows-1)/numOfRows;
                 }
 
-                // 더 열어
+                // 더 열기
                 Map<String, Object> items = (Map<String, Object>) body.get("items");
                 List<Map<String, Object>> itemList = (List<Map<String, Object>>) items.get("item");
 
@@ -185,7 +193,7 @@ public class FacilitySafeFetchService {
                     String xStr = (String) item.get("x");
                     String yStr = (String) item.get("y");
 
-                    // x좌표가 0 이면 지오코딩 (x없으면y도없음)
+                    // x좌표가 0 이면 지오코딩
                     double lat;  double lng;
                     if (xStr == null || xStr.equals("0")) {
                         double[] coords = gs.getCoordsKakao(facAdd);
@@ -197,15 +205,15 @@ public class FacilitySafeFetchService {
                         lng = Double.parseDouble(xStr);
                     }
 
-                    // DB에 있나요
+                    // DB 확인
                     Optional<FacilitySafeEntity> exists = fr.findByFacNameAndFacAdd(facName , facAdd);
-                    if(exists.isPresent()){         // 네
+                    if(exists.isPresent()){
                         FacilitySafeEntity exist = exists.get();
                         exist.setFacTel(facTel);
                         exist.setFacSgg(facSgg);
                         exist.setFacLat(lat);
                         exist.setFacLng(lng);
-                    }else {                         // 아니요
+                    }else {
                         fr.save(FacilitySafeEntity.builder()
                                 .facType("경찰서")
                                 .facSgg(facSgg)
@@ -231,6 +239,7 @@ public class FacilitySafeFetchService {
     }
 
     // 안전시설물(보안등,CCTV,안전벨) 저장 (8100여 개)
+    @Transactional
     public boolean fetchSafeFac(){
         int numOfRows = 500;
         int totalCount = 0;
@@ -255,16 +264,12 @@ public class FacilitySafeFetchService {
                 int endIndex = page*numOfRows;
 
                 // 주소에 넣기
-                String uri = safeFacUrl
-                        + "/" + seoulServiceKey
-                        + "/json/tbSafeReturnItem/"
-                        + startIndex + "/" + endIndex;
-
                 // 요청 API
                 Map<String,Object> response = webClient.get()
-                        .uri(uri)
+                        .uri(safeFacUrl+"/{key}/{type}/{service}/{start}/{end}",
+                                safeFacUrl, "json", "tbSafeReturnItem", startIndex, endIndex)
                         .retrieve()
-                        .bodyToMono(Map.class)
+                        .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>() {})
                         .block();
 
                 // 열기
@@ -277,7 +282,7 @@ public class FacilitySafeFetchService {
                     totalPages=(totalCount+numOfRows-1)/numOfRows;
                 }
 
-                // 더 열어 ('row')
+                // 더 열기 ('row')
                 List<Map<String,Object>> itemList = (List<Map<String, Object>>) tbSafeReturnItem.get("row");
 
                 // 저장
@@ -309,7 +314,7 @@ public class FacilitySafeFetchService {
                     String instlCnt = (String) item.get("INSTL_CNT");
                     Integer instlcut = instlCnt!=null&&!instlCnt.isEmpty() ? Integer.parseInt(instlCnt) : null;
 
-                    // DB에 있나요
+                    // DB 확인
                     Optional<FacilitySafeEntity> exists = fr.findByFacNameAndFacAdd(facName,facAdd);
                     if(exists.isPresent()){
                         FacilitySafeEntity exist = exists.get();

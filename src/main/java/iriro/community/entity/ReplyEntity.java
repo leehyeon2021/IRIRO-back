@@ -19,9 +19,6 @@ public class ReplyEntity extends BaseTime {
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Integer replyId;
 
-    @Column( columnDefinition = "longtext" )
-    private String replyContent;
-
     // 회원번호(FK)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn( name = "user_id")
@@ -32,6 +29,8 @@ public class ReplyEntity extends BaseTime {
     @JoinColumn( name = "board_id")
     private BoardEntity boardEntity;
 
+    @Column( columnDefinition = "longtext" )
+    private String replyContent;
 
     // Entity --> Dto 변환
     public ReplyDto toDto(){
@@ -39,6 +38,7 @@ public class ReplyEntity extends BaseTime {
                 .replyId(this.replyId)
                 .userId(this.getUserEntity().getUserId())
                 .boardId(this.getBoardEntity().getBoardId())
+                .nickname(this.getUserEntity().getNickname())
                 .replyContent(this.replyContent)
                 .createdAt(this.getCreatedAt().toString())
                 .updatedAt(this.getUpdatedAt().toString())

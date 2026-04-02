@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data@NoArgsConstructor@AllArgsConstructor@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
 public class FacilitySafeDto {
     private Integer facId;
     private String facType;
@@ -18,10 +21,4 @@ public class FacilitySafeDto {
     private Integer facCount;
     private String facUse;
     private String facTel;
-
-    public FacilitySafeEntity toEntity(){
-        return FacilitySafeEntity.builder()
-                .facId(this.facId).facType(this.facType).facSgg(this.facSgg).facName(this.facName).facAdd(this.facAdd).facLat(this.facLat).facLng(this.facLng).facCount(this.facCount).facUse(this.facUse).facTel(this.facTel)
-                .build();
-    }
 }

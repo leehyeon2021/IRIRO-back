@@ -1,5 +1,6 @@
 package iriro.saferoute.service;
 
+import iriro.common.exception.ExternalApiException;
 import iriro.saferoute.dto.DetourWayPointDto;
 import iriro.saferoute.dto.RoutePointDto;
 import iriro.saferoute.dto.RouteRequestDto;
@@ -84,15 +85,15 @@ public class TmapRouteService { //Tmap API 연결
 
     // response에 대한 처리(원하는 값만 가져오기)
     private RouteResponseDto buildRouteResponse(Map<String, Object> response, RouteRequestDto routeRequestDto){
-        if (response == null) {
-            throw new RuntimeException(("TMAP 응답이 없습니다."));
+        if (response == null) { // 사용자에게 바로 보이게끔 되어 있음 -> 고쳐야 함
+            throw new ExternalApiException("TMAP 응답이 null입니다.");
         }
 
         // 경로 배열은 Feature -> geometry -> LineString -> coordinates에 있음
         // 3. 응답에서 features 추출
         Object featuresObj = response.get("features");
-        if (!(featuresObj instanceof List<?> features)) {
-            throw new RuntimeException("TMAP 응답에 features가 없습니다.");
+        if (!(featuresObj instanceof List<?> features)) { // 사용자에게 바로 보이게끔 되어 있음 -> 고쳐야 함
+            throw new ExternalApiException("TMAP 응답에 features가 없습니다.");
         }
 
         List<RoutePointDto> routePoints = new ArrayList<>();

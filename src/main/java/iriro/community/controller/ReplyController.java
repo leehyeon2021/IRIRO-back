@@ -1,20 +1,13 @@
 package iriro.community.controller;
 
 import iriro.community.dto.ReplyDto;
-import iriro.community.entity.ReplyEntity;
-import iriro.community.repository.ReplyRepository;
 import iriro.community.service.JWTService;
 import iriro.community.service.ReplyService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +20,7 @@ public class ReplyController {
 
     // 1. 댓글 등록
     // http://localhost:8080/board/rpwrite
+    // Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNvc29AbmF2ZXIuY29tIiwiaWF0IjoxNzc0OTM3NjY1LCJleHAiOjE3NzUwMjQwNjV9.e2i3Yl9CpiEjvSH-uAwxy1pINyKvrbzHt0XNGwPS7Ws
     // { "replyContent" : "박진감보고싶습니감ㅠㅠ" , "boardId" : 2 }
     @PostMapping("/rpwrite")
     public ResponseEntity<?> rpAdd(@RequestBody ReplyDto replyDto, @RequestHeader("Authorization")String token) {
@@ -35,9 +29,12 @@ public class ReplyController {
 
         String loginEmail = null;
 
-        if(token != null && token.startsWith("Bearer")) {
-            String realToken = token.substring(7);
+        if(token != null && token.startsWith("Bearer ")) {
+            String realToken = token.replace("Bearer ","");
             loginEmail = jwtService.getClaim(realToken);
+        }
+        if(loginEmail == null){
+            return ResponseEntity.ok(false);
         }
         boolean result = replyService.rpAdd(replyDto, loginEmail);
         return ResponseEntity.ok(result);

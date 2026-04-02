@@ -2,19 +2,25 @@ package iriro.publicData.controller;
 
 import iriro.publicData.service.CrimeRoadFetchService;
 import iriro.publicData.service.FacilitySafeFetchService;
+import iriro.publicData.service.RefreshAllDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequiredArgsConstructor @RestController
+@RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class TestController {
     private final CrimeRoadFetchService cf;
     private final FacilitySafeFetchService ff;
+    private final RefreshAllDataService rf;
 
     // 저장 기능을 테스트하기 위한 컨트롤러입니다.
+
+    @GetMapping("/test5")
+    public ResponseEntity<Boolean> test5(){return ResponseEntity.ok(rf.refreshAllData()); }
 
     // 위험 도로
     @GetMapping("/test1/cri")

@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -12,8 +14,13 @@ import java.util.Date;
 
 @Service
 public class JWTService {
-    private String secret = "qkrwlsrkatkfkdgoqkrwlsrkatkfkdgoqkrwlsrkatkfkdgo";
-    private Key secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // 비밀키 생성
+    @Value("${jwt.secret}")
+    private String secret;
+    private Key secretKey;
+    @PostConstruct
+    public void init(){this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));}// 비밀키 생성
+
+
     // [1] 토큰 발급
     public String createToken(String email) {
         String token = Jwts.builder()

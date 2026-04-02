@@ -10,10 +10,15 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Entity @Table(name = "facility_safe")
-@NoArgsConstructor @AllArgsConstructor @Data @Builder
+@Entity
+@Table(name = "facility_safe")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 public class FacilitySafeEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "fac_id")
     private Integer facId;
     @Column(name = "fac_type", nullable = false, length = 50)

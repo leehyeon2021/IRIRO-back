@@ -10,11 +10,15 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Entity @Table(name = "crime_road")
-@NoArgsConstructor @AllArgsConstructor
-@Data @Builder
+@Entity
+@Table(name = "crime_road")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 public class CrimeRoadEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cri_id")
     private Integer criId;
     @Column(name = "cri_zip")

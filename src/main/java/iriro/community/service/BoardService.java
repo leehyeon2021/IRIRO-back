@@ -9,12 +9,14 @@ import iriro.community.repository.BoardRepository;
 
 import iriro.community.repository.UserRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +24,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
@@ -31,27 +32,15 @@ public class BoardService {
     public boolean rvAdd(BoardDto boardDto, String loginEmail) {
 
         // 비회원이면 글쓰기 거절
-        if (loginEmail == null) {
-            System.out.println("비회원 접근 불가능 : 로그인 후 이용해주세요.");
-            return false;
-        }
-        // ============== 회원만 글쓰자 ================
-        // 1] dto --> entity 변환
-        BoardEntity saveEntity = boardDto.toEntity();
+        if (loginEmail == null) return false;
 
-        // 유저 엔티티를 담을 변수
-        UserEntity userEntity;
-
-        Optional<UserEntity> entityOptional = userRepository.findByEmail(loginEmail);
-        if (entityOptional.isPresent()) { // 로그인한 사용자 발견
-            userEntity = entityOptional.get();
-
-            // 찾은 유저를 게시물에 연결
-            saveEntity.setUserEntity((userEntity));
-            BoardEntity savedEntity = boardRepository.save(saveEntity); // 2] entity 저장한다.
-            return savedEntity.getBoardId() > 0;
-            }
-            return false;
+            return userRepository.findByEmail(loginEmail)
+                    .map(userEntity -> {
+                        BoardEntity saveEntity = boardDto.toEntity();
+                        saveEntity.setUserEntity(userEntity);
+                        return boardRepository.save(saveEntity).getBoardId() > 0;
+                    })
+                    .orElse(false);
     }
 
     // 2. 리뷰 전체 조회
@@ -78,22 +67,31 @@ public class BoardService {
         return entity.toDto(); // 엔티티 --> 디티오
     }
 
-    // 4. 리뷰 개별 삭제 (회원)
+//    // 4. 리뷰 개별 수정
+//    @Transactional
+//    public BoardDto rvUpdate(Integer boardId, BoardDto boardDto, HttpServletRequest request){
+//        BoardEntity boardEntity = boardRepository.findByIdAndUserId(boardId,email)
+//    }
+
+
+    // 5. 리뷰 개별 삭제 (회원)
+    @Transactional
     public boolean rvDelete(Integer boardId,String loginEmail) {
-        Optional<BoardEntity> boardOptional = boardRepository.findById(boardId);
-        if (boardOptional.isPresent()) {
-            BoardEntity board = boardOptional.get();
-            if (    board.getUserEntity() != null && // .getUserEntity()가 null일 수도 있으니까
-                    board.getUserEntity().getEmail().equals(loginEmail)) {
-                boardRepository.deleteById(boardId);
-                return true;
-            }
+    if(boardId==null||loginEmail==null){return false;}
+    BoardEntity board = boardRepository.findById(boardId).orElse(null);
+
+        if(board == null) {return false;}
+        if(board.getUserEntity()==null||!board.getUserEntity().getEmail().equals(loginEmail)){
+            System.out.println("경고 : 해당하는 글의 작성자가 아닙니다.");
+            return false;
         }
-        return false;
+        boardRepository.delete(board);
+        return true;
     }
 
 
     // 5. 글 추천
+    @Transactional
     public boolean ddabong(Integer boardId) {
         Optional<BoardEntity> optionalBoard = boardRepository.findById(boardId);
 

@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor @NoArgsConstructor @Data @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
 public class CrimeRoadDto {
     private Integer criId;
     private Integer criZip;
@@ -16,11 +19,4 @@ public class CrimeRoadDto {
     private Double criLat;
     private Double criLng;
     private Integer criCount;
-
-    public CrimeRoadEntity toEntity(){ // 저장 없어서 쓸 일 없을 수도
-        return CrimeRoadEntity.builder()
-                .criId(this.criId).criZip(this.criZip).criSgg(this.criSgg).criRoad(this.criRoad)
-                .criLat(this.criLat).criLng(this.criLng).criType(this.criType).criCount(this.criCount)
-                .build();
-    }
 }

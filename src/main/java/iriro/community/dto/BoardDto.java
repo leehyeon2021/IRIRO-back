@@ -12,6 +12,7 @@ public class BoardDto {
     private Integer boardId;
     private Integer userId;
     private Long logId;
+    private String nickname;
     private String boardTitle;
     private String boardContent;
     private Integer recommendCount;
