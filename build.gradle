@@ -8,6 +8,7 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 description = 'Demo project for Spring Boot'
 
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -16,6 +17,13 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }            // Spring AI 저장소 설정
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:1.1.3"                           // Spring AI 버전 관리 설정
+    }
 }
 
 dependencies {
@@ -31,23 +39,12 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.21.1'     // XML 파싱
     implementation 'org.springframework.security:spring-security-crypto:6.4.4'          // 비크립트
     implementation 'org.springframework.boot:spring-boot-starter-validation'            // DTO유효성 검사
-    implementation 'org.springframework.ai:spring-ai-google-genai-spring-boot-starter'  // Spring OpenAi
+    implementation 'org.springframework.ai:spring-ai-starter-model-google-genai'        // Spring OpenAi
 
     // JWT 라이브러리
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-}
-
-// Spring AI 설정
-repositories {
-    mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
-}
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.ai:spring-ai-bom:1.0.0-M6"
-    }
 }
 
 tasks.named('test') {
