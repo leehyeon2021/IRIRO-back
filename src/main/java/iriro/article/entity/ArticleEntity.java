@@ -33,14 +33,20 @@ public class ArticleEntity extends BaseTime{
     private String articleSite;
     @Column(columnDefinition = "text")
     private String articleKeyword;
-    @Column(name = "article_district")
+    @Column(length = 10)
     private String articleDistrict;
 
     public ArticleDto toDto(){
         return ArticleDto.builder()
-                .articleId(this.articleId).articleTitle(this.articleTitle).articleDate(this.articleDate)
-                .articleContent(this.articleContent).articleUrl(this.articleUrl).articleWriter(this.articleWriter)
-                .articlePic(this.articlePic).articleSite(this.articleSite).articleKeyword(this.articleKeyword)
+                .articleId(this.articleId)
+                .articleTitle(this.articleTitle)
+                .articleDate(this.articleDate)
+                .articleContent(this.articleContent)
+                .articleUrl(this.articleUrl)
+                .articleWriter(this.articleWriter)
+                .articlePic(this.articlePic)
+                .articleSite(this.articleSite)
+                .articleKeyword(this.articleKeyword)
                 .articleCreatedAt(getArticleCreatedAt().toString())
                 .build();
     }
