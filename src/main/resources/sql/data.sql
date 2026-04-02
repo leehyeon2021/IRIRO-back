@@ -91,4 +91,30 @@ INSERT INTO reply (reply_id, board_id, user_id, reply_content, created_at, updat
 (9, 5, 4, '저는 그 우체국 맞은편 24시 빨래방 불빛 덕분에 밤마다 안심하면서 지나갑니다 ㅋㅋ', '2026-03-19 22:45:00', '2026-03-19 22:45:00'),
 (10, 2, 3, '나중에 경찰에 순찰 강화 요청도 해봐야겠네요. 무사히 귀가하셔서 다행입니다!', '2026-03-19 08:00:00', '2026-03-19 08:00:00');
 
--- [8] article (삭제)
+-- [8] article
+INSERT INTO article (article_title, article_date, article_content, article_url, article_writer, article_pic, article_site, article_keyword, article_district, article_created_at) VALUES
+('강남역 인근 묻지마 폭행 20대 남성 검거', '2026-04-01', '강남역 인근에서 행인에게 주먹을 휘두른 남성이 시민들의 신고로 현장에서 붙잡혔습니다.', 'https://news.example.com/gangnam', '홍길동', 'https://pic.example.com/gn.jpg', '노컷뉴스', '강남구 범죄', '강남구', NOW()),
+('강동구 천호동 상가 밀집지역 야간 순찰 강화', '2026-04-02', '강동경찰서는 최근 천호동 일대 상가 침입 절도 예방을 위해 도보 순찰 인력을 배가했습니다.', 'https://news.example.com/gangdong', '김철수', 'https://pic.example.com/gd.jpg', '머니투데이', '강동구 범죄', '강동구', NOW()),
+('강북구 수유동 빌라 유리창 파손 사건 수사', '2026-04-01', '심야 시간대 주택가 창문을 깨고 침입하려던 흔적이 발견되어 경찰이 주변 CCTV를 분석 중입니다.', 'https://news.example.com/gangbuk', '이영희', 'https://pic.example.com/gb.jpg', '노컷뉴스', '강북구 범죄', '강북구', NOW()),
+('강서구 화곡동 주거지역 스토킹 의심 신고 급증', '2026-04-03', '화곡동 일대 1인 가구 밀집 지역을 중심으로 모르는 사람이 문을 두드린다는 신고가 잇따르고 있습니다.', 'https://news.example.com/gangseo', '박민지', 'https://pic.example.com/gs.jpg', '머니투데이', '강서구 범죄', '강서구', NOW()),
+('관악구 신림동 산책로 '안심 가로등' 전격 설치', '2026-04-01', '관악구는 최근 발생한 강력 범죄 예방을 위해 등산로 입구와 어두운 산책로에 스마트 가로등을 배치했습니다.', 'https://news.example.com/gwanak', '최현우', 'https://pic.example.com/ga.jpg', '노컷뉴스', '관악구 범죄', '관악구', NOW()),
+('광진구 건대입구역 주변 취객 대상 '아리랑치기' 주의', '2026-04-02', '심야 시간 길가에 쓰러진 취객의 소지품을 노리는 범죄가 늘고 있어 경찰이 집중 단속에 나섰습니다.', 'https://news.example.com/gwangjin', '윤아름', 'https://pic.example.com/gj.jpg', '머니투데이', '광진구 범죄', '광진구', NOW()),
+('구로구 고척동 일대 자전거 연쇄 절도범 구속', '2026-04-01', '아파트 단지 내 고가의 자전거를 절단기로 끊고 훔쳐온 30대 남성이 경찰에 구속되었습니다.', 'https://news.example.com/guro', '정재훈', 'https://pic.example.com/gr.jpg', '노컷뉴스', '구로구 범죄', '구로구', NOW()),
+('금천구 가산동 IT단지 출근길 소매치기 발생', '2026-04-03', '가산디지털단지역 인근 인파가 붐비는 틈을 타 지갑을 훔쳐 달아난 용의자를 추적 중입니다.', 'https://news.example.com/geumcheon', '한소희', 'https://pic.example.com/gc.jpg', '머니투데이', '금천구 범죄', '금천구', NOW()),
+('노원구 상계동 아파트 주차장 차량 털이 기승', '2026-04-01', '사이드미러가 접히지 않은 차량만을 골라 내부 금품을 훔친 10대 일당이 검거되었습니다.', 'https://news.example.com/nowon', '강수진', 'https://pic.example.com/nw.jpg', '노컷뉴스', '노원구 범죄', '노원구', NOW()),
+('도봉구 쌍문동 노인 대상 보이스피싱 예방 교육', '2026-04-02', '도봉경찰서는 최근 급증하는 어르신 대상 저금리 대출 사기 근절을 위해 경로당 순회 교육을 실시했습니다.', 'https://news.example.com/dobong', '오승택', 'https://pic.example.com/db.jpg', '머니투데이', '도봉구 범죄', '도봉구', NOW()),
+('동대문구 제기동 전통시장 화재 취약지역 점검', '2026-04-01', '전통시장 내 방화 사건 예방과 화재 안전을 위해 소방서와 경찰이 합동 순찰을 진행했습니다.', 'https://news.example.com/dongdaemun', '임현주', 'https://pic.example.com/ddm.jpg', '노컷뉴스', '동대문구 범죄', '동대문구', NOW()),
+('동작구 노량진동 고시촌 주거침입 시도범 검거', '2026-04-03', '고시원 복도를 배회하며 도어락 비밀번호를 누르려던 남성이 거주자의 신고로 긴급 체포되었습니다.', 'https://news.example.com/dongjak', '배성준', 'https://pic.example.com/dj.jpg', '머니투데이', '동작구 범죄', '동작구', NOW()),
+('마포구 홍대 클럽거리 마약 투약 의심자 수사', '2026-04-01', '클럽 내 화장실에서 수상한 행동을 하던 남성이 시민의 신고로 마약류 간이 검사를 받게 되었습니다.', 'https://news.example.com/mapo', '송지혜', 'https://pic.example.com/mp.jpg', '노컷뉴스', '마포구 범죄', '마포구', NOW()),
+('서대문구 신촌 연세로 버스킹 구경 중 지갑 분실 신고', '2026-04-02', '주말 인파가 몰리는 틈을 탄 절도 범죄 가능성을 열어두고 현장 잠복 수사를 강화하고 있습니다.', 'https://news.example.com/seodaemun', '유재석', 'https://pic.example.com/sdm.jpg', '머니투데이', '서대문구 범죄', '서대문구', NOW()),
+('서초구 반포동 한강공원 심야 드론 순찰 도입', '2026-04-01', '실종 사고 및 범죄 사각지대 해소를 위해 서초구는 야간 드론 순찰대를 본격 가동합니다.', 'https://news.example.com/seocho', '조세호', 'https://pic.example.com/sc.jpg', '노컷뉴스', '서초구 범죄', '서초구', NOW()),
+('성동구 성수동 팝업스토어 인근 기물 파손 사건', '2026-04-03', '성수동 카페거리 인근 전시물을 발로 차 부순 20대 남성이 재물손괴 혐의로 입건되었습니다.', 'https://news.example.com/seongdong', '김태리', 'https://pic.example.com/sd.jpg', '머니투데이', '성동구 범죄', '성동구', NOW()),
+('성북구 정릉동 주택가 상습 빈집털이범 추적', '2026-04-01', '집주인이 비어 있는 낮 시간대를 노려 귀중품을 훔쳐 달아난 용의자의 인상착의를 확보했습니다.', 'https://news.example.com/seongbuk', '남주혁', 'https://pic.example.com/sb.jpg', '노컷뉴스', '성북구 범죄', '성북구', NOW()),
+('송파구 잠실 롯데월드몰 인근 흉기 소지자 소동', '2026-04-02', '가방에 흉기를 넣고 배회하던 40대 남성이 경찰의 불심검문에 걸려 조사를 받고 있습니다.', 'https://news.example.com/songpa', '안효섭', 'https://pic.example.com/sp.jpg', '머니투데이', '송파구 범죄', '송파구', NOW()),
+('양천구 목동 학원가 '불법 촬영' 몰카범 검거', '2026-04-01', '여학생들을 대상으로 몰래 촬영을 시도하던 학원 강사가 경찰에 현행범으로 체포되었습니다.', 'https://news.example.com/yangcheon', '이성경', 'https://pic.example.com/yc.jpg', '노컷뉴스', '양천구 범죄', '양천구', NOW()),
+('영등포구 여의도동 국회 인근 불법 집회 난동', '2026-04-03', '집회 중 경찰관을 폭행하고 바리케이드를 파손한 시위대 일부가 공무집행방해 혐의로 연행되었습니다.', 'https://news.example.com/yeongdeungpo', '김세정', 'https://pic.example.com/ydp.jpg', '머니투데이', '영등포구 범죄', '영등포구', NOW()),
+('용산구 이태원동 주취 난동 외국인 무더기 입건', '2026-04-01', '인근 식당에서 술에 취해 시비가 붙어 폭력을 휘두른 외국인 관광객들이 경찰 조사를 받고 있습니다.', 'https://news.example.com/yongsan', '설인아', 'https://pic.example.com/ys.jpg', '노컷뉴스', '용산구 범죄', '용산구', NOW()),
+('은평구 불광동 시장 내 장노년층 소매치기 기승', '2026-04-02', '전통시장 장날을 맞아 혼잡한 틈을 타 어르신들의 쌈짓돈을 노린 절도가 빈번해지고 있습니다.', 'https://news.example.com/eunpyeong', '권나라', 'https://pic.example.com/ep.jpg', '머니투데이', '은평구 범죄', '은평구', NOW()),
+('종로구 익선동 한옥마을 낙서 테러범 수사', '2026-04-01', '문화재급 한옥 담벼락에 스프레이로 낙서를 하고 도망친 일당을 경찰이 추적하고 있습니다.', 'https://news.example.com/jongno', '차은우', 'https://pic.example.com/jn.jpg', '노컷뉴스', '종로구 범죄', '종로구', NOW()),
+('중구 명동 관광객 대상 바가지 요금 및 강매 수사', '2026-04-03', '명동 일대에서 위협적인 태도로 물건 구매를 강요한 상인들에 대해 경찰이 단속을 강화합니다.', 'https://news.example.com/junggu', '한소희', 'https://pic.example.com/jg.jpg', '머니투데이', '중구 범죄', '중구', NOW()),
+('중랑구 면목동 골목길 '바바리맨' 목격 신고', '2026-04-01', '야간에 골목길에서 음란 행위를 하고 사라진 남성에 대해 성폭력처벌법 위반 혐의로 조사 중입니다.', 'https://news.example.com/jungnang', '박보검', 'https://pic.example.com/jn.jpg', '노컷뉴스', '중랑구 범죄', '중랑구', NOW());
