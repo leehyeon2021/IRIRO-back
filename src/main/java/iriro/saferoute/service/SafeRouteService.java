@@ -1,6 +1,5 @@
 package iriro.saferoute.service;
 
-import iriro.common.exception.LogSaveException;
 import iriro.publicData.entity.CrimeRoadEntity;
 import iriro.publicData.entity.FacilitySafeEntity;
 import iriro.publicData.repository.CrimeRoadRepository;
