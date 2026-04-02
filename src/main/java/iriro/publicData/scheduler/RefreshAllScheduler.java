@@ -1,12 +1,13 @@
-package iriro.publicData.service;
+package iriro.publicData.scheduler;
 
+import iriro.publicData.service.CrimeRoadFetchService;
+import iriro.publicData.service.FacilitySafeFetchService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RefreshAllDataService {
+public class RefreshAllScheduler {
     private final FacilitySafeFetchService ffs;
     private final CrimeRoadFetchService cfs;
 

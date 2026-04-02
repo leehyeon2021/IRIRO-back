@@ -2,7 +2,7 @@ package iriro.publicData.controller;
 
 import iriro.publicData.service.CrimeRoadFetchService;
 import iriro.publicData.service.FacilitySafeFetchService;
-import iriro.publicData.service.RefreshAllDataService;
+import iriro.publicData.scheduler.RefreshAllScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     private final CrimeRoadFetchService cf;
     private final FacilitySafeFetchService ff;
-    private final RefreshAllDataService rf;
+    private final RefreshAllScheduler rf;
 
     // 저장 기능을 테스트하기 위한 컨트롤러입니다.
 

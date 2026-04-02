@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 public class CrimeNewsFilter {
 
     private static final String[] BLACK_LIST = {
-            "드라마", "출연", "방송", "연예", "화보", "영화", "공개", "웹툰",
-            "주가", "코스피", "증권", "부동산", "날씨", "스포츠"
+            "드라마", "출연", "방송", "연예", "화보", "영화", "공개", "웹툰", "매매가격",
+            "주가", "주식", "코스피", "증권", "부동산", "날씨", "스포츠", "박재홍의 한판승부"
     };
 
     private static final String[] CRIME_KEYWORDS = {
