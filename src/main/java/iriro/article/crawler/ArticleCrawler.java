@@ -3,7 +3,7 @@ package iriro.article.crawler;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import iriro.article.repository.ArticleRepository;
 import iriro.article.service.ArticleService;
-import iriro.article.util.CrimeNewsFilter;
+import iriro.article.util.ArticleCrimeFilter;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,7 +28,7 @@ import java.util.Map;
 public class ArticleCrawler {
 
     private final ArticleRepository articleRepository;
-    private final CrimeNewsFilter filter;
+    private final ArticleCrimeFilter filter;
     private final ArticleService articleService;
 
     // 1. 노컷뉴스 크롤러 (Selenium으로 목록 가져오기 -> Jsoup으로 본문 읽기)
@@ -40,7 +40,8 @@ public class ArticleCrawler {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
-            String searchUrl = "https://search.nocutnews.co.kr/list?query=" + keyword;
+            String searchUrl = "https://search.nocutnews.co.kr/list?query="
+                                + java.net.URLEncoder.encode(keyword, "UTF-8");
             driver.get(searchUrl);
 
             // 검색 결과 뜰 때까지 대기
@@ -49,13 +50,13 @@ public class ArticleCrawler {
             // 기사 목록 (1페이지)
             List<WebElement> articles = driver.findElements(By.cssSelector(".newslist > li"));
 
-            // 안전장치 1: 몇 개 가져왔는지 세기
+            // 기사 몇 개 가져왔는지 세기
             int count = 0;
 
             for (WebElement article : articles) {
                 try{
-                    // 안전장치 1: 5개 다 채웠으면 반복문을 강제 종료
-                    if (count >= 10) {
+                    // n개 다 채웠으면 반복문을 강제 종료
+                    if (count >= 3) {
                         System.out.println(count+"개 수집. 노컷뉴스 크롤링 종료.");
                         break;
                     }
@@ -63,14 +64,15 @@ public class ArticleCrawler {
                     String title = article.findElement(By.cssSelector("a > strong")).getText().trim();
                     String url = article.findElement(By.cssSelector("a")).getAttribute("href");
                     String pic = article.findElement(By.cssSelector(".img > a > img")).getAttribute("src");
-                    String date = article.findElement(By.cssSelector(".txt > span")).getText().trim();
+                    String date = article.findElement(By.cssSelector(".txt > span")).getText().replace(".","-").trim();
 
-                    if (url.isEmpty() || articleRepository.existsByArticleUrl(url)) continue;
+                    // URL 없거나 이미 저장된 기사 건너뜀
+                    if (title.isEmpty() || url.isEmpty() || articleRepository.existsByArticleUrl(url)) {
+                        continue;
+                    }
 
                     // 상세 페이지 본문 정보
                     Map<String, String> details = fetchArticleDetails(url);
-
-                    // 상자에서 본문과 기자 이름을 꺼냅니다.
                     String content = details.get("content");
                     String writer = details.get("writer");
 
@@ -80,18 +82,19 @@ public class ArticleCrawler {
                         continue;
                     }
 
-                    if (!filter.isValid(title, content)) continue;
+                    // 1) AI에게 묻고 , 2) 5초 쉼 (무료 한도 제한: 1분 15회)
+                    boolean isCrimeNews = filter.isValid(title, content);
+                    System.out.println("5초 대기");
+                    Thread.sleep(5000);
 
+                    // 아니면 넘김
+                    if(!isCrimeNews){continue;}
+                    // 맞으면 저장
                     articleService.saveToDb(title, url, content, "노컷뉴스", district, keyword, date, writer, pic);
-
-                    // 저장 성공 카운터 1 증가
+                    // 저장 성공 count 1 증가
                     count++;
 
-                    // 안전장치 2: 1.5초
-                    System.out.println("2.7초 대기");
-                    Thread.sleep(2700);
                 } catch (Exception e) {
-                    // 특정 기사 1개에서 에러가 나더라도 전체 크롤링이 멈추지 않도록 내부에서 예외처리
                     System.out.println("개별 기사 파싱 중 오류 (건너뜀): " + e.getMessage());
                 }
             }
@@ -105,7 +108,8 @@ public class ArticleCrawler {
     // 2. 머니투데이 크롤러 (목록, 본문 전부 Jsoup)
     public void crawlMtNews(String keyword, String district) {
         try {
-            String searchUrl = "https://www.mt.co.kr/search?filter=contents&order=accuracy&keyword=" + keyword;
+            String searchUrl = "https://www.mt.co.kr/search?filter=contents&order=accuracy&keyword="
+                            + java.net.URLEncoder.encode(keyword, "UTF-8");
 
             Document doc = Jsoup.connect(searchUrl)
                     .userAgent("Mozilla/5.0")
@@ -114,47 +118,46 @@ public class ArticleCrawler {
 
             Elements articles = doc.select(".article_item");
 
-            int count = 0; // 안전장치 1: 개수 세기
+            // 기사 몇 개 가져왔는지 세기
+            int count = 0;
 
             for (Element article : articles) {
-                // 안전장치 2: 5개 다 채웠으면 반복문 강제 종료
-                if (count >= 10) {
-                    System.out.println(count+"개 수집. 머니투데이 크롤링 종료.");
-                    break;
-                }
+                try{
+                    // n개 다 채웠으면 반복문을 강제 종료
+                    if (count >= 3) {
+                        System.out.println(count+"개 수집. 머니투데이 크롤링 종료.");
+                        break;
+                    }
 
-                try {
                     String title = article.select(".headline").text().trim();
                     String url = article.select("a").attr("abs:href");
                     String pic = article.select(".article_body > .thumb > img").attr("src");
                     String writer = article.select(".writer").text().replace(" 기자", "").trim();
-                    String date = article.select(".article_date").text().trim();
+                    String date = article.select(".article_date").text().replace(".","-").trim();
 
                     // URL 없거나 이미 저장된 기사 건너뜀
                     if (title.isEmpty() || url.isEmpty() || articleRepository.existsByArticleUrl(url)) {
                         continue;
                     }
 
-                    // 상세 페이지 본문 전체 가져오기
+                    // 상세 페이지 본문 정보
                     Map<String, String> details = fetchArticleDetails(url);
-
                     String content = details.get("content");
 
-                    // 필터 통과 못 하면 건너뜀
-                    if (!filter.isValid(title, content)) continue;
+                    // 1) AI에게 묻고 , 2) 5초 쉼 (무료 한도 제한: 1분 15회)
+                    boolean isCrimeNews = filter.isValid(title, content);
+                    System.out.println("5초 대기");
+                    Thread.sleep(5000);
 
-                    // 저장
+                    // 아니면 넘김
+                    if(!isCrimeNews){continue;}
+                    // 맞으면 저장
                     articleService.saveToDb(title, url, content, "머니투데이", district, keyword, date, writer, pic);
+                    // 저장 성공 count 1 증가
+                    count++;
 
-                    count++; // 성공 카운터 1 증가
-
-                    // 안전장치 3: 2.7초
-                    System.out.println("2.7초 대기");
-                    Thread.sleep(2700);
-
-                } catch (Exception innerE) {
-                    // 기사 하나가 에러 나도 전체가 멈추지 않게
-                    System.out.println("머니투데이 개별 기사 건너뜀: " + innerE.getMessage());
+                }catch(Exception e){
+                    System.out.println("개별 기사 파싱 중 오류 (건너뜀): " + e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -162,7 +165,8 @@ public class ArticleCrawler {
         }
     }
 
-    // 3. 기사 본문 상세 (본문, 기자)
+
+    // * 기사 본문 상세 (본문, 기자)
     private Map<String, String> fetchArticleDetails(String articleUrl){
         Map<String, String> result = new HashMap<>();
         result.put("content", "");
