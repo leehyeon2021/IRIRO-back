@@ -57,7 +57,7 @@ public class ArticleCrawler {
             for (WebElement article : articles) {
                 try{
                     // n개 다 채웠으면 반복문을 강제 종료
-                    if (count >= 3) {
+                    if (count >= 1) {
                         System.out.println(count+"개 수집. 노컷뉴스 크롤링 종료.");
                         break;
                     }
@@ -83,11 +83,8 @@ public class ArticleCrawler {
                         continue;
                     }
 
-                    // 1) AI에게 묻고 , 2) 5초 쉼 (무료 한도 제한: 1분 15회)
+                    // AI에게 묻고
                     boolean isCrimeNews = filter.isValid(title, content);
-                    System.out.println("5초 대기");
-                    Thread.sleep(5000);
-
                     // 아니면 넘김
                     if(!isCrimeNews){continue;}
                     // 맞으면 저장
@@ -125,7 +122,7 @@ public class ArticleCrawler {
             for (Element article : articles) {
                 try{
                     // n개 다 채웠으면 반복문을 강제 종료
-                    if (count >= 3) {
+                    if (count >= 1) {
                         System.out.println(count+"개 수집. 머니투데이 크롤링 종료.");
                         break;
                     }
@@ -145,11 +142,8 @@ public class ArticleCrawler {
                     Map<String, String> details = fetchArticleDetails(url);
                     String content = details.get("content");
 
-                    // 1) AI에게 묻고 , 2) 5초 쉼 (무료 한도 제한: 1분 15회)
+                    // AI에게 묻고
                     boolean isCrimeNews = filter.isValid(title, content);
-                    System.out.println("5초 대기");
-                    Thread.sleep(5000);
-
                     // 아니면 넘김
                     if(!isCrimeNews){continue;}
                     // 맞으면 저장
@@ -158,7 +152,7 @@ public class ArticleCrawler {
                     count++;
 
                 }catch(Exception e){
-                    System.out.println("개별 기사 파싱 중 오류 (건너뜀): " + e.getMessage());
+                    System.out.println("[개별 기사 파싱 중 오류 (건너뜀)] " + e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -193,7 +187,7 @@ public class ArticleCrawler {
             }
 
         } catch (Exception e) {
-            System.out.println("상세 페이지 파싱 오류: " + e.getMessage());
+            System.out.println("[상세 페이지 파싱 오류] " + e.getMessage());
         }
 
         return result;
