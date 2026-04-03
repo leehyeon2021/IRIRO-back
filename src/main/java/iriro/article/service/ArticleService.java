@@ -28,7 +28,7 @@ public class ArticleService {
     }
 
     // 기사 개별 조회
-    public ArticleDto getArticleFindOne(int articleId){
+    public ArticleDto getArticleFindOne(Integer articleId){
         return articleRepository.findById(articleId)
                 .map(ArticleEntity::toDto)
                 .orElse(null);
