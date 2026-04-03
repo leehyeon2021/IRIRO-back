@@ -4,9 +4,9 @@ import iriro.article.crawler.ArticleCrawler;
 import iriro.article.util.RegionConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class ArticleCrawlingScheduler {
 
