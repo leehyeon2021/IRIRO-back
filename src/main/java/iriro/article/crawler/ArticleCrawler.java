@@ -92,6 +92,10 @@ public class ArticleCrawler {
                     // 저장 성공 count 1 증가
                     count++;
 
+                    // 대기하기
+                    System.out.println("2.7초 대기");
+                    Thread.sleep(2700);
+
                 } catch (Exception e) {
                     System.out.println("개별 기사 파싱 중 오류 (건너뜀): " + e.getMessage());
                 }
@@ -150,6 +154,10 @@ public class ArticleCrawler {
                     articleSaveService.saveToDb(title, url, content, "머니투데이", district, keyword, date, writer, pic);
                     // 저장 성공 count 1 증가
                     count++;
+
+                    // 대기하기
+                    System.out.println("2.7초 대기");
+                    Thread.sleep(2700);
 
                 }catch(Exception e){
                     System.out.println("[개별 기사 파싱 중 오류 (건너뜀)] " + e.getMessage());
