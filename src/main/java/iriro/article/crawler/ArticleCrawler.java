@@ -18,6 +18,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
+import java.net.URLEncoder;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -41,10 +42,10 @@ public class ArticleCrawler {
 
         try {
             String searchUrl = "https://search.nocutnews.co.kr/list?query="
-                                + java.net.URLEncoder.encode(keyword, "UTF-8");
+                                + URLEncoder.encode(keyword, "UTF-8");
             driver.get(searchUrl);
 
-            // 검색 결과 뜰 때까지 대기
+            // 검색 결과 렌더링 대기
             wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".content > #news > .newslist")));
 
             // 기사 목록 (1페이지)
@@ -109,7 +110,7 @@ public class ArticleCrawler {
     public void crawlMtNews(String keyword, String district) {
         try {
             String searchUrl = "https://www.mt.co.kr/search?filter=contents&order=accuracy&keyword="
-                            + java.net.URLEncoder.encode(keyword, "UTF-8");
+                            + URLEncoder.encode(keyword, "UTF-8");
 
             Document doc = Jsoup.connect(searchUrl)
                     .userAgent("Mozilla/5.0")
