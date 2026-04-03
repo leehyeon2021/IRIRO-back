@@ -40,7 +40,8 @@ public class ArticleCrawler {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
-            String searchUrl = "https://search.nocutnews.co.kr/list?query=" + keyword;
+            String searchUrl = "https://search.nocutnews.co.kr/list?query="
+                                + java.net.URLEncoder.encode(keyword, "UTF-8");
             driver.get(searchUrl);
 
             // 검색 결과 뜰 때까지 대기
@@ -49,13 +50,13 @@ public class ArticleCrawler {
             // 기사 목록 (1페이지)
             List<WebElement> articles = driver.findElements(By.cssSelector(".newslist > li"));
 
-            // 안전장치 1: 몇 개 가져왔는지 세기
+            // 기사 몇 개 가져왔는지 세기
             int count = 0;
 
             for (WebElement article : articles) {
                 try{
-                    // 10개 다 채웠으면 반복문을 강제 종료
-                    if (count >= 1) {
+                    // n개 다 채웠으면 반복문을 강제 종료
+                    if (count >= 3) {
                         System.out.println(count+"개 수집. 노컷뉴스 크롤링 종료.");
                         break;
                     }
@@ -107,7 +108,8 @@ public class ArticleCrawler {
     // 2. 머니투데이 크롤러 (목록, 본문 전부 Jsoup)
     public void crawlMtNews(String keyword, String district) {
         try {
-            String searchUrl = "https://www.mt.co.kr/search?filter=contents&order=accuracy&keyword=" + keyword;
+            String searchUrl = "https://www.mt.co.kr/search?filter=contents&order=accuracy&keyword="
+                            + java.net.URLEncoder.encode(keyword, "UTF-8");
 
             Document doc = Jsoup.connect(searchUrl)
                     .userAgent("Mozilla/5.0")
@@ -116,16 +118,17 @@ public class ArticleCrawler {
 
             Elements articles = doc.select(".article_item");
 
-            int count = 0; // 안전장치 1: 개수 세기
+            // 기사 몇 개 가져왔는지 세기
+            int count = 0;
 
             for (Element article : articles) {
-                // 안전장치 2: 10개 다 채웠으면 반복문 강제 종료
-                if (count >= 1) {
-                    System.out.println(count+"개 수집. 머니투데이 크롤링 종료.");
-                    break;
-                }
+                try{
+                    // n개 다 채웠으면 반복문을 강제 종료
+                    if (count >= 3) {
+                        System.out.println(count+"개 수집. 머니투데이 크롤링 종료.");
+                        break;
+                    }
 
-                try {
                     String title = article.select(".headline").text().trim();
                     String url = article.select("a").attr("abs:href");
                     String pic = article.select(".article_body > .thumb > img").attr("src");
