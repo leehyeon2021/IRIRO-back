@@ -77,24 +77,24 @@ public class ArticleCrimeFilter {
         try {
             String shortContent = content.length() > 300 ? content.substring(0, 300) : content;
             String prompt = """
-                    너는 서울 지역 시민 안전 뉴스 분류 AI야.
-                    아래 기사가 '서울 시민의 안전과 직접 관련된 범죄/치안 뉴스'인지 판단해.
-                    반드시 'TRUE' 또는 'FALSE' 한 단어만 대답해. 다른 말은 절대 하지 마.
-
-                    [TRUE 조건 - 하나라도 해당하면 TRUE]
-                    - 서울에서 발생한 폭행, 흉기, 살인, 강도, 절도, 성범죄, 스토킹, 묻지마 범죄
-                    - 서울 치안 강화, 순찰 확대, CCTV 설치 등 시민 안전 정책
-                    - 서울 우범지역, 귀갓길 위험 관련 뉴스
-
-                    [FALSE 조건 - 하나라도 해당하면 FALSE]
-                    - 정치인 비리, 기업 횡령, 선거 관련 뉴스
-                    - 연예인, 아이돌 관련 뉴스
-                    - 서울 외 지역 범죄 뉴스
-                    - 드라마/영화/웹툰 내용 소개
-                    - 주식, 부동산, 날씨, 스포츠
-
-                    제목: %s
-                    본문 요약: %s
+                    You are a Seoul citizen safety news classifier AI.
+                    Determine whether the article below is directly related to 'crime or public safety news for Seoul citizens'.
+                    Answer ONLY with 'TRUE' or 'FALSE'. Do not say anything else.
+            
+                    [TRUE conditions - answer TRUE if ANY of these apply]
+                    - Assault, weapons, murder, robbery, theft, sexual crime, stalking, random attacks in Seoul
+                    - Seoul public safety policies: increased patrols, CCTV installation, etc.
+                    - News about high-crime areas or dangerous commute routes in Seoul
+            
+                    [FALSE conditions - answer FALSE if ANY of these apply]
+                    - Politician corruption, corporate embezzlement, election-related news
+                    - Celebrity or idol-related news
+                    - Crime news outside of Seoul
+                    - Drama/movie/webtoon content
+                    - Stocks, real estate, weather, sports
+            
+                    Title: %s
+                    Article summary: %s
                     """.formatted(title, shortContent);
 
             Map<String, Object> body = Map.of(
