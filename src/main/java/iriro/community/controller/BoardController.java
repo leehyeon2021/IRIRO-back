@@ -49,7 +49,7 @@ public class BoardController {
 
     // 2. 리뷰 전체 조회
     // http://localhost:8080/api/board
-    @GetMapping("/all")
+    @GetMapping("/list")
     public ResponseEntity<?> findALl(){
         return ResponseEntity.ok(boardService.findAll());
     }
