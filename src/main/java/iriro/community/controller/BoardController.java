@@ -50,15 +50,15 @@ public class BoardController {
     // 2. 리뷰 전체 조회
     // http://localhost:8080/api/board
     @GetMapping("/all")
-    public List<BoardDto> rbAllView(){
-        return boardService.rvAllView();
+    public ResponseEntity<?> findALl(){
+        return ResponseEntity.ok(boardService.findAll());
     }
 
     // 3. 리뷰 상세 조회
     // http://localhost:8080/api/board/detail?boardId=1
     @GetMapping("/detail")
-    public BoardDto rvView(@RequestParam Integer boardId){
-        return boardService.rvView(boardId);
+    public ResponseEntity<?> findById(@RequestParam Integer boardId){
+        return ResponseEntity.ok(boardService.findById(boardId));
     }
 
 

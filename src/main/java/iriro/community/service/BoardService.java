@@ -4,20 +4,13 @@ package iriro.community.service;
 
 import iriro.community.dto.BoardDto;
 import iriro.community.entity.BoardEntity;
-import iriro.community.entity.UserEntity;
 import iriro.community.repository.BoardRepository;
 
 import iriro.community.repository.UserRepository;
-
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,34 +37,20 @@ public class BoardService {
     }
 
     // 2. 리뷰 전체 조회
-    public List<BoardDto> rvAllView() {
-        // 1. DB(창고)에서 모든 엔티티(생고기 박스) 꺼내오기.
-        List<BoardEntity> entityList = boardRepository.findAll();
+    public List<BoardDto> findAll() {
+        return boardRepository.findAll(Sort.by(Sort.Direction.DESC , "boardId" )) // .findAll(페이징,정렬) 전체조회
+                .stream() // .stream() 이란? 여러개 자료를 갖는 자료(리스트/배열)들의 순차적 처리 지원 함수
+                .map(BoardEntity::toDto) // 메소드 레퍼런스란, 화살표 함수 간결하게 사용하는 문법 , 클래스명 :: 함수명
+                .toList(); // 리스트 타입으로 반환
 
-        // 2. Dto(플레이팅접시)들을 담을 빈 박스를 새로 만든다.
-        List<BoardDto> dtoList = new ArrayList<>();
-
-        // 3. Entity --> Dto 변환 생고기박스에서 하나씩 꺼냄 앤나 접시에 옮김
-        for (BoardEntity entity : entityList) {
-            BoardDto dto = entity.toDto(); // 생고기를 접시에 플레이팅함
-
-            // 접시를 새박스에 쌓는다.
-            dtoList.add(dto);
-        }
-        return dtoList;
     }
 
     // 3. 리뷰 상세 조회
-    public BoardDto rvView(Integer boardId) {
-        BoardEntity entity = boardRepository.findById(boardId).orElse(null);
-        return entity.toDto(); // 엔티티 --> 디티오
-    }
-
-//    // 4. 리뷰 개별 수정
-//    @Transactional
-//    public BoardDto rvUpdate(Integer boardId, BoardDto boardDto, HttpServletRequest request){
-//        BoardEntity boardEntity = boardRepository.findByIdAndUserId(boardId,email)
-//    }
+    public BoardDto findById( Integer boardId ){
+            return boardRepository.findById(boardId) // .findById(pk번호) 개별엔티티조회
+                    .orElse(null)
+                    .toDto(); // 엔티티가 존재하면 dto로 변환
+        }
 
 
     // 5. 리뷰 개별 삭제 (회원)
