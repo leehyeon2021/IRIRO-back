@@ -41,11 +41,12 @@ public class ArticleCrimeFilter {
 
     // 저장할 가치 있는 기사인지 판별
     public boolean isValid(String title, String content) {
-
         // === AI 호출 전 키워드 체크 ===
 
         // 1. 필수값 체크
-        if (title == null || content == null || title.isBlank() || content.isBlank()) return false;
+        if (title == null || content == null || title.isBlank() || content.isBlank()){
+            return false;
+        }
 
         // 2. 블랙리스트 체크
         for (String word : blackList) {
