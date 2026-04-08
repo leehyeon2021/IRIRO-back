@@ -32,7 +32,7 @@ public class ArticleCrawler {
     private final ArticleCrimeFilter filter;
     private final ArticleSaveService articleSaveService;
 
-    // 1. 노컷뉴스 크롤러 (Selenium으로 목록 가져오기 -> Jsoup으로 본문 읽기)
+    // 1. 노컷뉴스 크롤러 (Selenium으로 목록 가져오기 -> Jsoup으로 본문 읽기 -> Selenium으로 다음페이지 클릭)
     public void crawlNoCutNews(String keyword, String district) {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
@@ -40,66 +40,71 @@ public class ArticleCrawler {
         WebDriver driver = new ChromeDriver(options);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
+        int totalCount = 0;
+
         try {
             String searchUrl = "https://search.nocutnews.co.kr/list?query="
                                 + URLEncoder.encode(keyword, "UTF-8");
             driver.get(searchUrl);
+            //for(int page = 1; page <= 10; page++){
+                // 검색 결과 렌더링 대기
+                wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".content > #news > .newslist")));
 
-            // 검색 결과 렌더링 대기
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".content > #news > .newslist")));
+                // 기사 목록 (1페이지)
+                List<WebElement> articles = driver.findElements(By.cssSelector(".newslist > li"));
 
-            // 기사 목록 (1페이지)
-            List<WebElement> articles = driver.findElements(By.cssSelector(".newslist > li"));
+                // 기사 몇 개 가져왔는지 세기
+                int count = 0;
 
-            // 기사 몇 개 가져왔는지 세기
-            int count = 0;
+                for (WebElement article : articles) {
+                    try {
+                        // 대기하기
+                        System.out.println("2.7초 대기");
+                        Thread.sleep(2700);
 
-            for (WebElement article : articles) {
-                try{
-                    // 대기하기
-                    System.out.println("2.7초 대기");
-                    Thread.sleep(2700);
+                        // n개 다 채웠으면 반복문을 강제 종료
+                        if (count >= 10) {
+                            System.out.println(count + "개 수집. 노컷뉴스 크롤링 종료.");
+                            break;
+                        }
 
-                    // n개 다 채웠으면 반복문을 강제 종료
-                    if (count >= 10) {
-                        System.out.println(count+"개 수집. 노컷뉴스 크롤링 종료.");
-                        break;
+                        String title = article.findElement(By.cssSelector("a > strong")).getText().trim();
+                        String url = article.findElement(By.cssSelector("a")).getAttribute("href");
+                        String pic = article.findElement(By.cssSelector(".img > a > img")).getAttribute("src");
+                        String date = article.findElement(By.cssSelector(".txt > span")).getText().replace(".", "-").trim();
+
+                        // URL 없거나 이미 저장된 기사 건너뜀
+                        if (title.isEmpty() || url.isEmpty() || articleRepository.existsByArticleUrl(url)) {
+                            continue;
+                        }
+
+                        // 상세 페이지 본문 정보
+                        Map<String, String> details = fetchArticleDetails(url);
+                        String content = details.get("content");
+                        String writer = details.get("writer");
+
+                        // 사회/문화 html 넘기기
+                        if (writer.contains("메일보내기")) {
+                            System.out.println("다른 형식의 뉴스 건너뛰기: " + title);
+                            continue;
+                        }
+
+                        // AI에게 묻고
+                        boolean isCrimeNews = filter.isValid(title, content);
+                        // 아니면 넘김
+                        if (!isCrimeNews) {
+                            continue;
+                        }
+                        // 맞으면 저장
+                        articleSaveService.saveToDb(title, url, content, "노컷뉴스", district, keyword, date, writer, pic);
+                        // 저장 성공 count 1 증가
+                        count++;
+
+                    } catch (Exception e) {
+                        System.out.println("개별 기사 파싱 중 오류 (건너뜀): " + e.getMessage());
                     }
-
-                    String title = article.findElement(By.cssSelector("a > strong")).getText().trim();
-                    String url = article.findElement(By.cssSelector("a")).getAttribute("href");
-                    String pic = article.findElement(By.cssSelector(".img > a > img")).getAttribute("src");
-                    String date = article.findElement(By.cssSelector(".txt > span")).getText().replace(".","-").trim();
-
-                    // URL 없거나 이미 저장된 기사 건너뜀
-                    if (title.isEmpty() || url.isEmpty() || articleRepository.existsByArticleUrl(url)) {
-                        continue;
-                    }
-
-                    // 상세 페이지 본문 정보
-                    Map<String, String> details = fetchArticleDetails(url);
-                    String content = details.get("content");
-                    String writer = details.get("writer");
-
-                    // 사회/문화 html 넘기기
-                    if( writer.contains("메일보내기")){
-                        System.out.println("다른 형식의 뉴스 건너뛰기: " + title);
-                        continue;
-                    }
-
-                    // AI에게 묻고
-                    boolean isCrimeNews = filter.isValid(title, content);
-                    // 아니면 넘김
-                    if(!isCrimeNews){continue;}
-                    // 맞으면 저장
-                    articleSaveService.saveToDb(title, url, content, "노컷뉴스", district, keyword, date, writer, pic);
-                    // 저장 성공 count 1 증가
-                    count++;
-
-                } catch (Exception e) {
-                    System.out.println("개별 기사 파싱 중 오류 (건너뜀): " + e.getMessage());
                 }
-            }
+            //}
         } catch (Exception e) {
             System.out.println("노컷뉴스 오류: " + e.getMessage());
         } finally {
