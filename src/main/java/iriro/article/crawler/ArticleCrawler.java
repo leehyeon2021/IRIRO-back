@@ -61,7 +61,7 @@ public class ArticleCrawler {
                     Thread.sleep(2700);
 
                     // n개 다 채웠으면 반복문을 강제 종료
-                    if (count >= 1) {
+                    if (count >= 10) {
                         System.out.println(count+"개 수집. 노컷뉴스 크롤링 종료.");
                         break;
                     }
@@ -110,7 +110,7 @@ public class ArticleCrawler {
     // 2. 머니투데이 크롤러 (목록, 본문 전부 Jsoup)
     public void crawlMtNews(String keyword, String district) {
         try {
-            String searchUrl = "https://www.mt.co.kr/search?filter=contents&order=accuracy&keyword="
+            String searchUrl = "https://www.mt.co.kr/search/news?filter=contents&order=latest&keyword="
                             + URLEncoder.encode(keyword, "UTF-8");
 
             Document doc = Jsoup.connect(searchUrl)
@@ -131,7 +131,7 @@ public class ArticleCrawler {
                     Thread.sleep(2700);
 
                     // n개 다 채웠으면 반복문을 강제 종료
-                    if (count >= 1) {
+                    if (count >= 10) {
                         System.out.println(count+"개 수집. 머니투데이 크롤링 종료.");
                         break;
                     }
