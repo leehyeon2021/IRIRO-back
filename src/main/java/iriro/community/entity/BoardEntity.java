@@ -58,7 +58,6 @@ public class BoardEntity extends BaseTime {
                 .boardContent(this.boardContent)
                 .recommendCount(this.recommendCount)
                 .createdAt(this.getCreatedAt().toString())
-                .updatedAt(this.getUpdatedAt().toString())
                 .build();
 
     }

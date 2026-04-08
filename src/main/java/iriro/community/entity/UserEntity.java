@@ -57,7 +57,6 @@ public class UserEntity extends BaseTime {
                 // 비밀번호는 소중하니까 불포함한다.
                 .nickName(this.nickname)
                 .createAt(this.getCreatedAt().toString())
-                .updateAt(this.getUpdatedAt().toString())
                 .myBoards(this.boardList != null ?
                         this.boardList.stream()
                                 .map(board->board.toDto())

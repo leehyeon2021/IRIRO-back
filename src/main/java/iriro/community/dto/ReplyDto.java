@@ -17,7 +17,6 @@ public class ReplyDto {
     private String nickname;
     private String replyContent; // 내용
     private String createdAt;
-    private String updatedAt;
 
     // + Dto --> Entity 변환 // 사용자가 직접 입력한 데이터만.
     public ReplyEntity toEntity(){

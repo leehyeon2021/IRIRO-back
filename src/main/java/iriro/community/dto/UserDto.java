@@ -21,7 +21,6 @@ public class UserDto {
     private String pwToken; // 비밀번호
     private String nickName; // 닉네임
     private String createAt; // 가입일
-    private String updateAt; // 수정일
 
 
     // 내가 쓴 글 목록 , 댓글 목록 담을 칸
