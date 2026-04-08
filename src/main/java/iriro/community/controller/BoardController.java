@@ -24,11 +24,10 @@ public class BoardController {
 
 
     // 1. 리뷰 등록 (회원만 가능)
-    // http://localhost:8080/api/board
+    // http://localhost:8080/api/board/rvwrite
     // Authorization
     // Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNvc29AbmF2ZXIuY29tIiwiaWF0IjoxNzc0NTA5MzI1LCJleHAiOjE3NzQ1OTU3MjV9.olTdmXyDEL9amHExge5VC8VdwSruWt7Q0ia4q7VcB58
     //  { "boardTitle" : "테스트제목", "boardContent" : "테스트내용", "logId" : 1 }
-    // { "boardTitle" : "회원만 쓸 수 있다능", "boardContent" : "회원이 씀", "logId" : 1 }
     @PostMapping("/rvwrite")
     public ResponseEntity<?> rbAdd(@RequestBody BoardDto boardDto ,
                                    @RequestHeader(value = "Authorization",required = false)String token) {
@@ -48,7 +47,7 @@ public class BoardController {
         }
 
     // 2. 리뷰 전체 조회
-    // http://localhost:8080/api/board
+    // http://localhost:8080/api/board/list
     @GetMapping("/list")
     public ResponseEntity<?> findALl(){
         return ResponseEntity.ok(boardService.findAll());
@@ -63,7 +62,7 @@ public class BoardController {
 
 
     // 5. 리뷰 개별 삭제
-    // http://localhost:8080/api/board?boardId=11
+    // http://localhost:8080/api/board/rvdelete?boardId=11
     @DeleteMapping("/rvdelete")
     public ResponseEntity<?> rvDelete(@RequestParam Integer boardId ,
                                       @RequestHeader(value="Authorization",required = false)String token){

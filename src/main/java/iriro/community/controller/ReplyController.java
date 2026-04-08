@@ -40,7 +40,7 @@ public class ReplyController {
     }
 
     // 2. 댓글 삭제
-    // http://localhost:8080/api/board/rpdelete?replyId=1
+    // http://localhost:8080/api/board/rpdelete?replyId=11
     @DeleteMapping("/rpdelete")
     public ResponseEntity<?> rpDelete(@RequestParam Integer replyId,
                                       @RequestHeader(value = "Authorization",required = false)String token) {
