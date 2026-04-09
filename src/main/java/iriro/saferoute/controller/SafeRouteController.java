@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api") //공통 주소 입력
+@CrossOrigin( value = "http://localhost:5173") //도메인 허용 규칙
 public class SafeRouteController {
 
     private final SafeRouteService safeRouteSvc;
