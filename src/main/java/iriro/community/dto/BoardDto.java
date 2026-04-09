@@ -17,7 +17,6 @@ public class BoardDto {
     private String boardContent;
     private Integer recommendCount;
     private String createdAt;
-    private String updatedAt;
 
     // + Dto --> Entity 변환 // 사용자가 직접 입력한 데이터만. 플레이팅화
     public BoardEntity toEntity(){

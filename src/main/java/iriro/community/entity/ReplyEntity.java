@@ -41,7 +41,6 @@ public class ReplyEntity extends BaseTime {
                 .nickname(this.userEntity.getNickname())
                 .replyContent(this.replyContent)
                 .createdAt(this.getCreatedAt().toString())
-                .updatedAt(this.getUpdatedAt().toString())
                 .build();
     }
 

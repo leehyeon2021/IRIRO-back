@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/articles")
 @RequiredArgsConstructor
-@CrossOrigin( value = "http://localhost:5173" , exposedHeaders = "Authorization")
+@CrossOrigin( value = "http://localhost:5173")
 public class ArticleController {
 
     private final ArticleService articleService;

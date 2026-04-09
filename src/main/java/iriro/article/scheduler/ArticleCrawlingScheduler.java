@@ -20,7 +20,7 @@ public class ArticleCrawlingScheduler {
         // 2. 지역구 하나씩 검색
         for (String district : RegionConstants.seoulDistricts) {
 
-            String keyword = district + " 폭행";
+            String keyword = district + " 범행";
 
             // 1. 노컷뉴스 크롤링 (Selenium 사용)
             System.out.println("[노컷뉴스] 크롤링 시작");

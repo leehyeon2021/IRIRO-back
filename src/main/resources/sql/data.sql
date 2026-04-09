@@ -91,9 +91,9 @@ INSERT INTO reply (reply_id, board_id, user_id, reply_content, created_at, updat
 
 -- [8] article
 INSERT INTO article (article_title, article_date, article_content, article_url, article_writer, article_pic, article_site, article_keyword, article_district, article_created_at) VALUES
-('강남역 인근 묻지마 폭행 20대 남성 검거', '2026-04-01', '강남역 인근에서 행인에게 주먹을 휘두른 남성이 시민들의 신고로 현장에서 붙잡혔습니다.', 'https://news.example.com/gangnam', '홍길동', 'https://pic.example.com/gn.jpg', '노컷뉴스', '강남구 범죄', '강남구', NOW()),
-('강동구 천호동 상가 밀집지역 야간 순찰 강화', '2026-04-02', '강동경찰서는 최근 천호동 일대 상가 침입 절도 예방을 위해 도보 순찰 인력을 배가했습니다.', 'https://news.example.com/gangdong', '김철수', 'https://pic.example.com/gd.jpg', '머니투데이', '강동구 범죄', '강동구', NOW()),
-('강북구 수유동 빌라 유리창 파손 사건 수사', '2026-04-01', '심야 시간대 주택가 창문을 깨고 침입하려던 흔적이 발견되어 경찰이 주변 CCTV를 분석 중입니다.', 'https://news.example.com/gangbuk', '이영희', 'https://pic.example.com/gb.jpg', '노컷뉴스', '강북구 범죄', '강북구', NOW()),
+('강남역 인근 묻지마 폭행 20대 남성 검거', '2026-04-01', '강남역 인근에서 행인에게 주먹을 휘두른 남성이 시민들의 신고로 현장에서 붙잡혔습니다.', 'https://news.example.com/gangnam', '홍길동', 'https://tailoredimageuk.co.uk/wp-content/uploads/2016/02/Medium-Circle-400x400.png', '노컷뉴스', '강남구 범죄', '강남구', NOW()),
+('강동구 천호동 상가 밀집지역 야간 순찰 강화', '2026-04-02', '강동경찰서는 최근 천호동 일대 상가 침입 절도 예방을 위해 도보 순찰 인력을 배가했습니다.', 'https://news.example.com/gangdong', '김철수', 'https://tailoredimageuk.co.uk/wp-content/uploads/2016/02/Medium-Circle-400x400.png', '머니투데이', '강동구 범죄', '강동구', NOW()),
+('강북구 수유동 빌라 유리창 파손 사건 수사', '2026-04-01', '심야 시간대 주택가 창문을 깨고 침입하려던 흔적이 발견되어 경찰이 주변 CCTV를 분석 중입니다.', 'https://news.example.com/gangbuk', '이영희', 'https://tailoredimageuk.co.uk/wp-content/uploads/2016/02/Medium-Circle-400x400.png', '노컷뉴스', '강북구 범죄', '강북구', NOW()),
 ('강서구 화곡동 주거지역 스토킹 의심 신고 급증', '2026-04-03', '화곡동 일대 1인 가구 밀집 지역을 중심으로 모르는 사람이 문을 두드린다는 신고가 잇따르고 있습니다.', 'https://news.example.com/gangseo', '박민지', 'https://pic.example.com/gs.jpg', '머니투데이', '강서구 범죄', '강서구', NOW()),
 ('관악구 신림동 산책로 "안심 가로등" 전격 설치', '2026-04-01', '관악구는 최근 발생한 강력 범죄 예방을 위해 등산로 입구와 어두운 산책로에 스마트 가로등을 배치했습니다.', 'https://news.example.com/gwanak', '최현우', 'https://pic.example.com/ga.jpg', '노컷뉴스', '관악구 범죄', '관악구', NOW()),
 ('광진구 건대입구역 주변 취객 대상 "아리랑치기" 주의', '2026-04-02', '심야 시간 길가에 쓰러진 취객의 소지품을 노리는 범죄가 늘고 있어 경찰이 집중 단속에 나섰습니다.', 'https://news.example.com/gwangjin', '윤아름', 'https://pic.example.com/gj.jpg', '머니투데이', '광진구 범죄', '광진구', NOW()),

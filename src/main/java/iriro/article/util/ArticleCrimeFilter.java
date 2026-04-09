@@ -30,22 +30,23 @@ public class ArticleCrimeFilter {
     private static final String[] blackList = {
             "드라마", "출연", "방송", "연예", "화보", "영화", "공개", "웹툰", "매매가격", "비트코인",
             "주가", "주식", "코스피", "증권", "부동산", "날씨", "스포츠", "박재홍의 한판승부",
-            "의원", "공천", "특혜", "청탁", "압수수색", "비자금", "선거", "정치", "국회", "기업",
+            "공천", "특혜", "청탁", "압수수색", "비자금", "선거", "정치", "국회", "기업",
             "노조", "내사", "언론 탄압", "아이돌", "BTS", "NCT"
     };
     private static final String[] crimeKeywords = {
             "강도", "절도", "폭행", "성범죄", "흉기", "묻지마", "살인", "상해",
-            "칼부림", "스토킹", "침입", "치안", "순찰", "우범", "안전"
+            "칼부림", "스토킹", "침입", "치안", "순찰", "우범", "안전", "난동"
     };
 
 
     // 저장할 가치 있는 기사인지 판별
     public boolean isValid(String title, String content) {
-
         // === AI 호출 전 키워드 체크 ===
 
         // 1. 필수값 체크
-        if (title == null || content == null || title.isBlank() || content.isBlank()) return false;
+        if (title == null || content == null || title.isBlank() || content.isBlank()){
+            return false;
+        }
 
         // 2. 블랙리스트 체크
         for (String word : blackList) {

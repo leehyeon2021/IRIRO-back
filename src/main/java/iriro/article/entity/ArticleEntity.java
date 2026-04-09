@@ -47,6 +47,7 @@ public class ArticleEntity extends BaseTime{
                 .articlePic(this.articlePic)
                 .articleSite(this.articleSite)
                 .articleKeyword(this.articleKeyword)
+                .articleDistrict(this.articleDistrict)
                 .articleCreatedAt(getArticleCreatedAt().toString())
                 .build();
     }
