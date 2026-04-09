@@ -22,7 +22,7 @@ public class ArticleEntity extends BaseTime{
     @Column(length = 20)
     private String articleDate;
     @Column(length = 300)
-    private String articleContent;
+    private String articleContent; // 본문 전체 저장은 저작권법위반
     @Column(columnDefinition = "text")
     private String articleUrl;
     @Column(length = 20)
