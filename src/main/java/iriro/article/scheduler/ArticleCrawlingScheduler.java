@@ -22,6 +22,8 @@ public class ArticleCrawlingScheduler {
 
             String keyword = district + " 범행";
 
+            System.out.println("[\""+keyword+"\" 검색]");
+
             // 1. 노컷뉴스 크롤링 (Selenium 사용)
             System.out.println("[노컷뉴스] 크롤링 시작");
             crawler.crawlNoCutNews(keyword, district);
@@ -32,11 +34,14 @@ public class ArticleCrawlingScheduler {
 
             // 3. 안전장치: 한 지역구 끝날 때마다 대기
             try {
-                System.out.println("다음 지역 대기 (10초)");
+
+                System.out.println("== 다음 지역 대기 (10초) ==");
                 Thread.sleep(10000);
+
             } catch (InterruptedException e) {
-                System.out.println("대기 중 인터럽트: " + e.getMessage());
+                System.out.println("[대기 중 인터럽트 발생: 종료] " + e.getMessage());
                 Thread.currentThread().interrupt();
+                return;
             }
         }
         System.out.println("=== 서울 전체 범죄 뉴스 크롤링 종료 ===");
