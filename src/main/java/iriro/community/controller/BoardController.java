@@ -43,7 +43,7 @@ public class BoardController {
             return ResponseEntity.status(401).body("로그인이 만료되었습니다.");
         }
         boolean result = boardService.rvAdd(boardDto,loginEmail);
-        return ResponseEntity.ok("리뷰가 등록되었습니다");
+        return ResponseEntity.ok(result);
         }
 
     // 2. 리뷰 전체 조회
