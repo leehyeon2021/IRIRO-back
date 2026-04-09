@@ -92,9 +92,9 @@ public class RouteLogSaveService {
     }
 
     // 후기(별점)을 받으면 추가로 저장 --> update에 가깝다.
-    public void updateLogRating(RouteRatingRequestDto routeRatingRequest){
+    public void updateLogRating(Long logId, RouteRatingRequestDto routeRatingRequest){
         // 후기 저장
-        LocationlogEntity logEntity = locationLogRepo.findById(routeRatingRequest.getLogId())
+        LocationlogEntity logEntity = locationLogRepo.findById(logId)
                 .orElseThrow(() -> new LogSaveException("log is not found"));
 
         logEntity.setRating(routeRatingRequest.getRating());

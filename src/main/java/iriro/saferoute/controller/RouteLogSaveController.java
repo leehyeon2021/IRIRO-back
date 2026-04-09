@@ -18,8 +18,10 @@ public class RouteLogSaveController {
 
     // 후기 저장
     @PatchMapping("/saverating")
-    public ResponseEntity<?> saveRating(@Valid @RequestBody RouteRatingRequestDto routeRatingRequest){
-        routeLogSaveSvc.updateLogRating(routeRatingRequest);
+    public ResponseEntity<?> saveRating(
+            @CookieValue(name = "logId") Long logId,
+            @Valid @RequestBody RouteRatingRequestDto routeRatingRequest){
+        routeLogSaveSvc.updateLogRating(logId, routeRatingRequest);
         return ResponseEntity.ok( true );
     }
 }
