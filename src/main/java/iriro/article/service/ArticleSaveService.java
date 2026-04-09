@@ -19,8 +19,9 @@ public class ArticleSaveService {
             return;
         }
 
-        // DB 글자 수 제한 지키기
+        // DB 글자 수 제한 지키기 (본문 전체 저장은 저작권법위반)
         String safeTitle = title.length() > 95 ? title.substring(0, 95) + "..." : title;
+        String safeConte = content.length() > 300 ? content.substring(0, 300) : content;
         String safeSite = siteName.length() > 10 ? siteName.substring(0, 10) : siteName;
         String safeDistrict = district.length() > 10 ? district.substring(0, 10) : district;
         String safeDate = date.length() > 10 ? date.substring(0, 10) : date;
@@ -30,7 +31,7 @@ public class ArticleSaveService {
         articleRepository.save(ArticleEntity.builder()
                 .articleTitle(safeTitle)
                 .articleUrl(url)
-                .articleContent(content)
+                .articleContent(safeConte)
                 .articleSite(safeSite)
                 .articleDistrict(safeDistrict)
                 .articleKeyword(keyword) // 추가 필요
