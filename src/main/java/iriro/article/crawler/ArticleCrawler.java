@@ -68,6 +68,16 @@ public class ArticleCrawler {
                     break;
                 }
 
+                // 대기
+                try {
+                    System.out.println("[다음 페이지 이동] 3초");
+                    Thread.sleep(3000);
+                }catch (InterruptedException e){
+                    System.out.println("[다음 페이지 이동 중 인터럽트 발생: 종료] " + e.getMessage());
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+
                 // 현재 페이지 목록
                 List<WebElement> articles = driver.findElements(By.cssSelector(".newslist > li"));
                 if( articles.isEmpty() ){
@@ -80,9 +90,14 @@ public class ArticleCrawler {
                     try {
                         if(totalCount >= maxCount){ break; }
 
-                        // 대기
-                        System.out.println("[다음 기사 이동] 2.7초");
-                        Thread.sleep(2700);
+                        try {
+                            System.out.println("[다음 기사 이동] 2.7초");
+                            Thread.sleep(2700);
+                        }catch (InterruptedException e){
+                            System.out.println("[다음 기사 이동 중 인터럽트 발생: 종료] " + e.getMessage());
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
 
                         String title = article.findElement(By.cssSelector("a > strong")).getText().trim();
                         String url = article.findElement(By.cssSelector("a")).getAttribute("href");
@@ -127,8 +142,14 @@ public class ArticleCrawler {
                     nextBtn.click();
 
                     // 대기
-                    System.out.println("[다음 페이지 이동] 2.7초");
-                    Thread.sleep(2700);
+                    try {
+                        System.out.println("[다음 페이지 이동] 3초");
+                        Thread.sleep(3000);
+                    }catch (InterruptedException e){
+                        System.out.println("[다음 페이지 이동 중 인터럽트 발생: 종료] " + e.getMessage());
+                        Thread.currentThread().interrupt();
+                        return;
+                    }
 
                 }catch (Exception e){
                     System.out.println("[노컷뉴스] 다음 페이지 없음: 종료");
@@ -149,11 +170,21 @@ public class ArticleCrawler {
 
         try {
             // 페이지 넘기기
-            for(int page = 1; page <=maxPage; page++) {
+            for(int page = 1; page <= maxPage; page++) {
 
                 if(totalCount >= maxCount) {
                     System.out.println("[머니투데이] "+totalCount+"개 수집 완료");
                     break;
+                }
+
+                // 대기
+                try {
+                    System.out.println("[다음 페이지 이동] 3초");
+                    Thread.sleep(3000);
+                }catch (InterruptedException e){
+                    System.out.println("[다음 페이지 이동 중 인터럽트 발생: 종료] " + e.getMessage());
+                    Thread.currentThread().interrupt();
+                    return;
                 }
 
                 String searchUrl = "https://www.mt.co.kr/search/news"
@@ -182,8 +213,14 @@ public class ArticleCrawler {
                         if(totalCount >= maxCount){ break; }
 
                         // 대기
-                        System.out.println("[다음 기사 이동] 2.7초");
-                        Thread.sleep(2700);
+                        try {
+                            System.out.println("[다음 기사 이동] 2.7초");
+                            Thread.sleep(2700);
+                        }catch (InterruptedException e){
+                            System.out.println("[다음 기사 이동 중 인터럽트 발생: 종료] " + e.getMessage());
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
 
                         String title = article.select(".headline").text().trim();
                         String url = article.select("a").attr("abs:href");
