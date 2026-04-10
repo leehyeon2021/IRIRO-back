@@ -10,6 +10,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
@@ -148,22 +150,13 @@ public class FacilitySafeFetchService {
 
         try {
             for (int page = 1; page <= totalPages; page++) {
-                int pageNo = page;
 
                 String uri = policeUrl + "?serviceKey=" + adminServiceKey
                         + "&pageNo=" + page
                         + "&numOfRows=" + numOfRows
                         + "&returnType=json";
 
-                // 쿼리 방식만 허용되는 API
                 Map<String, Object> response = webClient.get()
-//                        .uri(uriBuilder -> uriBuilder
-//                                .path(policeUrl)
-//                                .queryParam("serviceKey", adminServiceKey)
-//                                .queryParam("pageNo", pageNo) // ❓
-//                                .queryParam("numOfRows",numOfRows)
-//                                .queryParam("returnType","json")
-//                                .build())
                         .uri(uri)
                         .retrieve()
                         .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>() {})
