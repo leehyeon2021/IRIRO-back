@@ -35,6 +35,7 @@ public class ArticleCrawler {
     // 최대
     private static final int maxCount = 10;
     private static final int maxPage = 5;
+    private static final String thisYear = "2026";
 
     // 1. 노컷뉴스 크롤러 (Selenium으로 목록 가져오기 -> Jsoup으로 본문 읽기 -> Selenium으로 다음페이지 클릭)
     public void crawlNoCutNews(String keyword, String district) {
@@ -99,10 +100,14 @@ public class ArticleCrawler {
                             return;
                         }
 
+                        String date = article.findElement(By.cssSelector(".txt > span")).getText().replace(".", "-").trim();
+                        if(!date.contains(thisYear) ){
+                            System.out.println("[날짜 부적절] "+date+" (건너뜀)");
+                            continue;
+                        }
                         String title = article.findElement(By.cssSelector("a > strong")).getText().trim();
                         String url = article.findElement(By.cssSelector("a")).getAttribute("href");
                         String pic = article.findElement(By.cssSelector(".img > a > img")).getAttribute("src");
-                        String date = article.findElement(By.cssSelector(".txt > span")).getText().replace(".", "-").trim();
 
                         // URL 없거나 이미 저장된 기사 건너뜀
                         if (title.isEmpty() || url.isEmpty() || articleRepository.existsByArticleUrl(url)) {
@@ -222,11 +227,15 @@ public class ArticleCrawler {
                             return;
                         }
 
+                        String date = article.select(".article_date").text().replace(".", "-").trim();
+                        if(!date.contains(thisYear)){
+                            System.out.println("[날짜 부적절] "+date+" (건너뜀)");
+                            continue;
+                        }
                         String title = article.select(".headline").text().trim();
                         String url = article.select("a").attr("abs:href");
                         String pic = article.select(".article_body > .thumb > img").attr("src");
                         String writer = article.select(".writer").text().replace(" 기자", "").trim();
-                        String date = article.select(".article_date").text().replace(".", "-").trim();
 
                         // URL 없거나 이미 저장된 기사 건너뜀
                         if (title.isEmpty() || url.isEmpty() || articleRepository.existsByArticleUrl(url)) {

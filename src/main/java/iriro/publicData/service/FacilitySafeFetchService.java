@@ -10,6 +10,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.net.http.HttpClient;
 import java.util.*;
 
 @Service
@@ -272,7 +273,7 @@ public class FacilitySafeFetchService {
                 // 쿼리 방식만 허용되는 API
                 Map<String,Object> response = webClient.get()
                         .uri(safeFacUrl+"/{key}/{type}/{service}/{start}/{end}",
-                                safeFacUrl, "json", "tbSafeReturnItem", startIndex, endIndex)
+                                seoulServiceKey, "json", "tbSafeReturnItem", startIndex, endIndex)
                         .retrieve()
                         .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>() {})
                         .block();
