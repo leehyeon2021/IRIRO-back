@@ -119,6 +119,7 @@ public class FacilitySafeFetchService {
                                 .build());
                     }
                 }
+                System.out.println(page+" 페이지 저장 완료!");
             }
             // 업데이트된 데이터에 없는 기존 데이터 삭제
             for(FacilitySafeEntity db : oldList){
@@ -128,6 +129,7 @@ public class FacilitySafeFetchService {
                     fr.delete(db);
                 }
             }
+            System.out.println("[안심지킴이집 데이터 저장 완료]");
            return true;
         }catch(Exception e){System.out.println("안심지킴이집 저장 실패: "+e);return false;}
     }
@@ -148,7 +150,7 @@ public class FacilitySafeFetchService {
             for (int page = 1; page <= totalPages; page++) {
                 int pageNo = page;
 
-                String uri = "https://safemap.go.kr/openapi2/IF_0036" + "?serviceKey=" + adminServiceKey
+                String uri = policeUrl + "?serviceKey=" + adminServiceKey
                         + "&pageNo=" + page
                         + "&numOfRows=" + numOfRows
                         + "&returnType=json";
@@ -237,6 +239,7 @@ public class FacilitySafeFetchService {
                                 .build());
                     }
                 }
+                System.out.println(page+" 페이지 저장 완료!");
             }
             // 업데이트된 데이터에 없는 기존 데이터 삭제
             for(FacilitySafeEntity db : oldList){
@@ -246,6 +249,7 @@ public class FacilitySafeFetchService {
                     fr.delete(db);
                 }
             }
+            System.out.println("[경찰서 데이터 저장 완료]");
             return true;
         }catch(Exception e){System.out.println("경찰서 저장 실패: " + e);return false;}
     }
@@ -346,6 +350,7 @@ public class FacilitySafeFetchService {
                                 .build());
                     }
                 }
+                System.out.println(page+" 페이지 저장 완료!");
             }
             // 업데이트된 데이터에 없는 기존 데이터 삭제
             for(FacilitySafeEntity db : oldList){
@@ -355,7 +360,10 @@ public class FacilitySafeFetchService {
                     fr.delete(db);
                 }
             }
+            System.out.println("[안전시설물 데이터 저장 완료]");
             return true;
-        }catch(Exception e){System.out.println("안전시설물 저장 실패: "+e);return false;}
+        }catch(Exception e){
+            System.out.println("안전시설물 저장 실패: "+e);
+            return false;}
     }
 }
