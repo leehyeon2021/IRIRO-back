@@ -9,7 +9,10 @@ import iriro.community.repository.ReplyRepository;
 import iriro.community.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,5 +54,13 @@ public class ReplyService {
         }
         replyRepository.deleteById(replyId);
         return true;
+    }
+
+    // 3. 댓글 전체 조회
+    public List<ReplyDto> findAll() {
+        return replyRepository.findAll(Sort.by(Sort.Direction.DESC, "replyId"))
+                .stream()
+                .map(ReplyEntity::toDto)
+                .toList();
     }
 }
