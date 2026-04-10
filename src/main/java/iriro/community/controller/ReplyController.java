@@ -54,5 +54,11 @@ public class ReplyController {
         return ResponseEntity.ok(replyService.rpDelete(replyId, loginEmail));
     }
 
+    // 3. 댓글 전체 조회
+    // http://localhost:8080/api/board/rplist
+    @GetMapping("/rplist")
+    public ResponseEntity<?> findAll(){return ResponseEntity.ok(replyService.findAll());}
+
+
 
     }
