@@ -5,6 +5,7 @@ import iriro.publicData.entity.FacilitySafeEntity;
 import iriro.publicData.repository.FacilitySafeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
 public class FacilitySafeFetchService {
 
     // 안심지킴이집
@@ -36,7 +36,14 @@ public class FacilitySafeFetchService {
     @Value("${api.seoul.safe-fac.url}")
     private String safeFacUrl;
 
-    private final WebClient webClient;
+    private final WebClient redirectWebClient;
+    public FacilitySafeFetchService(@Qualifier("redirectWebClient") WebClient redirectWebClient,
+                                    FacilitySafeRepository fr,
+                                    GeocodingService gs) {
+        this.redirectWebClient = redirectWebClient;
+        this.fr = fr;
+        this.gs = gs;
+    }
     private final FacilitySafeRepository fr;
     private final GeocodingService gs;
 
@@ -55,17 +62,17 @@ public class FacilitySafeFetchService {
         try{
             for(int page=1;page<=totalPages;page++){
                 int pageNo = page;
+
                 // 쿼리 방식만 허용되는 API
-                Map<String,Object> response = webClient.get()
-                        .uri(uriBuilder -> uriBuilder
-                                .path(safeHouseUrl)
-                                .queryParam("serviceKey",pubServiceKey)
-                                .queryParam("pageNo", pageNo)
-                                .queryParam("numOfRows", numOfRows)
-                                .queryParam("type","JSON")
-                                .queryParam("ctprvnNm","서울특별시")
-                                .build()
-                        )
+                String uri = safeHouseUrl
+                        + "?serviceKey=" + pubServiceKey
+                        + "&pageNo=" + page
+                        + "&numOfRows=" + numOfRows
+                        + "&type=JSON"
+                        + "&ctprvnNm=서울특별시";
+
+                Map<String,Object> response = redirectWebClient.get()
+                        .uri(uri)
                         .retrieve()
                         .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>(){})
                         .block();
@@ -156,7 +163,7 @@ public class FacilitySafeFetchService {
                         + "&numOfRows=" + numOfRows
                         + "&returnType=json";
 
-                Map<String, Object> response = webClient.get()
+                Map<String, Object> response = redirectWebClient.get()
                         .uri(uri)
                         .retrieve()
                         .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>() {})
@@ -273,7 +280,7 @@ public class FacilitySafeFetchService {
                 int endIndex = page*numOfRows;
 
                 // 쿼리 방식만 허용되는 API
-                Map<String,Object> response = webClient.get()
+                Map<String,Object> response = redirectWebClient.get()
                         .uri(safeFacUrl+"/{key}/{type}/{service}/{start}/{end}",
                                 seoulServiceKey, "json", "tbSafeReturnItem", startIndex, endIndex)
                         .retrieve()

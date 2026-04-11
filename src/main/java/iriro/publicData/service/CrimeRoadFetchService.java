@@ -3,7 +3,7 @@ package iriro.publicData.service;
 import iriro.common.service.GeocodingService;
 import iriro.publicData.entity.CrimeRoadEntity;
 import iriro.publicData.repository.CrimeRoadRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,9 +28,9 @@ public class CrimeRoadFetchService{
     // 위험도로명(Map) 저장
     @Transactional
     public boolean fetchCrimeRoad(){
-        int numOfRows = 1000;   // 한 번에 1000개 조회 가능
-        int totalCount = 0;     // 저장해야 함
-        int totalPages = 1;     // numOfRows와 totalCount를 고려하여 페이지 넘김
+        int numOfRows = 1000;
+        int totalCount = 0;
+        int totalPages = 1;
 
         // 기존 데이터 체크용
         List<CrimeRoadEntity> oldList = cr.findAll();
@@ -41,6 +41,7 @@ public class CrimeRoadFetchService{
 
         try {
             // totalCount 찾기
+            // (너무 오래 걸린다면: totalPages 원하는 자료양 만큼 변경.)
             for (int page = 1; page <= totalPages; page++) {
 
                 // 서비스키를 주소상에 포함
@@ -67,7 +68,7 @@ public class CrimeRoadFetchService{
                 if (page == 1) {
                     totalCount = (int) body.get("totalCount");
                     totalPages = (totalCount + numOfRows - 1) / numOfRows;
-                    System.out.println("totalCount: "+totalCount);
+                    System.out.println("[totalCount] "+totalCount);
                 }
 
                 // 더 열기
@@ -91,7 +92,7 @@ public class CrimeRoadFetchService{
 
                     // cri_count 추가
                     if(!count.add(it)){ // Set은 중복이면 저장x false 반환
-                        Optional<CrimeRoadEntity> lists = cr.findByCriSggAndCriRoad(sggNm, ctpvNm);
+                        Optional<CrimeRoadEntity> lists = cr.findByCriSggAndCriRoad(sggNm, roadName);
                         lists.ifPresent( list -> list.setCriCount(list.getCriCount()+1));
                         continue;
                     }
@@ -101,7 +102,7 @@ public class CrimeRoadFetchService{
                     int zipCode = Integer.parseInt((String) item.get("roadNmZip"));
 
                     // DB 확인
-                    Optional<CrimeRoadEntity> exists = cr.findByCriSggAndCriRoad(sggNm, ctpvNm);
+                    Optional<CrimeRoadEntity> exists = cr.findByCriSggAndCriRoad(sggNm, roadName);
                     if(exists.isPresent()){
                         // 있으면 업데이트
                         CrimeRoadEntity exist = exists.get();
@@ -134,6 +135,7 @@ public class CrimeRoadFetchService{
                                 .build());
                     }
                 }
+                System.out.println(page+" 페이지 저장 완료!");
             }
             // 업데이트된 데이터에 없는 기존 데이터 삭제
             for (CrimeRoadEntity db : oldList) {
@@ -143,8 +145,13 @@ public class CrimeRoadFetchService{
                     cr.delete(db);
                 }
             }
+            System.out.println("[위험도로명 데이터 저장 완료]");
             return true;
-        }catch(Exception e){System.out.println("위험도로명 저장 실패: "+e);return false;}
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println("위험도로명 저장 실패: "+e);
+            return false;
+        }
     }
 
     public static String getRoadSuffix(String roadName) {

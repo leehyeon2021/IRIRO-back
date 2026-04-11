@@ -17,6 +17,7 @@ public class CrimeRoadController {
     private final CrimeRoadService cs;
 
     // 범죄자도로명 조회
+    // (너무 오래 걸린다면: CrimeRoadService에서 totalPages를 (for문에 직접)임의 값으로 변경)
     @GetMapping("/crimeroad")
     public ResponseEntity<?> getCrimeRoad(){
         return ResponseEntity.ok(cs.getCrimeRoad());
