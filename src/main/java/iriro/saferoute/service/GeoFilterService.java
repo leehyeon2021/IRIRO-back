@@ -6,61 +6,83 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-// 역할: bbox생성, bbox포함 여부, 두 좌표 거리 계산, 경로와 점 사이 최소 거리 계산, sequence 찾기
 @Service
 public class GeoFilterService {
-    private static final double EARTH_RADIUS = 6371000; // 지구 반지름(상수)
+    private static final double EARTH_RADIUS = 6371000;
 
-    // 좌표 1개당 경로 좌표들 중 최소거리를 구하는 함수
-    public double getMinDistance(List<RoutePointDto> routePoints, double latitude, double longitude){
-        double minDistance = Double.MAX_VALUE;
-
-        for(RoutePointDto point : routePoints){
-            double pointLat = point.getLatitude();
-            double pointLng = point.getLongitude();
-
-            double distance = distanceMeter(pointLat, pointLng, latitude, longitude);
-
-            minDistance = Math.min(minDistance, distance);
+    /** 폴리라인(선분)과 점 사이 최단거리(m) */
+    public double getMinDistance(List<RoutePointDto> routePoints, double latitude, double longitude) {
+        if (routePoints == null || routePoints.isEmpty()) {
+            return Double.MAX_VALUE;
         }
-
-        return minDistance;
+        if (routePoints.size() == 1) {
+            RoutePointDto p = routePoints.get(0);
+            return distanceMeter(p.getLatitude(), p.getLongitude(), latitude, longitude);
+        }
+        double min = Double.MAX_VALUE;
+        for (int i = 0; i < routePoints.size() - 1; i++) {
+            RoutePointDto a = routePoints.get(i);
+            RoutePointDto b = routePoints.get(i + 1);
+            min = Math.min(min, distancePointToSegmentMeters(
+                    a.getLatitude(), a.getLongitude(), b.getLatitude(), b.getLongitude(),
+                    latitude, longitude));
+        }
+        return min;
     }
 
-    // 위험지역에 들어간 최단거리 경로 좌표의 순서를 구하는 함수
-    public int getSequence(List<RoutePointDto> routePoints, RiskPointDto riskZone){
+    private double distancePointToSegmentMeters(
+            double lat1, double lng1, double lat2, double lng2,
+            double latP, double lngP) {
+        double refLat = (lat1 + lat2 + latP) / 3.0;
+        double mPerLat = 111000.0;
+        double mPerLng = 111000.0 * Math.cos(Math.toRadians(refLat));
+        double bx = (lng2 - lng1) * mPerLng;
+        double by = (lat2 - lat1) * mPerLat;
+        double px = (lngP - lng1) * mPerLng;
+        double py = (latP - lat1) * mPerLat;
+        double c2 = bx * bx + by * by;
+        if (c2 < 1e-12) {
+            return distanceMeter(lat1, lng1, latP, lngP);
+        }
+        double t = (px * bx + py * by) / c2;
+        double projX, projY;
+        if (t <= 0) {
+            projX = 0;
+            projY = 0;
+        } else if (t >= 1) {
+            projX = bx;
+            projY = by;
+        } else {
+            projX = t * bx;
+            projY = t * by;
+        }
+        double dx = px - projX;
+        double dy = py - projY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public int getSequence(List<RoutePointDto> routePoints, RiskPointDto riskZone) {
         double minDistance = Double.MAX_VALUE;
         int sequence = 0;
-
         double riskLat = riskZone.getLatitude();
         double riskLng = riskZone.getLongitude();
-
-        for(RoutePointDto point : routePoints){
-            double pointLat = point.getLatitude();
-            double pointLng = point.getLongitude();
-
-            double distance = distanceMeter(pointLat, pointLng, riskLat, riskLng);
-
-            if(minDistance > distance){
-                minDistance = distance;
+        for (RoutePointDto point : routePoints) {
+            double d = distanceMeter(point.getLatitude(), point.getLongitude(), riskLat, riskLng);
+            if (minDistance > d) {
+                minDistance = d;
                 sequence = point.getSequence();
             }
         }
-
         return sequence;
     }
 
-    // 거리를 구하는 함수 ( m단위로 반환 ) -> Haversine 공식
     public double distanceMeter(double lat1, double lng1, double lat2, double lng2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLng = Math.toRadians(lng2 - lng1);
-
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
                 * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return EARTH_RADIUS * c;
     }
-
 }
