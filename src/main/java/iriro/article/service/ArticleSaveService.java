@@ -104,7 +104,7 @@ public class ArticleSaveService {
 
         // 교집합 나누기 합집합
         double similarity = (double) intersection.size() / union.size();
-        System.out.println("[유사도] "+keyword1+" , "+keyword2+" => "+similarity);
+        System.out.println("[유사도] ["+keyword1+"] , ["+keyword2+"] => "+similarity);
 
         // 50% 넘으면 중복 처리
         return similarity >= 0.5;
