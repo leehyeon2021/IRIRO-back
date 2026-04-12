@@ -34,9 +34,9 @@ public class ArticleCrawler {
     private final ArticleSaveService articleSaveService;
 
     // 최대 개수 조절
-    private static final int maxCount = 1;
-    private static final int maxPage = 1;
-    private static final String[] thisYear = {"2026", "2025"};
+    private static final int maxCount = 10;
+    private static final int maxPage = 5;
+    private static final String[] year = {"2026", "2025"};
 
     // 1. 노컷뉴스 크롤러 (Selenium으로 목록 가져오기 -> Jsoup으로 본문 읽기 -> Selenium으로 다음페이지 클릭)
     public void crawlNoCutNews(String keyword, String district) {
@@ -102,7 +102,7 @@ public class ArticleCrawler {
                         }
 
                         String date = article.findElement(By.cssSelector(".txt > span")).getText().replace(".", "-").trim();
-                        boolean isTargetYear = Arrays.stream(thisYear).anyMatch(date::contains);
+                        boolean isTargetYear = Arrays.stream(year).anyMatch(date::contains);
                         if(!isTargetYear){
                             System.out.println("[날짜 부적절] "+date+" (건너뜀)");
                             continue;
@@ -230,7 +230,7 @@ public class ArticleCrawler {
                         }
 
                         String date = article.select(".article_date").text().replace(".", "-").trim();
-                        boolean isTargetYear = Arrays.stream(thisYear).anyMatch(date::contains);
+                        boolean isTargetYear = Arrays.stream(year).anyMatch(date::contains);
                         if(!isTargetYear){
                             System.out.println("[날짜 부적절] "+date+" (건너뜀)");
                             continue;
