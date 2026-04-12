@@ -17,6 +17,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -32,6 +33,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.21.1'     // XML 파싱
     implementation 'org.springframework.security:spring-security-crypto:6.4.4'          // 비크립트
     implementation 'org.springframework.boot:spring-boot-starter-validation'            // DTO유효성 검사
+    implementation 'com.github.shin285:KOMORAN:3.3.4'
 
     // JWT 라이브러리
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
