@@ -63,8 +63,8 @@ public class CandidateRouteService {
             return res;
         }
 
-        // 다중 경유 경로 생성 시도 실패하면 경유지 수를 줄여가며 재시도
-        reduceUntilDetourWorks(req, res, dwps);
+        // 우회점 경로 후보들 추가
+        collectCandidates(req, res, dwps);
         return res;
     }
 
@@ -88,7 +88,7 @@ public class CandidateRouteService {
     }
 
     // 다중 우회 경로 생성 함수
-    private void reduceUntilDetourWorks(
+    private void collectCandidates(
             RouteRequestDto req,
             List<RouteResponseDto> candidates,
             List<DetourWayPointDto> waypoints) {
@@ -99,9 +99,9 @@ public class CandidateRouteService {
                 RouteResponseDto res = tmapRouteSvc.getDetourRoute(req, cur);
                 candidates.add(res); // 생성에 성공시 후보  경로에 추가
                 log.info("[우회 후보] 경유지={}개 거리={}m", cur.size(), res.getTotalDistance());
-                return;
             } catch (Exception e) {
                 log.warn("[우회] 경유지 {}개 실패: {} → 개수 축소", cur.size(), e.getMessage());
+            } finally {
                 cur.remove(cur.size() - 1); // 마지막 값 삭제
             }
         }
