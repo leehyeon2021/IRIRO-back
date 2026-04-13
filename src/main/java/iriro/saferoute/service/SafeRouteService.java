@@ -18,13 +18,13 @@ import java.util.List;
 public class SafeRouteService {
 
     private static final double BBOX_MARGIN_METER = 300.0; // BBox 여유 반경
-    private static final double MAX_DETOUR_RATIO = 1.50; // 기본 경로 대비 허용 가능한 최대 우회 비율
+    private static final double MAX_DETOUR_RATIO = 2.0; // 기본 경로 대비 허용 가능한 최대 우회 비율
 
     private static final double SOFT_BAND_M = 40.0; // 위험 반경 바깥쪽의 완충 구간 거리(경고 구역)
-    private static final double SOFT_PEAK = 0.35; // 위험 노출을 얼마나 줄여 반영할지 결정(경고 구간에서는 0.35배 정도)
-    private static final double EXPOSURE_TO_POINTS = 2.6; // 위험 노출을 실제 점수 차감 포인트로 바꾸는 계수
-    private static final int MAX_RISK_DEDUCTION = 88; // 위험으로 인한 최대 차감 한도
-    private static final int MAX_FACILITY_BONUS = 8; // 안전시설 보너스 최대치
+    private static final double SOFT_PEAK = 0.35; // 위험 노출을 얼마나 줄여 반영할지 결정(경고 구간에서는 0.35배 정도) -> 높이면 완충구간에도 더 민감하게 반응
+    private static final double EXPOSURE_TO_POINTS = 2.6; // 위험 노출을 실제 점수 차감 포인트로 바꾸는 계수(높이면 더 민감하게 반응)
+    private static final int MAX_RISK_DEDUCTION = 88; // 위험요소때문에 아무리 많이 깎여도 최대 88점까지 깍임
+    private static final int MAX_FACILITY_BONUS = 8; // 안전시설 보너스 최대치 점수
 
     private final TmapRouteService tmapRouteSvc;
     private final CandidateRouteService candidateRouteSvc;
@@ -189,7 +189,7 @@ public class SafeRouteService {
 
         // 위험 차감 계산
         int d = (int) Math.ceil(exposure * EXPOSURE_TO_POINTS);
-        d = Math.min(MAX_RISK_DEDUCTION, d);
+        d = Math.min(MAX_RISK_DEDUCTION, d); // 아무리 크게 깎여도 12점 미만으로 안가게 최소값으로 설정
 
         return Math.max(0, Math.min(100, 100 - d + fac));
     }
