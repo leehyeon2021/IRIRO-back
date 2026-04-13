@@ -141,7 +141,7 @@ public class SafeRouteService {
                 expAny = ex;
                 bestAny = c;
             }
-            if (ratio <= MAX_DETOUR_RATIO) { // 만약 1.5배가 안 넘으면
+            if (ratio <= MAX_DETOUR_RATIO) {
                 if (bestOk == null || ex < expOk - 1e-9
                         || (Math.abs(ex - expOk) < 1e-9 && c.getTotalDistance() < bestOk.getTotalDistance())) {
                     expOk = ex;
