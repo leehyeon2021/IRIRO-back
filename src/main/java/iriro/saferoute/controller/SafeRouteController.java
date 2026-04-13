@@ -32,7 +32,7 @@ public class SafeRouteController {
         String email = null;
 
         // 이메일 토큰 값에서 가져오기
-        if(token != null && token.startsWith("Bearer")){
+        if(token != null && token.startsWith("Bearer ")){
             String realToken = token.substring(7);
             email = jwtSvc.getClaim(realToken);
         }
