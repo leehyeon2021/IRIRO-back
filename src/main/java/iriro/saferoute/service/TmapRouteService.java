@@ -29,6 +29,8 @@ public class TmapRouteService { //Tmap API 연결
     // 외부 API를 호출하기 위한 HTTP 클라이언트 객체 생성
     private final WebClient webClient;
 
+    private final GeoFilterService geoFilterSvc;
+
     // 기본 경로 구하는 함수
     public RouteResponseDto getPedestrianRoute(RouteRequestDto routeRequestDto) {
         // 1. 요청 body 생성
@@ -148,6 +150,7 @@ public class TmapRouteService { //Tmap API 연결
             }
         }
         List<RoutePointDto> deduplicateRoutePoints = deduplicateRoutePoints(routePoints);
+        List<RoutePointDto> cleanedPoints = removeBacktrackDetourPoints(deduplicateRoutePoints);
 
         return RouteResponseDto.builder()
                 .start_latitude(routeRequestDto.getStartLat())
@@ -156,7 +159,7 @@ public class TmapRouteService { //Tmap API 연결
                 .end_longitude(routeRequestDto.getEndLng())
                 .totalTime(totalTime)
                 .totalDistance(totalDistance)
-                .routePoints(deduplicateRoutePoints)
+                .routePoints(cleanedPoints)
                 .build();
     }
 
@@ -186,5 +189,62 @@ public class TmapRouteService { //Tmap API 연결
         }
 
         return routePoints;
+    }
+
+    // 잠깐 튀었다 돌아오는 경로 삭제
+    private List<RoutePointDto> removeBacktrackDetourPoints(List<RoutePointDto> routePoints) {
+        if (routePoints == null || routePoints.size() < 3) {
+            return routePoints;
+        }
+
+        List<RoutePointDto> result = new ArrayList<>(routePoints);
+        boolean changed = true;
+
+        while (changed) {
+            changed = false;
+
+            for (int i = 1; i < result.size() - 1; i++) {
+                RoutePointDto prev = result.get(i - 1);
+                RoutePointDto curr = result.get(i);
+                RoutePointDto next = result.get(i + 1);
+
+                double prevCurrDist = geoFilterSvc.distanceMeter(
+                        prev.getLatitude(), prev.getLongitude(),
+                        curr.getLatitude(), curr.getLongitude()
+                );
+
+                double currNextDist = geoFilterSvc.distanceMeter(
+                        curr.getLatitude(), curr.getLongitude(),
+                        next.getLatitude(), next.getLongitude()
+                );
+
+                double prevNextDist = geoFilterSvc.distanceMeter(
+                        prev.getLatitude(), prev.getLongitude(),
+                        next.getLatitude(), next.getLongitude()
+                );
+
+                // 직전점과 다음점이 거의 같은 위치면
+                // curr 은 잠깐 튀었다가 돌아온 점일 확률이 높음
+                boolean isBacktrackShape = prevNextDist <= 8.0;
+
+                // curr 로 잠깐 벗어났다가 복귀한 짧은 구간인지
+                boolean isShortDetour =
+                        prevCurrDist <= 30.0 &&
+                                currNextDist <= 30.0;
+
+                // 완만한 곡선은 삭제하지 않도록 각도 보조 조건 추가
+                double angle = geoFilterSvc.calculateAngle(prev, curr, next);
+                boolean isSharpTurn = angle <= 70.0;
+
+                if (isBacktrackShape && isShortDetour && isSharpTurn) {
+                    result.remove(i);
+                    changed = true;
+                    break;
+                }
+            }
+        }
+
+        resetSequence(result);
+        return result;
     }
 }

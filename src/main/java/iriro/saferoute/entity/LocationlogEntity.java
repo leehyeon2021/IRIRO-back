@@ -50,9 +50,4 @@ public class LocationlogEntity extends BaseTime {
 
     private Integer rating; // (처음엔 null 그 다음엔 업데이트)
 
-    // 생성 일자만 엔티티 생성
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
 }

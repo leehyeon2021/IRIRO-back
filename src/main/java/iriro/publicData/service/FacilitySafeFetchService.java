@@ -4,15 +4,18 @@ import iriro.common.service.GeocodingService;
 import iriro.publicData.entity.FacilitySafeEntity;
 import iriro.publicData.repository.FacilitySafeRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.util.UriComponentsBuilder;
+import reactor.util.retry.Retry;
 
-import java.net.URLDecoder;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.*;
 
 @Service
@@ -37,10 +40,16 @@ public class FacilitySafeFetchService {
     private String safeFacUrl;
 
     private final WebClient redirectWebClient;
-    public FacilitySafeFetchService(@Qualifier("redirectWebClient") WebClient redirectWebClient,
-                                    FacilitySafeRepository fr,
-                                    GeocodingService gs) {
+    /** api.data.go.kr 호출 시 Netty에서 Connection reset 이 나면 이 클라이언트 사용 */
+    private final WebClient publicDataWebClient;
+
+    public FacilitySafeFetchService(
+            @Qualifier("redirectWebClient") WebClient redirectWebClient,
+            @Qualifier("publicDataWebClient") WebClient publicDataWebClient,
+            FacilitySafeRepository fr,
+            GeocodingService gs) {
         this.redirectWebClient = redirectWebClient;
+        this.publicDataWebClient = publicDataWebClient;
         this.fr = fr;
         this.gs = gs;
     }
@@ -62,19 +71,25 @@ public class FacilitySafeFetchService {
         try{
             for(int page=1;page<=totalPages;page++){
 
-                // 쿼리 방식만 허용되는 API
-                String uri = safeHouseUrl
-                        + "?serviceKey=" + pubServiceKey
-                        + "&pageNo=" + page
-                        + "&numOfRows=" + numOfRows
-                        + "&type=JSON"
-                        + "&ctprvnNm=서울특별시";
+                // 쿼리 방식만 허용되는 API (한글 파라미터는 반드시 URI 인코딩 — 미인코딩 시 Connection reset 빈번)
+                URI requestUri = UriComponentsBuilder.fromUriString(safeHouseUrl)
+                        .queryParam("serviceKey", pubServiceKey)
+                        .queryParam("pageNo", pageNo)
+                        .queryParam("numOfRows", numOfRows)
+                        .queryParam("type", "JSON")
+                        .queryParam("ctprvnNm", "서울특별시")
+                        .build()
+                        .encode(StandardCharsets.UTF_8)
+                        .toUri();
 
-                Map<String,Object> response = redirectWebClient.get()
-                        .uri(uri)
+                // 여러번 요청하도록 리트라이 추가
+                Map<String,Object> response = publicDataWebClient.get()
+                        .uri(requestUri)
                         .retrieve()
                         .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>(){})
-                        .block();
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
+                                .filter(ex -> ex instanceof WebClientRequestException))
+                        .block(Duration.ofMinutes(2));
 
                 // 열기
                 Map<String,Object> responseInner = (Map<String, Object>) response.get("response");

@@ -85,4 +85,25 @@ public class GeoFilterService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return EARTH_RADIUS * c;
     }
+
+    // 연속된 경로 점 간의 각도 계산
+    public double calculateAngle(RoutePointDto prev, RoutePointDto curr, RoutePointDto next) {
+        double v1x = prev.getLongitude() - curr.getLongitude();
+        double v1y = prev.getLatitude() - curr.getLatitude();
+        double v2x = next.getLongitude() - curr.getLongitude();
+        double v2y = next.getLatitude() - curr.getLatitude();
+
+        double dot = v1x * v2x + v1y * v2y;
+        double mag1 = Math.sqrt(v1x * v1x + v1y * v1y);
+        double mag2 = Math.sqrt(v2x * v2x + v2y * v2y);
+
+        if (mag1 == 0 || mag2 == 0) {
+            return 180.0;
+        }
+
+        double cos = dot / (mag1 * mag2);
+        cos = Math.max(-1.0, Math.min(1.0, cos));
+
+        return Math.toDegrees(Math.acos(cos));
+    }
 }
