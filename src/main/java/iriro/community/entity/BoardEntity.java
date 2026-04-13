@@ -53,12 +53,12 @@ public class BoardEntity extends BaseTime {
                 .userId(this.userEntity != null ? this.userEntity.getUserId() : null)
                 // userEntity가 비어있지 않으면 아이디를 꺼내고, 비어있으면 null을 넣어라!
 
-                .logId(this.locationlogEntity.getLogId())
-                .startLatitude(this.toDto().getStartLatitude())
-                .startLongitude(this.toDto().getStartLongitude())
-                .endLatitude(this.toDto().getEndLatitude())
-                .endLongitude(this.toDto().getEndLongitude())
-                .total_distance(this.toDto().getTotal_distance())
+                .logId(this.locationlogEntity != null ? this.locationlogEntity.getLogId() : null)
+                .startLatitude(this.locationlogEntity != null ? this.locationlogEntity.getStartLatitude() : null)
+                .startLongitude(this.locationlogEntity != null ? this.locationlogEntity.getStartLongitude() : null)
+                .endLatitude(this.locationlogEntity != null ? this.locationlogEntity.getEndLatitude() : null)
+                .endLongitude(this.locationlogEntity != null ? this.locationlogEntity.getEndLongitude() : null)
+                .total_distance(this.locationlogEntity != null ? this.locationlogEntity.getTotal_distance() : null)
 
 
                 .nickname(this.userEntity.getNickname())
