@@ -113,7 +113,7 @@ public class ArticleSaveService {
         System.out.println("[유사도] ["+keyword1+"] , ["+keyword2+"] => "+similarity);
 
         // 50% 넘으면 중복 처리
-        return similarity >= 0.5;
+        return similarity >= 0.3;
     }
 
 }
