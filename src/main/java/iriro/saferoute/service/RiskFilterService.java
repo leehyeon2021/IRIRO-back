@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RiskFilterService {
-    private static final double MERGE_DISTANCE_METER = 50; // 사이간격(상수)
+    private static final double MERGE_DISTANCE_METER = 200; // 사이간격(상수)
 
     private final GeoFilterService geoFilterSvc;
 
@@ -30,7 +30,7 @@ public class RiskFilterService {
         // 2차 필터 적용 후 리스트가 비어 있으면 바로 리턴
         if(secondDangerPoints.isEmpty()) return new ArrayList<>();
 
-        // [3차 필터] : 2차 필터링된 위험 위치 리스트들의 각 중심점의 위치 간의 거리가 50m 이내라면 뒤에 나온 위험구간 무시 후 해당 지역 위험수 +1
+        // [3차 필터] : 2차 필터링된 위험 위치 리스트들의 각 중심점의 위치 간의 거리가 200m 이내라면 뒤에 나온 위험구간 무시 후 해당 지역 위험수 +1
         List<RiskPointDto> thirdDangerPoints = new ArrayList<>();
         for (RiskPointDto secondPoint : secondDangerPoints) {
 
@@ -41,7 +41,7 @@ public class RiskFilterService {
 
             for (RiskPointDto point : thirdDangerPoints) {
                 double distance = geoFilterSvc.distanceMeter(secondLat, secondLng, point.getLatitude(), point.getLongitude());
-                if (distance < MERGE_DISTANCE_METER) { // 하나라도 50m 이하면 false
+                if (distance < MERGE_DISTANCE_METER) {
                     canAdd = false;
                     point.setRiskCount(point.getRiskCount() + secondPoint.getRiskCount()); // 위험 수 + 1
                     break;

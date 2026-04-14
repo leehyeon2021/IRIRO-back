@@ -37,7 +37,8 @@ public class CandidateRouteService {
         }
 
         // 전체 위험지점 중 기본 경로에 실제로 영향을 주는 위험지점만 필터링
-        List<RiskPointDto> onDangerPath = riskFilterSvc.filterDangerPoints(routePoints, allDangerPoints);
+        List<RiskPointDto> onDangerPath
+                = riskFilterSvc.filterDangerPoints(routePoints, allDangerPoints);
         if (onDangerPath.isEmpty()) {
             log.info("경로 인근 위험 없음 → 우회 후보 없음");
             return res;
@@ -53,7 +54,10 @@ public class CandidateRouteService {
         int limit = Math.min(MAX_WAYPOINTS, sortedDangerPath.size()); // 경유지 5개 제한
         for (int i = 0; i < limit; i++) {
             // 각 위험지점을 기준으로 좌/우 법선 방향 우회 경유지 1개 계산하여 추가
-            DetourWayPointDto dwp = perpendicularWaypoint(routePoints, sortedDangerPath.get(i), sortedDangerPath);
+            DetourWayPointDto dwp
+                    = perpendicularWaypoint(
+                            routePoints, sortedDangerPath.get(i),
+                    sortedDangerPath );
             if (dwp != null) {
                 dwps.add(dwp);
             }
