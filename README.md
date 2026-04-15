@@ -45,12 +45,12 @@
 <img src="https://img.shields.io/badge/AI_Filtering-FF6C37?style=for-the-badge&logo=openai&logoColor=white"> <img src="https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white"> <img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white">
 
 ## 4. 서비스 아키텍처
-![Architecure Diagram](이미지경로)
+![아키텍처 이미지](이미지경로)
 
 ## 5. 시연영상 링크
 <시연영상 하이퍼링크/Youtube>
 
-## 6. 참고 링크(읽기모드로)
+## 6. 참고 링크
 
 ### SPRING GIT REPOSITORY(Back):<https://github.com/leehyeon2021/IRIRO-back>
 ### REACT GIT REPOSITORY(Front):<https://github.com/leehyeon2021/IRIRO-front>
