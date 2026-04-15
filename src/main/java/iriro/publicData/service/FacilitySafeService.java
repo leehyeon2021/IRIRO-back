@@ -54,14 +54,4 @@ public class FacilitySafeService {
                 .map(FacilitySafeEntity::toDto)
                 .collect(Collectors.toList());
     }
-
-
-    // 저장 - 다른 파일 만드는 게 나을 것 같음
-    // 1. 경찰서 저장
-    // 2. 안심지킴이집 저장
-    // 3. 보안등 저장
-    // 4. CCTV 저장
-    // 5. 안전벨 저장
-
-    // 7. 불러오기 (한 달에 한 번)
 }

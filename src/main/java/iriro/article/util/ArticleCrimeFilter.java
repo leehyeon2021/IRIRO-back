@@ -84,7 +84,6 @@ public class ArticleCrimeFilter {
             
                     [TRUE conditions - answer TRUE if ANY of these apply]
                     - Assault, weapons, murder, robbery, theft, sexual crime, stalking, random attacks in Seoul
-                    - Seoul public safety policies: increased patrols, CCTV installation, etc.
                     - News about high-crime areas or dangerous commute routes in Seoul
             
                     [FALSE conditions - answer FALSE if ANY of these apply]

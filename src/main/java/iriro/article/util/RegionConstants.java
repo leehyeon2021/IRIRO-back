@@ -11,6 +11,6 @@ public class RegionConstants {
     };
 
     // 테스트용
-    //public static final String[] seoulDistricts = {"송파구"};
+    //public static final String[] seoulDistricts = {"강동구"};
 
 }
